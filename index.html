@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clarios IS — Registro de Impacto Social</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:    #08051A;
+  --surf:  #110D26;
+  --surf2: #1A1435;
+  --surf3: #251B4A;
+  --prim:  #6B3FC5;
+  --primh: #7D52D4;
+  --primd: #4E2E96;
+  --acc:   #A87DEA;
+  --t1: #EDE8F5; --t2: #C0AEDD; --t3: #8A7AAA;
+  --brd:  #2C1E52;
+  --ok:   #27AE60;
+  --warn: #E67E22;
+  --err:  #E74C3C;
+  --rad: 12px; --rads: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:14px;}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 1.5rem;height:56px;gap:1.5rem;}
+.logo{font-weight:700;font-size:1.05rem;color:var(--acc);letter-spacing:.5px;white-space:nowrap;}
+.logo span{color:var(--t3);font-weight:400;}
+.topnav{display:flex;gap:.25rem;flex:1;}
+.topnav button{background:none;border:none;color:var(--t2);padding:.45rem .9rem;border-radius:var(--rads);cursor:pointer;font-size:.85rem;transition:background .15s,color .15s;font-family:inherit;}
+.topnav button:hover{background:var(--surf3);color:var(--t1);}
+.topnav button.active{background:var(--surf3);color:var(--acc);font-weight:600;}
+.sync-wrap{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--t3);white-space:nowrap;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--t3);flex-shrink:0;}
+.sync-dot.ok{background:var(--ok);}
+.sync-dot.spin{background:var(--warn);animation:blink 1s infinite;}
+.sync-dot.err{background:var(--err);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* LAYOUT */
+.main{padding:1.75rem 2rem;max-width:1400px;margin:0 auto;}
+.section{display:none;}.section.active{display:block;}
+.page-hdr{margin-bottom:1.5rem;}
+.page-hdr h1{font-size:1.4rem;font-weight:700;margin-bottom:.2rem;}
+.page-hdr p{color:var(--t3);font-size:.85rem;}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.kpi-card{background:var(--surf2);border:1px solid var(--brd);border-radius:var(--rad);padding:1.25rem;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--prim);}
+.kpi-card.k2::before{background:var(--acc);}
+.kpi-card.k3::before{background:#4E2E96;}
+.kpi-card.k4::before{background:#8A5DD4;}
+.kpi-card.k5::before{background:#3D1E7C;}
+.kpi-lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:.5rem;}
+.kpi-val{font-size:1.9rem;font-weight:700;}
+
+/* CHARTS */
+.charts-grid{display:grid;grid-template-columns:1fr 2fr;gap:1rem;margin-bottom:1.5rem;}
+@media(max-width:768px){.charts-grid{grid-template-columns:1fr;}}
+.chart-card{background:var(--surf2);border:1px solid var(--brd);border-radius:var(--rad);padding:1.25rem;}
+.chart-card h3{font-size:.82rem;color:var(--t2);margin-bottom:1rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+.chart-wrap{position:relative;height:230px;}
+
+/* CARD */
+.card{background:var(--surf2);border:1px solid var(--brd);border-radius:var(--rad);padding:1.5rem;}
+
+/* TYPE SELECTOR */
+.type-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;}
+@media(max-width:580px){.type-selector{grid-template-columns:1fr;}}
+.type-card{background:var(--surf3);border:2px solid var(--brd);border-radius:var(--rad);padding:1.5rem 1.25rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+.type-card:hover{border-color:var(--primd);}
+.type-card.selected{border-color:var(--prim);background:rgba(107,63,197,.15);}
+.type-icon{font-size:2.4rem;margin-bottom:.75rem;}
+.type-name{font-size:.95rem;font-weight:700;margin-bottom:.3rem;}
+.type-desc{font-size:.78rem;color:var(--t3);line-height:1.4;}
+
+/* STEPS */
+.steps-ind{display:flex;align-items:center;gap:.4rem;margin-bottom:2rem;overflow-x:auto;padding-bottom:.25rem;}
+.sitem{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--t3);flex-shrink:0;}
+.sitem.active{color:var(--acc);}
+.sitem.done{color:var(--ok);}
+.snum{width:26px;height:26px;border-radius:50%;border:2px solid var(--brd);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;}
+.sitem.active .snum{border-color:var(--prim);background:var(--prim);color:#fff;}
+.sitem.done .snum{border-color:var(--ok);background:var(--ok);color:#fff;}
+.ssep{flex:1;min-width:16px;height:1px;background:var(--brd);}
+
+/* FORM */
+.form-step{display:none;}.form-step.active{display:block;}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+.form-grid.g3{grid-template-columns:repeat(3,1fr);}
+@media(max-width:600px){.form-grid,.form-grid.g3{grid-template-columns:1fr;}}
+.fg{display:flex;flex-direction:column;gap:.35rem;}
+.fg.full{grid-column:1/-1;}
+label{font-size:.78rem;color:var(--t2);font-weight:500;}
+.req{color:var(--err);margin-left:2px;}
+input,select,textarea{background:var(--surf3);border:1px solid var(--brd);color:var(--t1);border-radius:var(--rads);padding:.58rem .75rem;font-size:.85rem;width:100%;transition:border-color .15s;font-family:inherit;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--prim);}
+input.err-f,select.err-f,textarea.err-f{border-color:var(--err);}
+textarea{resize:vertical;min-height:80px;}
+select option{background:var(--surf3);}
+
+/* SLIDERS */
+.sliders-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;}
+@media(max-width:580px){.sliders-grid{grid-template-columns:1fr;}}
+.sg{display:flex;flex-direction:column;gap:.35rem;}
+.srow{display:flex;align-items:center;gap:.75rem;}
+.srow input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:5px;border-radius:3px;background:var(--brd);cursor:pointer;padding:0;border:none;}
+.srow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--prim);cursor:pointer;border:2px solid var(--acc);}
+.srow input[type=range]:focus{border:none;box-shadow:none;}
+.sval{min-width:26px;text-align:center;font-weight:700;color:var(--acc);font-size:.95rem;}
+
+/* BUTTONS */
+.form-actions{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--brd);}
+.btn{padding:.58rem 1.15rem;border-radius:var(--rads);border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:background .15s,transform .1s;font-family:inherit;}
+.btn:active{transform:scale(.98);}
+.btn-p{background:var(--prim);color:#fff;}
+.btn-p:hover{background:var(--primh);}
+.btn-p:disabled{background:var(--primd);opacity:.55;cursor:not-allowed;}
+.btn-g{background:var(--surf3);color:var(--t2);}
+.btn-g:hover{background:var(--brd);color:var(--t1);}
+.btn-sm{padding:.28rem .65rem;border-radius:var(--rads);border:1px solid var(--brd);background:var(--surf3);color:var(--t2);cursor:pointer;font-size:.78rem;transition:background .15s,color .15s;font-family:inherit;}
+.btn-sm:hover{background:var(--prim);color:#fff;border-color:var(--prim);}
+.sec-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);margin:1.25rem 0 .75rem;}
+
+/* FILTERS & TABLE */
+.filters-bar{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;}
+.filters-bar select{width:auto;min-width:155px;}
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);padding:.7rem 1rem;border-bottom:1px solid var(--brd);white-space:nowrap;}
+td{padding:.7rem 1rem;border-bottom:1px solid var(--brd);font-size:.85rem;}
+tr:hover td{background:rgba(107,63,197,.05);}
+code{font-size:.78rem;color:var(--acc);font-family:'Courier New',monospace;}
+
+.badge{display:inline-block;padding:.18rem .55rem;border-radius:20px;font-size:.73rem;font-weight:600;}
+.b-proyecto{background:rgba(107,63,197,.25);color:var(--acc);}
+.b-evento{background:rgba(168,125,234,.2);color:#C9A8F0;}
+.b-activacion{background:rgba(78,46,150,.28);color:#9B78D4;}
+
+.sc-badge{display:inline-flex;align-items:center;justify-content:center;padding:.22rem .55rem;border-radius:20px;font-size:.78rem;font-weight:700;min-width:38px;}
+.sc-ok{background:rgba(39,174,96,.18);color:#27AE60;}
+.sc-warn{background:rgba(230,126,34,.18);color:#E67E22;}
+.sc-err{background:rgba(231,76,60,.18);color:#E74C3C;}
+.sc-nil{background:var(--surf3);color:var(--t3);}
+.tbl-count{padding:.6rem 0;font-size:.78rem;color:var(--t3);}
+
+/* MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
+.modal-ov.open{display:flex;}
+.modal{background:var(--surf2);border:1px solid var(--brd);border-radius:var(--rad);width:100%;max-width:700px;max-height:88vh;overflow-y:auto;}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.5rem;border-bottom:1px solid var(--brd);position:sticky;top:0;background:var(--surf2);}
+.modal-hdr h2{font-size:1rem;font-weight:700;}
+.modal-x{background:none;border:none;color:var(--t3);cursor:pointer;font-size:1.2rem;padding:.2rem .4rem;border-radius:var(--rads);}
+.modal-x:hover{color:var(--t1);background:var(--surf3);}
+.modal-bd{padding:1.5rem;}
+
+/* DETAIL */
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:560px){.det-grid{grid-template-columns:1fr;}}
+.det-sec{background:var(--surf3);border-radius:var(--rads);padding:1rem;}
+.det-sec.full{grid-column:1/-1;}
+.det-sec h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:.75rem;}
+dl{display:grid;grid-template-columns:auto 1fr;gap:.28rem .75rem;align-items:baseline;}
+dt{color:var(--t3);font-size:.78rem;white-space:nowrap;}
+dd{font-size:.85rem;}
+.sc-grid{display:flex;flex-direction:column;gap:.45rem;}
+.sc-row{display:grid;grid-template-columns:90px 1fr 26px;align-items:center;gap:.5rem;font-size:.78rem;}
+.sc-bar{height:5px;background:var(--brd);border-radius:3px;overflow:hidden;}
+.sc-fill{height:100%;border-radius:3px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:400;padding:.7rem 1.2rem;border-radius:var(--rads);font-size:.85rem;font-weight:500;transform:translateY(80px);opacity:0;transition:transform .28s,opacity .28s;max-width:360px;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:#122B1D;border:1px solid var(--ok);color:#5ACA8A;}
+.toast.error{background:#2B1212;border:1px solid var(--err);color:#E88080;}
+
+.specific-fields{display:none;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">Clarios <span>IS</span></div>
+  <nav class="topnav">
+    <button data-nav="dashboard" onclick="nav('dashboard')">Dashboard</button>
+    <button data-nav="registro"  onclick="nav('registro')">Nuevo Registro</button>
+    <button data-nav="listado"   onclick="nav('listado')">Listado</button>
+  </nav>
+  <div class="sync-wrap">
+    <div class="sync-dot" id="sdot"></div>
+    <span id="stxt">—</span>
+  </div>
+</header>
+
+<main class="main">
+
+<!-- ── DASHBOARD ─────────────────────────────────── -->
+<section id="s-dashboard" class="section active">
+  <div class="page-hdr">
+    <h1>Dashboard</h1>
+    <p>Resumen general del programa de Impacto Social Clarios</p>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card">    <div class="kpi-lbl">Total Registros</div><div class="kpi-val" id="k-tot">—</div></div>
+    <div class="kpi-card k2"> <div class="kpi-lbl">Beneficiarios</div>  <div class="kpi-val" id="k-ben">—</div></div>
+    <div class="kpi-card k3"> <div class="kpi-lbl">Proyectos</div>      <div class="kpi-val" id="k-pro">—</div></div>
+    <div class="kpi-card k4"> <div class="kpi-lbl">Eventos</div>        <div class="kpi-val" id="k-ev">—</div></div>
+    <div class="kpi-card k5"> <div class="kpi-lbl">Activaciones</div>   <div class="kpi-val" id="k-act">—</div></div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>Distribución por Tipo</h3>
+      <div class="chart-wrap"><canvas id="chart-donut"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Score IS Promedio por Dimensión</h3>
+      <div class="chart-wrap"><canvas id="chart-bar"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── REGISTRO ───────────────────────────────────── -->
+<section id="s-registro" class="section">
+  <div class="page-hdr">
+    <h1>Nuevo Registro</h1>
+    <p>Registra un proyecto, evento o activación de impacto social</p>
+  </div>
+  <div class="card">
+    <!-- Step indicator -->
+    <div class="steps-ind">
+      <div class="sitem active" id="si1"><div class="snum">1</div><span>Tipo</span></div>
+      <div class="ssep"></div>
+      <div class="sitem" id="si2"><div class="snum">2</div><span>Datos básicos</span></div>
+      <div class="ssep"></div>
+      <div class="sitem" id="si3"><div class="snum">3</div><span>Detalles</span></div>
+      <div class="ssep"></div>
+      <div class="sitem" id="si4"><div class="snum">4</div><span>Score IS</span></div>
+      <div class="ssep"></div>
+      <div class="sitem" id="si5"><div class="snum">5</div><span>Métricas</span></div>
+    </div>
+
+    <form id="reg-form" onsubmit="return false">
+
+      <!-- STEP 1 -->
+      <div class="form-step active" id="fstep-1">
+        <div class="type-selector">
+          <div class="type-card" data-type="proyecto" onclick="selectType('proyecto')">
+            <div class="type-icon">🏗️</div>
+            <div class="type-name">Proyecto</div>
+            <div class="type-desc">Iniciativa con duración y presupuesto definidos</div>
+          </div>
+          <div class="type-card" data-type="evento" onclick="selectType('evento')">
+            <div class="type-icon">📅</div>
+            <div class="type-name">Evento</div>
+            <div class="type-desc">Foro, taller, lanzamiento u actividad puntual</div>
+          </div>
+          <div class="type-card" data-type="activacion" onclick="selectType('activacion')">
+            <div class="type-icon">📣</div>
+            <div class="type-name">Activación</div>
+            <div class="type-desc">Campaña, movilización ciudadana o acción territorial</div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-p" id="btn-s1" onclick="nextStep()" disabled>Continuar →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="form-step" id="fstep-2">
+        <div class="form-grid">
+          <div class="fg">
+            <label>Nombre <span class="req">*</span></label>
+            <input type="text" name="nombre" required placeholder="Nombre del registro">
+          </div>
+          <div class="fg">
+            <label>Fecha <span class="req">*</span></label>
+            <input type="date" name="fecha" required>
+          </div>
+          <div class="fg">
+            <label>Responsable <span class="req">*</span></label>
+            <input type="text" name="responsable" required placeholder="Nombre del responsable">
+          </div>
+          <div class="fg">
+            <label>Ubicación <span class="req">*</span></label>
+            <input type="text" name="ubicacion" required placeholder="Ciudad / estado">
+          </div>
+          <div class="fg">
+            <label>Área <span class="req">*</span></label>
+            <select name="area" required>
+              <option value="">Seleccionar área…</option>
+              <option>Impacto Social</option>
+              <option>Comunicación</option>
+              <option>Relaciones Institucionales</option>
+              <option>Sustentabilidad</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Programa <span class="req">*</span></label>
+            <select name="programa" required>
+              <option value="">Seleccionar programa…</option>
+              <option>Arranca el Futuro</option>
+              <option>Guardianes del Planeta</option>
+              <option>Infraestructura</option>
+              <option>Activación Social</option>
+              <option>General</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Beneficiarios <span class="req">*</span></label>
+            <input type="number" name="beneficiarios" required placeholder="Número total" min="0">
+          </div>
+          <div class="fg">
+            <label>Tipo de beneficiario <span class="req">*</span></label>
+            <input type="text" name="tipo_beneficiario" required placeholder="ej. Jóvenes, adultos mayores…">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-g" onclick="prevStep()">← Atrás</button>
+          <button type="button" class="btn btn-p" onclick="nextStep()">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="form-step" id="fstep-3">
+        <div class="fg full" style="margin-bottom:1rem">
+          <label>Objetivo <span class="req">*</span></label>
+          <textarea name="objetivo" required placeholder="Describe el objetivo principal…"></textarea>
+        </div>
+
+        <!-- Proyecto -->
+        <div id="fld-proyecto" class="specific-fields">
+          <div class="sec-title">Campos de Proyecto</div>
+          <div class="form-grid">
+            <div class="fg"><label>Duración</label><input type="text" name="duracion" placeholder="ej. 6 meses"></div>
+            <div class="fg"><label>Presupuesto (MXN)</label><input type="number" name="presupuesto" placeholder="0" min="0"></div>
+            <div class="fg"><label>Aliados</label><input type="text" name="aliados" placeholder="Organizaciones aliadas"></div>
+            <div class="fg"><label>Indicador</label><input type="text" name="indicador" placeholder="Indicador clave de éxito"></div>
+            <div class="fg"><label>Meta</label><input type="text" name="meta" placeholder="Meta cuantitativa"></div>
+            <div class="fg"><label>Alineación ODS</label><input type="text" name="alineacion" placeholder="ej. ODS 4, ODS 10"></div>
+          </div>
+        </div>
+
+        <!-- Evento -->
+        <div id="fld-evento" class="specific-fields">
+          <div class="sec-title">Campos de Evento</div>
+          <div class="form-grid">
+            <div class="fg">
+              <label>Tipo de evento</label>
+              <select name="tipo_evento">
+                <option value="">Seleccionar…</option>
+                <option>Foro/Conferencia</option><option>Lanzamiento</option>
+                <option>Taller</option><option>Medios</option><option>Otro</option>
+              </select>
+            </div>
+            <div class="fg"><label>Asistentes</label><input type="number" name="asistentes" placeholder="Número de asistentes" min="0"></div>
+            <div class="fg">
+              <label>Modalidad</label>
+              <select name="modalidad">
+                <option value="">Seleccionar…</option>
+                <option>Presencial</option><option>Virtual</option><option>Híbrido</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>Cobertura de medios</label>
+              <select name="media"><option value="">Seleccionar…</option><option>Sí</option><option>No</option></select>
+            </div>
+            <div class="fg full"><label>Logística</label><textarea name="logistica" placeholder="Notas de logística…"></textarea></div>
+          </div>
+        </div>
+
+        <!-- Activación -->
+        <div id="fld-activacion" class="specific-fields">
+          <div class="sec-title">Campos de Activación</div>
+          <div class="form-grid">
+            <div class="fg">
+              <label>Tipo de activación</label>
+              <select name="tipo_activacion">
+                <option value="">Seleccionar…</option>
+                <option>Movilización ciudadana</option><option>Campaña digital</option>
+                <option>Territorial</option><option>Otro</option>
+              </select>
+            </div>
+            <div class="fg"><label>Canal</label><input type="text" name="canal" placeholder="ej. Redes sociales, radio…"></div>
+            <div class="fg"><label>Alcance estimado</label><input type="number" name="alcance" placeholder="Personas alcanzadas" min="0"></div>
+            <div class="fg"><label>Inversión (MXN)</label><input type="number" name="inversion" placeholder="0" min="0"></div>
+            <div class="fg full"><label>Mensaje clave</label><textarea name="mensaje" placeholder="Mensaje principal de la activación…"></textarea></div>
+          </div>
+        </div>
+
+        <div class="fg" style="margin-top:1rem">
+          <label>Notas adicionales</label>
+          <textarea name="notas" placeholder="Observaciones opcionales…"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-g" onclick="prevStep()">← Atrás</button>
+          <button type="button" class="btn btn-p" onclick="nextStep()">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4 — Score IS -->
+      <div class="form-step" id="fstep-4">
+        <div class="sec-title" style="margin-top:0">Score IS — Evalúa del 1 al 5 cada dimensión</div>
+        <div class="sliders-grid">
+          <div class="sg"><label>Propósito</label><div class="srow"><input type="range" name="proposito" min="1" max="5" value="3" oninput="sv('proposito',this.value)"><span class="sval" id="sv-proposito">3</span></div></div>
+          <div class="sg"><label>Liderazgo</label><div class="srow"><input type="range" name="liderazgo" min="1" max="5" value="3" oninput="sv('liderazgo',this.value)"><span class="sval" id="sv-liderazgo">3</span></div></div>
+          <div class="sg"><label>Reputación</label><div class="srow"><input type="range" name="reputacion" min="1" max="5" value="3" oninput="sv('reputacion',this.value)"><span class="sval" id="sv-reputacion">3</span></div></div>
+          <div class="sg"><label>Sostenibilidad</label><div class="srow"><input type="range" name="sostenibilidad" min="1" max="5" value="3" oninput="sv('sostenibilidad',this.value)"><span class="sval" id="sv-sostenibilidad">3</span></div></div>
+          <div class="sg"><label>Cocreación</label><div class="srow"><input type="range" name="cocreacion" min="1" max="5" value="3" oninput="sv('cocreacion',this.value)"><span class="sval" id="sv-cocreacion">3</span></div></div>
+          <div class="sg"><label>Gestión</label><div class="srow"><input type="range" name="gestion" min="1" max="5" value="3" oninput="sv('gestion',this.value)"><span class="sval" id="sv-gestion">3</span></div></div>
+          <div class="sg"><label>Valor</label><div class="srow"><input type="range" name="valor" min="1" max="5" value="3" oninput="sv('valor',this.value)"><span class="sval" id="sv-valor">3</span></div></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-g" onclick="prevStep()">← Atrás</button>
+          <button type="button" class="btn btn-p" onclick="nextStep()">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5 — Métricas -->
+      <div class="form-step" id="fstep-5">
+        <div class="sec-title" style="margin-top:0">Métricas Globales de Impacto</div>
+        <div class="form-grid g3">
+          <div class="fg"><label>Beneficiarios directos</label><input type="number" name="g_ben_directos" placeholder="0" min="0"></div>
+          <div class="fg"><label>Horas de formación</label><input type="number" name="g_horas_formacion" placeholder="0" min="0"></div>
+          <div class="fg"><label>% Mujeres beneficiarias</label><input type="number" name="g_pct_mujeres" placeholder="0" min="0" max="100"></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-g" onclick="prevStep()">← Atrás</button>
+          <button type="button" class="btn btn-p" id="btn-submit" onclick="submitForm()">💾 Guardar Registro</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</section>
+
+<!-- ── LISTADO ────────────────────────────────────── -->
+<section id="s-listado" class="section">
+  <div class="page-hdr">
+    <h1>Listado de Registros</h1>
+    <p>Todos los proyectos, eventos y activaciones registradas</p>
+  </div>
+  <div class="card">
+    <div class="filters-bar">
+      <select id="f-type" onchange="renderTable()">
+        <option value="">Todos los tipos</option>
+        <option value="proyecto">Proyectos</option>
+        <option value="evento">Eventos</option>
+        <option value="activacion">Activaciones</option>
+      </select>
+      <select id="f-prog" onchange="renderTable()">
+        <option value="">Todos los programas</option>
+        <option>Arranca el Futuro</option>
+        <option>Guardianes del Planeta</option>
+        <option>Infraestructura</option>
+        <option>Activación Social</option>
+        <option>General</option>
+      </select>
+      <button class="btn btn-g" onclick="loadData()" style="margin-left:auto">↻ Actualizar</button>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Folio</th><th>Nombre</th><th>Tipo</th><th>Área</th>
+            <th>Programa</th><th>Fecha</th><th>Score IS</th><th>Beneficiarios</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body">
+          <tr><td colspan="9" style="text-align:center;color:var(--t3);padding:2rem">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tbl-count" id="tbl-count"></div>
+  </div>
+</section>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="modal-title">Detalle</h2>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-bd" id="modal-bd"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────
+// Reemplaza con la URL de tu Google Apps Script Web App desplegado
+const API_URL = 'TU_URL_DE_APPS_SCRIPT_AQUI';
+
+// ─── STATE ───────────────────────────────────────────────
+let records = [];
+let fStep = 1;
+let fType = '';
+let cDonut = null, cBar = null;
+
+// ─── INIT ────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  setSyncStatus('idle');
+  nav('dashboard');
+  loadData();
+  setInterval(loadData, 60000);
+});
+
+// ─── NAVIGATION ──────────────────────────────────────────
+function nav(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('s-' + name).classList.add('active');
+  document.querySelectorAll('.topnav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.nav === name));
+}
+
+// ─── DATA ────────────────────────────────────────────────
+async function loadData() {
+  setSyncStatus('syncing');
+  try {
+    const res = await fetch(API_URL + (API_URL.includes('?') ? '&' : '?') + '_=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (json.status !== 'ok') throw new Error(json.message);
+    records = json.data || [];
+    setSyncStatus('ok');
+  } catch (e) {
+    setSyncStatus('error');
+    if (!records.length) records = mockData();
+  }
+  renderDashboard();
+  renderTable();
+}
+
+function mockData() {
+  return [
+    { folio:'PRO-0001-2026', type:'proyecto', nombre:'Taller STEM Escuelas', fecha:'2026-02-15',
+      responsable:'Ana López', area:'Impacto Social', programa:'Arranca el Futuro',
+      beneficiarios:240, tipo_beneficiario:'Jóvenes', objetivo:'Fomentar interés en ciencia y tecnología',
+      proposito:4, liderazgo:4, reputacion:3, sostenibilidad:4, cocreacion:3, gestion:4, valor:4 },
+    { folio:'EVE-0001-2026', type:'evento', nombre:'Foro Sostenibilidad 2026', fecha:'2026-03-10',
+      responsable:'Carlos Ruiz', area:'Sustentabilidad', programa:'Guardianes del Planeta',
+      beneficiarios:350, tipo_beneficiario:'Empresarios y sociedad civil', objetivo:'Generar agenda de sustentabilidad regional',
+      proposito:5, liderazgo:4, reputacion:5, sostenibilidad:5, cocreacion:4, gestion:4, valor:5 },
+    { folio:'ACT-0001-2026', type:'activacion', nombre:'Campaña Reciclaje Digital', fecha:'2026-04-01',
+      responsable:'María Torres', area:'Comunicación', programa:'Guardianes del Planeta',
+      beneficiarios:1200, tipo_beneficiario:'Público general', objetivo:'Concientizar sobre reciclaje electrónico',
+      proposito:3, liderazgo:3, reputacion:4, sostenibilidad:4, cocreacion:2, gestion:3, valor:3 },
+    { folio:'PRO-0002-2026', type:'proyecto', nombre:'Infraestructura Comunitaria Monterrey', fecha:'2026-04-20',
+      responsable:'Luis Mendoza', area:'Relaciones Institucionales', programa:'Infraestructura',
+      beneficiarios:580, tipo_beneficiario:'Familias de bajos recursos', objetivo:'Mejorar infraestructura básica en colonias vulnerables',
+      proposito:5, liderazgo:5, reputacion:4, sostenibilidad:5, cocreacion:4, gestion:5, valor:5 },
+  ];
+}
+
+// ─── SYNC STATUS ─────────────────────────────────────────
+function setSyncStatus(status) {
+  const dot = document.getElementById('sdot');
+  const txt = document.getElementById('stxt');
+  const now = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  dot.className = 'sync-dot';
+  if (status === 'syncing') { dot.classList.add('spin'); txt.textContent = 'Sincronizando…'; }
+  else if (status === 'ok')  { dot.classList.add('ok');   txt.textContent = '✓ Sincronizado ' + now; }
+  else if (status === 'error'){ dot.classList.add('err'); txt.textContent = 'Sin conexión'; }
+  else txt.textContent = '—';
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────
+function renderDashboard() {
+  const p = records.filter(r=>r.type==='proyecto').length;
+  const e = records.filter(r=>r.type==='evento').length;
+  const a = records.filter(r=>r.type==='activacion').length;
+  const ben = records.reduce((s,r)=>s+(parseInt(r.beneficiarios)||0),0);
+  document.getElementById('k-tot').textContent = records.length;
+  document.getElementById('k-ben').textContent = ben.toLocaleString('es-MX');
+  document.getElementById('k-pro').textContent = p;
+  document.getElementById('k-ev').textContent  = e;
+  document.getElementById('k-act').textContent = a;
+  drawCharts(p, e, a);
+}
+
+function drawCharts(p, e, a) {
+  const gc = 'rgba(44,30,82,.55)';
+  const tc = '#8A7AAA';
+  const lc = '#C0AEDD';
+
+  // Donut
+  const dc = document.getElementById('chart-donut').getContext('2d');
+  if (cDonut) cDonut.destroy();
+  cDonut = new Chart(dc, {
+    type: 'doughnut',
+    data: {
+      labels: ['Proyectos','Eventos','Activaciones'],
+      datasets: [{ data:[p||0,e||0,a||0], backgroundColor:['#6B3FC5','#A87DEA','#3D1E7C'], borderWidth:2, borderColor:'#1A1435', hoverOffset:8 }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, cutout:'62%',
+      plugins:{ legend:{ position:'bottom', labels:{ color:lc, padding:14, font:{size:12} } } }
+    }
+  });
+
+  // Bar
+  const dims  = ['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'];
+  const dlbls = ['Propósito','Liderazgo','Reputación','Sostenibilidad','Cocreación','Gestión','Valor'];
+  const avgs = dims.map(d => {
+    const vals = records.map(r=>parseFloat(r[d])||0).filter(v=>v>0);
+    return vals.length ? +(vals.reduce((s,v)=>s+v,0)/vals.length).toFixed(2) : 0;
+  });
+
+  const bc = document.getElementById('chart-bar').getContext('2d');
+  if (cBar) cBar.destroy();
+  cBar = new Chart(bc, {
+    type:'bar',
+    data:{
+      labels:dlbls,
+      datasets:[{ label:'Score promedio', data:avgs, backgroundColor:'rgba(107,63,197,.78)',
+        borderColor:'#A87DEA', borderWidth:1, borderRadius:6, borderSkipped:false }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      scales:{
+        y:{ min:0, max:5, ticks:{ color:tc, stepSize:1 }, grid:{ color:gc } },
+        x:{ ticks:{ color:tc }, grid:{ display:false } }
+      },
+      plugins:{ legend:{ labels:{ color:lc } } }
+    }
+  });
+}
+
+// ─── TABLE ───────────────────────────────────────────────
+function renderTable() {
+  const ft = document.getElementById('f-type')?.value||'';
+  const fp = document.getElementById('f-prog')?.value||'';
+  let rows = records;
+  if (ft) rows = rows.filter(r=>r.type===ft);
+  if (fp) rows = rows.filter(r=>r.programa===fp);
+  document.getElementById('tbl-count').textContent = rows.length + ' registro' + (rows.length!==1?'s':'');
+  const tl = {proyecto:'Proyecto',evento:'Evento',activacion:'Activación'};
+  const tbody = document.getElementById('tbl-body');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--t3);padding:2.5rem">Sin registros</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const sc = score(r);
+    const cls = sc>=4?'sc-ok':sc>=3?'sc-warn':sc>0?'sc-err':'sc-nil';
+    const scTxt = sc>0?sc.toFixed(1):'—';
+    const folioEsc = (r.folio||'').replace(/'/g,"\\'");
+    return `<tr>
+      <td><code>${r.folio||'—'}</code></td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.nombre||''}">${r.nombre||'—'}</td>
+      <td><span class="badge b-${r.type}">${tl[r.type]||r.type}</span></td>
+      <td>${r.area||'—'}</td>
+      <td>${r.programa||'—'}</td>
+      <td>${r.fecha||'—'}</td>
+      <td><span class="sc-badge ${cls}">${scTxt}</span></td>
+      <td>${(parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
+      <td><button class="btn-sm" onclick="showDetail('${folioEsc}')">Ver</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function score(r) {
+  const dims = ['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'];
+  const vals = dims.map(d=>parseFloat(r[d])||0).filter(v=>v>0);
+  return vals.length ? vals.reduce((s,v)=>s+v,0)/vals.length : 0;
+}
+
+// ─── MODAL ───────────────────────────────────────────────
+function showDetail(folio) {
+  const r = records.find(x=>x.folio===folio);
+  if (!r) return;
+  const sc = score(r);
+  const cls = sc>=4?'sc-ok':sc>=3?'sc-warn':sc>0?'sc-err':'sc-nil';
+  const tl = {proyecto:'Proyecto',evento:'Evento',activacion:'Activación'};
+  const dims = [['Propósito','proposito'],['Liderazgo','liderazgo'],['Reputación','reputacion'],
+                ['Sostenibilidad','sostenibilidad'],['Cocreación','cocreacion'],['Gestión','gestion'],['Valor','valor']];
+
+  document.getElementById('modal-title').textContent = r.nombre||'Sin nombre';
+  document.getElementById('modal-bd').innerHTML = `
+    <div class="det-grid">
+      <div class="det-sec">
+        <h4>Información General</h4>
+        <dl>
+          <dt>Tipo</dt><dd><span class="badge b-${r.type}">${tl[r.type]||r.type}</span></dd>
+          <dt>Folio</dt><dd><code>${r.folio||'—'}</code></dd>
+          <dt>Fecha</dt><dd>${r.fecha||'—'}</dd>
+          <dt>Responsable</dt><dd>${r.responsable||'—'}</dd>
+          <dt>Ubicación</dt><dd>${r.ubicacion||'—'}</dd>
+          <dt>Área</dt><dd>${r.area||'—'}</dd>
+          <dt>Programa</dt><dd>${r.programa||'—'}</dd>
+          <dt>Beneficiarios</dt><dd>${(parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</dd>
+          <dt>Tipo benef.</dt><dd>${r.tipo_beneficiario||'—'}</dd>
+        </dl>
+      </div>
+      <div class="det-sec">
+        <h4>Score IS &nbsp;<span class="sc-badge ${cls}">${sc>0?sc.toFixed(2):'—'}</span></h4>
+        <div class="sc-grid">
+          ${dims.map(([lbl,k])=>{
+            const v=parseFloat(r[k])||0;
+            return `<div class="sc-row">
+              <span>${lbl}</span>
+              <div class="sc-bar"><div class="sc-fill" style="width:${(v/5*100).toFixed(0)}%;background:var(--prim)"></div></div>
+              <span>${v||'—'}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="det-sec full">
+        <h4>Objetivo</h4>
+        <p style="font-size:.85rem;color:var(--t2);line-height:1.55">${r.objetivo||'—'}</p>
+      </div>
+      ${r.notas?`<div class="det-sec full"><h4>Notas</h4><p style="font-size:.85rem;color:var(--t2)">${r.notas}</p></div>`:''}
+      ${(r.g_ben_directos||r.g_horas_formacion||r.g_pct_mujeres)?`
+      <div class="det-sec full">
+        <h4>Métricas Globales</h4>
+        <dl>
+          ${r.g_ben_directos?`<dt>Ben. directos</dt><dd>${parseInt(r.g_ben_directos).toLocaleString('es-MX')}</dd>`:''}
+          ${r.g_horas_formacion?`<dt>Horas formación</dt><dd>${r.g_horas_formacion}</dd>`:''}
+          ${r.g_pct_mujeres?`<dt>% Mujeres</dt><dd>${r.g_pct_mujeres}%</dd>`:''}
+        </dl>
+      </div>`:''}
+    </div>`;
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+// ─── FORM ────────────────────────────────────────────────
+function sv(name, val) { document.getElementById('sv-'+name).textContent = val; }
+
+function selectType(type) {
+  fType = type;
+  document.querySelectorAll('.type-card').forEach(c => c.classList.toggle('selected', c.dataset.type===type));
+  document.getElementById('btn-s1').disabled = false;
+}
+
+function nextStep() {
+  if (!validateStep()) return;
+  fStep = Math.min(fStep+1, 5);
+  applyStep();
+}
+
+function prevStep() {
+  fStep = Math.max(fStep-1, 1);
+  applyStep();
+}
+
+function applyStep() {
+  document.querySelectorAll('.form-step').forEach((s,i) => s.classList.toggle('active', i+1===fStep));
+  if (fStep===3) {
+    document.querySelectorAll('.specific-fields').forEach(f=>f.style.display='none');
+    const fld = document.getElementById('fld-'+fType);
+    if (fld) fld.style.display='block';
+  }
+  for(let i=1;i<=5;i++){
+    const el=document.getElementById('si'+i);
+    if(!el) continue;
+    el.classList.toggle('active', i===fStep);
+    el.classList.toggle('done', i<fStep);
+  }
+}
+
+function validateStep() {
+  if (fStep===1 && !fType) { toast('Selecciona un tipo de registro','error'); return false; }
+  const step = document.getElementById('fstep-'+fStep);
+  if (!step) return true;
+  let ok = true;
+  step.querySelectorAll('[required]').forEach(inp => {
+    const empty = !inp.value.trim();
+    inp.classList.toggle('err-f', empty);
+    if (empty) ok = false;
+  });
+  if (!ok) toast('Completa los campos requeridos','error');
+  return ok;
+}
+
+async function submitForm() {
+  if (!validateStep()) return;
+  const fd = new FormData(document.getElementById('reg-form'));
+  const payload = { type: fType };
+  fd.forEach((v,k)=>{ payload[k]=v; });
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+
+  try {
+    const res = await fetch(API_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (json.status==='ok') {
+      toast('✓ Guardado correctamente. Folio: '+json.folio,'success');
+      resetForm();
+      setTimeout(loadData, 800);
+    } else throw new Error(json.message||'Error del servidor');
+  } catch(e) {
+    toast('Error: '+e.message,'error');
+  } finally {
+    btn.disabled = false; btn.textContent = '💾 Guardar Registro';
+  }
+}
+
+function resetForm() {
+  document.getElementById('reg-form').reset();
+  fStep=1; fType='';
+  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('btn-s1').disabled=true;
+  ['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'].forEach(d=>{
+    const el=document.getElementById('sv-'+d); if(el) el.textContent='3';
+  });
+  applyStep();
+}
+
+// ─── TOAST ───────────────────────────────────────────────
+function toast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show '+type;
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>t.classList.remove('show'), 4500);
+}
+</script>
+</body>
+</html>
