@@ -179,6 +179,11 @@ dd{font-size:.85rem;}
 .toast.error{background:#2B1212;border:1px solid var(--err);color:#E88080;}
 
 .specific-fields{display:none;}
+.stabs-bar{display:flex;gap:0;border-bottom:1px solid var(--brd);margin-bottom:0;overflow-x:auto;}
+.stab{background:none;border:none;border-bottom:2px solid transparent;color:var(--t2);padding:.6rem 1.15rem;cursor:pointer;font-size:.85rem;font-family:inherit;white-space:nowrap;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.stab:hover{color:var(--t1);}
+.stab.active{color:var(--acc);border-bottom-color:var(--prim);font-weight:600;}
+.tab-pane{display:none;}.tab-pane.active{display:block;}
 </style>
 </head>
 <body>
@@ -190,6 +195,7 @@ dd{font-size:.85rem;}
     <button data-nav="dashboard" onclick="nav('dashboard')">Dashboard</button>
     <button data-nav="registro"  onclick="nav('registro')">Nuevo Registro</button>
     <button data-nav="listado"   onclick="nav('listado')">Listado</button>
+    <button data-nav="tracking"  onclick="nav('tracking')">Tracking Clarios</button>
   </nav>
   <div class="sync-wrap">
     <div class="sync-dot" id="sdot"></div>
@@ -479,6 +485,92 @@ dd{font-size:.85rem;}
   </div>
 </section>
 
+<!-- ── TRACKING CLARIOS ───────────────────────────────── -->
+<section id="s-tracking" class="section">
+  <div class="page-hdr">
+    <h1>Tracking Clarios IS</h1>
+    <p>Monitoreo de indicadores de impacto social por dimensión</p>
+  </div>
+  <div class="stabs-bar">
+    <button class="stab active" data-tab="generales"  onclick="showTab('generales')">Indicadores Generales</button>
+    <button class="stab"        data-tab="impacto"    onclick="showTab('impacto')">Indicadores de Impacto</button>
+    <button class="stab"        data-tab="resultados" onclick="showTab('resultados')">Resultados</button>
+    <button class="stab"        data-tab="reputacion" onclick="showTab('reputacion')">Reputación</button>
+  </div>
+
+  <!-- TAB: GENERALES -->
+  <div class="tab-pane active" id="tab-generales">
+    <div class="kpi-grid" style="margin-top:1.25rem">
+      <div class="kpi-card">   <div class="kpi-lbl">Ben. Directos Totales</div> <div class="kpi-val" id="tg-ben-dir">—</div></div>
+      <div class="kpi-card k2"><div class="kpi-lbl">Horas de Formación</div>   <div class="kpi-val" id="tg-horas">—</div></div>
+      <div class="kpi-card k3"><div class="kpi-lbl">% Mujeres Promedio</div>   <div class="kpi-val" id="tg-mujeres">—</div></div>
+      <div class="kpi-card k4"><div class="kpi-lbl">Inversión Total (MXN)</div><div class="kpi-val" id="tg-inversion">—</div></div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Beneficiarios por Programa</h3>
+        <div class="chart-wrap"><canvas id="c-ben-prog"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Distribución por Área</h3>
+        <div class="chart-wrap"><canvas id="c-area-donut"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: IMPACTO -->
+  <div class="tab-pane" id="tab-impacto">
+    <div style="margin-top:1.25rem;display:grid;grid-template-columns:220px 1fr;gap:1rem;margin-bottom:1rem">
+      <div class="card" style="text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem">
+        <div class="kpi-lbl">Score IS Global</div>
+        <div id="ti-score-global" style="font-size:3rem;font-weight:700;color:var(--acc)">—</div>
+        <div style="font-size:.75rem;color:var(--t3)">Promedio general</div>
+      </div>
+      <div class="chart-card">
+        <h3>Score IS por Tipo de Registro</h3>
+        <div class="chart-wrap"><canvas id="c-score-tipo"></canvas></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:1rem">Score IS por Programa</div>
+      <div id="ti-prog-table"></div>
+    </div>
+  </div>
+
+  <!-- TAB: RESULTADOS -->
+  <div class="tab-pane" id="tab-resultados">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem;margin-bottom:1rem">
+      <div class="card">
+        <div style="font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:1rem">Resumen por Programa</div>
+        <div id="tr-resumen"></div>
+      </div>
+      <div class="card">
+        <div style="font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:1rem">Top 5 — Mayor Score IS</div>
+        <div id="tr-top5"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:1rem">Registros Recientes</div>
+      <div id="tr-recientes"></div>
+    </div>
+  </div>
+
+  <!-- TAB: REPUTACIÓN -->
+  <div class="tab-pane" id="tab-reputacion">
+    <div class="kpi-grid" style="margin-top:1.25rem">
+      <div class="kpi-card">   <div class="kpi-lbl">Score Reputación Prom.</div><div class="kpi-val" id="trep-score">—</div></div>
+      <div class="kpi-card k2"><div class="kpi-lbl">Score Liderazgo Prom.</div> <div class="kpi-val" id="trep-lid">—</div></div>
+      <div class="kpi-card k3"><div class="kpi-lbl">Eventos con Medios</div>    <div class="kpi-val" id="trep-medios">—</div></div>
+      <div class="kpi-card k4"><div class="kpi-lbl">Foros / Conferencias</div>  <div class="kpi-val" id="trep-foros">—</div></div>
+      <div class="kpi-card k5"><div class="kpi-lbl">Proy. con Aliados</div>     <div class="kpi-val" id="trep-aliados">—</div></div>
+    </div>
+    <div class="chart-card" style="margin-top:1rem">
+      <h3>Reputación y Liderazgo por Tipo de Registro</h3>
+      <div class="chart-wrap"><canvas id="c-rep-bar"></canvas></div>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <!-- MODAL -->
@@ -538,6 +630,7 @@ async function loadData() {
   }
   renderDashboard();
   renderTable();
+  renderTracking();
 }
 
 function mockData() {
@@ -821,6 +914,109 @@ function resetForm() {
     const el=document.getElementById('sv-'+d); if(el) el.textContent='3';
   });
   applyStep();
+}
+
+// ─── TRACKING ────────────────────────────────────────────
+let cBenProg=null, cAreaDonut=null, cScoreTipo=null, cRepBar=null;
+
+function showTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+function renderTracking() {
+  renderGenerales();
+  renderImpacto();
+  renderResultados();
+  renderReputacion();
+}
+
+function renderGenerales() {
+  const benDir=records.reduce((s,r)=>s+(parseInt(r.g_ben_directos)||0),0);
+  const horas=records.reduce((s,r)=>s+(parseInt(r.g_horas_formacion)||0),0);
+  const mujVals=records.map(r=>parseFloat(r.g_pct_mujeres)||0).filter(v=>v>0);
+  const mujProm=mujVals.length?(mujVals.reduce((s,v)=>s+v,0)/mujVals.length).toFixed(1)+'%':'—';
+  const inv=records.reduce((s,r)=>s+(parseInt(r.presupuesto)||0)+(parseInt(r.inversion)||0),0);
+  document.getElementById('tg-ben-dir').textContent=benDir.toLocaleString('es-MX');
+  document.getElementById('tg-horas').textContent=horas.toLocaleString('es-MX');
+  document.getElementById('tg-mujeres').textContent=mujProm;
+  document.getElementById('tg-inversion').textContent=inv>0?'$'+inv.toLocaleString('es-MX'):'—';
+  const progs=['Arranca el Futuro','Guardianes del Planeta','Infraestructura','Activación Social','General'];
+  const progLbls=['Arranca Futuro','Guardianes','Infraestruc.','Act. Social','General'];
+  const benByProg=progs.map(p=>records.filter(r=>r.programa===p).reduce((s,r)=>s+(parseInt(r.beneficiarios)||0),0));
+  const c1=document.getElementById('c-ben-prog').getContext('2d');
+  if(cBenProg)cBenProg.destroy();
+  cBenProg=new Chart(c1,{type:'bar',data:{labels:progLbls,datasets:[{label:'Beneficiarios',data:benByProg,backgroundColor:'rgba(107,63,197,.78)',borderColor:'#A87DEA',borderWidth:1,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{ticks:{color:'#8A7AAA'},grid:{color:'rgba(44,30,82,.55)'}},x:{ticks:{color:'#8A7AAA'},grid:{display:false}}},plugins:{legend:{labels:{color:'#C0AEDD'}}}}});
+  const areas=['Impacto Social','Comunicación','Relaciones Institucionales','Sustentabilidad'];
+  const byArea=areas.map(a=>records.filter(r=>r.area===a).length);
+  const c2=document.getElementById('c-area-donut').getContext('2d');
+  if(cAreaDonut)cAreaDonut.destroy();
+  cAreaDonut=new Chart(c2,{type:'doughnut',data:{labels:areas,datasets:[{data:byArea,backgroundColor:['#6B3FC5','#A87DEA','#4E2E96','#8A5DD4'],borderWidth:2,borderColor:'#1A1435',hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#C0AEDD',padding:10,font:{size:11}}}}}});
+}
+
+function renderImpacto() {
+  const allSc=records.map(r=>score(r)).filter(v=>v>0);
+  const gSc=allSc.length?(allSc.reduce((s,v)=>s+v,0)/allSc.length).toFixed(2):'—';
+  const el=document.getElementById('ti-score-global');
+  if(el){el.textContent=gSc;const f=parseFloat(gSc);el.style.color=f>=4?'#27AE60':f>=3?'#E67E22':'#E74C3C';}
+  const dims=['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'];
+  const dlbls=['Propósito','Liderazgo','Reputación','Sostenibilidad','Cocreación','Gestión','Valor'];
+  const tipos=['proyecto','evento','activacion'];
+  const tipoL=['Proyectos','Eventos','Activaciones'];
+  const colors=['rgba(107,63,197,.8)','rgba(168,125,234,.8)','rgba(78,46,150,.8)'];
+  const borders=['#A87DEA','#C9A8F0','#9B78D4'];
+  const datasets=tipos.map((t,i)=>{
+    const recs=records.filter(r=>r.type===t);
+    const avgs=dims.map(d=>{const v=recs.map(r=>parseFloat(r[d])||0).filter(v=>v>0);return v.length?+(v.reduce((s,x)=>s+x,0)/v.length).toFixed(2):0;});
+    return{label:tipoL[i],data:avgs,backgroundColor:colors[i],borderColor:borders[i],borderWidth:1,borderRadius:4};
+  });
+  const c3=document.getElementById('c-score-tipo').getContext('2d');
+  if(cScoreTipo)cScoreTipo.destroy();
+  cScoreTipo=new Chart(c3,{type:'bar',data:{labels:dlbls,datasets},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:5,ticks:{color:'#8A7AAA',stepSize:1},grid:{color:'rgba(44,30,82,.55)'}},x:{ticks:{color:'#8A7AAA'},grid:{display:false}}},plugins:{legend:{labels:{color:'#C0AEDD'}}}}});
+  const progs=['Arranca el Futuro','Guardianes del Planeta','Infraestructura','Activación Social','General'];
+  const progEl=document.getElementById('ti-prog-table');
+  if(progEl)progEl.innerHTML=progs.map(p=>{
+    const recs=records.filter(r=>r.programa===p);
+    const sc=recs.map(r=>score(r)).filter(v=>v>0);
+    if(!recs.length)return'';
+    const avg=sc.length?(sc.reduce((s,v)=>s+v,0)/sc.length).toFixed(2):null;
+    const cls=parseFloat(avg)>=4?'sc-ok':parseFloat(avg)>=3?'sc-warn':'sc-err';
+    const pct=avg?(parseFloat(avg)/5*100).toFixed(0):0;
+    return`<div style="display:grid;grid-template-columns:180px 1fr 70px 55px;align-items:center;gap:.75rem;padding:.55rem 0;border-bottom:1px solid var(--brd)"><span style="font-size:.82rem">${p}</span><div style="height:7px;background:var(--brd);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:var(--prim);border-radius:4px"></div></div><span style="font-size:.75rem;color:var(--t3)">${recs.length} reg.</span><span class="sc-badge ${cls}">${avg||'—'}</span></div>`;
+  }).join('');
+}
+
+function renderResultados() {
+  const progs=['Arranca el Futuro','Guardianes del Planeta','Infraestructura','Activación Social','General'];
+  const tl={proyecto:'Proyecto',evento:'Evento',activacion:'Activación'};
+  const resEl=document.getElementById('tr-resumen');
+  if(resEl)resEl.innerHTML=`<table style="width:100%;border-collapse:collapse"><thead><tr>${['Programa','Regs.','Beneficiarios','Score IS'].map((h,i)=>`<th style="text-align:${i===0?'left':'right'};font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);padding:.45rem .6rem;border-bottom:1px solid var(--brd)">${h}</th>`).join('')}</tr></thead><tbody>${progs.map(p=>{const recs=records.filter(r=>r.programa===p);if(!recs.length)return'';const ben=recs.reduce((s,r)=>s+(parseInt(r.beneficiarios)||0),0);const sc=recs.map(r=>score(r)).filter(v=>v>0);const avg=sc.length?(sc.reduce((s,v)=>s+v,0)/sc.length).toFixed(1):null;const cls=parseFloat(avg)>=4?'sc-ok':parseFloat(avg)>=3?'sc-warn':'sc-err';return`<tr><td style="padding:.45rem .6rem;font-size:.8rem;border-bottom:1px solid var(--brd)">${p}</td><td style="text-align:right;padding:.45rem .6rem;font-size:.8rem;border-bottom:1px solid var(--brd)">${recs.length}</td><td style="text-align:right;padding:.45rem .6rem;font-size:.8rem;border-bottom:1px solid var(--brd)">${ben.toLocaleString('es-MX')}</td><td style="text-align:right;padding:.45rem .6rem;border-bottom:1px solid var(--brd)"><span class="sc-badge ${cls}">${avg||'—'}</span></td></tr>`;}).join('')}</tbody></table>`;
+  const sorted=[...records].filter(r=>score(r)>0).sort((a,b)=>score(b)-score(a)).slice(0,5);
+  const t5=document.getElementById('tr-top5');
+  if(t5)t5.innerHTML=sorted.length?sorted.map((r,i)=>{const sc=score(r);const cls=sc>=4?'sc-ok':sc>=3?'sc-warn':'sc-err';return`<div style="display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--brd)"><span style="width:20px;height:20px;border-radius:50%;background:var(--surf3);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--t3);flex-shrink:0">${i+1}</span><div style="flex:1;min-width:0"><div style="font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.nombre||'—'}</div><div style="font-size:.72rem;color:var(--t3)">${tl[r.type]||r.type} · ${r.programa||'—'}</div></div><span class="sc-badge ${cls}">${sc.toFixed(1)}</span></div>`;}).join(''):'<p style="color:var(--t3);font-size:.82rem">Sin datos</p>';
+  const recent=[...records].sort((a,b)=>(b.fecha_registro||b.fecha||'')>(a.fecha_registro||a.fecha||'')?1:-1).slice(0,8);
+  const recEl=document.getElementById('tr-recientes');
+  if(recEl)recEl.innerHTML=recent.length?`<div style="display:flex;flex-direction:column;gap:.4rem">${recent.map(r=>`<div style="display:flex;align-items:center;gap:.6rem;padding:.45rem .6rem;background:var(--surf3);border-radius:var(--rads)"><span class="badge b-${r.type}">${tl[r.type]||r.type}</span><span style="flex:1;font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.nombre||'—'}</span><span style="font-size:.75rem;color:var(--t3);white-space:nowrap">${r.fecha||'—'}</span><span style="font-size:.75rem;color:var(--t3);white-space:nowrap">${r.responsable||'—'}</span></div>`).join('')}</div>`:'<p style="color:var(--t3);font-size:.82rem">Sin registros</p>';
+}
+
+function renderReputacion() {
+  const repSc=records.map(r=>parseFloat(r.reputacion)||0).filter(v=>v>0);
+  const lidSc=records.map(r=>parseFloat(r.liderazgo)||0).filter(v=>v>0);
+  const repP=repSc.length?(repSc.reduce((s,v)=>s+v,0)/repSc.length).toFixed(2):'—';
+  const lidP=lidSc.length?(lidSc.reduce((s,v)=>s+v,0)/lidSc.length).toFixed(2):'—';
+  document.getElementById('trep-score').textContent=repP;
+  document.getElementById('trep-lid').textContent=lidP;
+  document.getElementById('trep-medios').textContent=records.filter(r=>r.media==='Sí').length;
+  document.getElementById('trep-foros').textContent=records.filter(r=>r.tipo_evento==='Foro/Conferencia').length;
+  document.getElementById('trep-aliados').textContent=records.filter(r=>r.aliados&&r.aliados.trim()).length;
+  const tipos=['proyecto','evento','activacion'];
+  const tipoL=['Proyectos','Eventos','Activaciones'];
+  const rAvg=tipos.map(t=>{const v=records.filter(r=>r.type===t).map(r=>parseFloat(r.reputacion)||0).filter(v=>v>0);return v.length?(v.reduce((s,x)=>s+x,0)/v.length).toFixed(2):0;});
+  const lAvg=tipos.map(t=>{const v=records.filter(r=>r.type===t).map(r=>parseFloat(r.liderazgo)||0).filter(v=>v>0);return v.length?(v.reduce((s,x)=>s+x,0)/v.length).toFixed(2):0;});
+  const c4=document.getElementById('c-rep-bar').getContext('2d');
+  if(cRepBar)cRepBar.destroy();
+  cRepBar=new Chart(c4,{type:'bar',data:{labels:tipoL,datasets:[{label:'Reputación',data:rAvg,backgroundColor:'rgba(107,63,197,.8)',borderColor:'#A87DEA',borderWidth:1,borderRadius:6},{label:'Liderazgo',data:lAvg,backgroundColor:'rgba(168,125,234,.6)',borderColor:'#C9A8F0',borderWidth:1,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:5,ticks:{color:'#8A7AAA',stepSize:1},grid:{color:'rgba(44,30,82,.55)'}},x:{ticks:{color:'#8A7AAA'},grid:{display:false}}},plugins:{legend:{labels:{color:'#C0AEDD'}}}}});
 }
 
 // ─── TOAST ───────────────────────────────────────────────
