@@ -5,6 +5,43 @@
 
 const SPREADSHEET_ID = 'TU_SPREADSHEET_ID_AQUI'; // <-- Reemplaza con el ID de tu Google Sheet
 
+// Columnas base comunes a los tres tipos de hoja
+const BASE_HEADERS = [
+  'id', 'timestamp', 'folio', 'fecha_registro', 'type',
+  'nombre', 'fecha', 'responsable', 'ubicacion', 'area',
+  'beneficiarios', 'tipo_beneficiario', 'objetivo', 'programa', 'notas'
+];
+
+// Indicadores generales (iguales en los tres tipos)
+const INDICADORES_HEADERS = [
+  // Resultado
+  'g_escuelas', 'g_horas_formacion', 'g_ben_directos', 'g_ben_indirectos',
+  'g_pct_mujeres', 'g_alianzas', 'g_prototipos', 'g_narrativas',
+  // Impacto
+  'g_pct_habilidades', 'g_pct_autonomia_mujeres', 'g_pct_becarios_sost',
+  // Reputación y proceso
+  'g_percepcion_clarios', 'g_reconocimiento', 'g_satisfaccion',
+  'g_rondas_mentoria', 'g_canal_seguimiento',
+  // Programa: Arranca el Futuro
+  'af_pct_perfiles', 'af_pct_intervenidos', 'af_gimnasios', 'af_sesiones', 'af_obs',
+  // Programa: Guardianes del Planeta
+  'gp_guardianes', 'gp_residuos_kg', 'gp_estaciones', 'gp_tipo_residuos', 'gp_obs',
+  // Programa: Infraestructura Resiliente
+  'inf_arboles', 'inf_intervenciones', 'inf_espacios_digitales', 'inf_tipo', 'inf_obs',
+  // Programa: Activación Social
+  'as_voluntarios', 'as_num_eventos', 'as_tipo', 'as_horas_voluntariado', 'as_obs'
+];
+
+// Headers completos por tipo de hoja
+const SHEET_HEADERS = {
+  'Proyectos':    [...BASE_HEADERS, 'duracion', 'presupuesto', 'aliados', 'indicador', 'meta', ...INDICADORES_HEADERS],
+  'Eventos':      [...BASE_HEADERS, 'tipo_evento', 'asistentes', 'modalidad', 'media', 'logistica', ...INDICADORES_HEADERS],
+  'Activaciones': [...BASE_HEADERS, 'tipo_activacion', 'canal', 'alcance', 'inversion', 'mensaje', ...INDICADORES_HEADERS]
+};
+
+// ─────────────────────────────────────────────────────────────
+// doGet — devuelve todos los registros como JSON
+// ─────────────────────────────────────────────────────────────
 function doGet(e) {
   const output = ContentService.createTextOutput();
   output.setMimeType(ContentService.MimeType.JSON);
@@ -35,6 +72,9 @@ function doGet(e) {
   return output;
 }
 
+// ─────────────────────────────────────────────────────────────
+// doPost — guarda un registro en la hoja correspondiente
+// ─────────────────────────────────────────────────────────────
 function doPost(e) {
   const output = ContentService.createTextOutput();
   output.setMimeType(ContentService.MimeType.JSON);
@@ -49,13 +89,19 @@ function doPost(e) {
     let sheet = ss.getSheetByName(sheetName);
     if (!sheet) { crearHojas(); sheet = ss.getSheetByName(sheetName); }
 
+    // Si faltan columnas en la hoja, las agrega antes de guardar
+    asegurarColumnas_(sheet, SHEET_HEADERS[sheetName]);
+
+    // Folio correlativo
     const prefixMap = { Proyectos: 'PRO', Eventos: 'EVE', Activaciones: 'ACT' };
     const seq = String(sheet.getLastRow()).padStart(4, '0');
     const folio = prefixMap[sheetName] + '-' + seq + '-' + new Date().getFullYear();
 
+    // Lee los headers actuales de la hoja (ya actualizados)
     const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     payload.folio = folio;
     payload.fecha_registro = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm:ss');
+
     const row = headers.map(h => (payload[h] != null ? payload[h] : ''));
     sheet.appendRow(row);
 
@@ -66,47 +112,117 @@ function doPost(e) {
   return output;
 }
 
-// Ejecuta esta función UNA VEZ manualmente desde el editor para crear las hojas
+// ─────────────────────────────────────────────────────────────
+// asegurarColumnas_ — agrega al final las columnas que falten
+// ─────────────────────────────────────────────────────────────
+function asegurarColumnas_(sheet, expectedHeaders) {
+  const lastCol = sheet.getLastColumn();
+  const existingHeaders = lastCol > 0
+    ? sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(h => h.toString())
+    : [];
+
+  const missing = expectedHeaders.filter(h => !existingHeaders.includes(h));
+  if (missing.length === 0) return;
+
+  const startCol = lastCol + 1;
+  const headerRange = sheet.getRange(1, startCol, 1, missing.length);
+  headerRange.setValues([missing]);
+  headerRange.setFontWeight('bold');
+  headerRange.setBackground('#4A1D8B');
+  headerRange.setFontColor('#FFFFFF');
+  Logger.log('Columnas agregadas a ' + sheet.getName() + ': ' + missing.join(', '));
+}
+
+// ─────────────────────────────────────────────────────────────
+// crearHojas — ejecuta UNA VEZ para crear las hojas vacías
+// ─────────────────────────────────────────────────────────────
 function crearHojas() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const common = [
-    'folio','fecha_registro','nombre','fecha','responsable','ubicacion',
-    'area','beneficiarios','tipo_beneficiario','objetivo','programa','notas',
-    'proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor',
-    'g_ben_directos','g_horas_formacion','g_pct_mujeres'
-  ];
-  const defs = {
-    'Proyectos':    [...common, 'duracion','presupuesto','aliados','indicador','meta','alineacion'],
-    'Eventos':      [...common, 'tipo_evento','asistentes','modalidad','media','logistica'],
-    'Activaciones': [...common, 'tipo_activacion','canal','alcance','inversion','mensaje']
-  };
-  Object.entries(defs).forEach(([name, headers]) => {
+  Object.entries(SHEET_HEADERS).forEach(([name, headers]) => {
     let sheet = ss.getSheetByName(name);
-    if (!sheet) sheet = ss.insertSheet(name);
-    else if (sheet.getRange(1,1).getValue() === 'folio') {
-      Logger.log(name + ': ya tiene headers, omitiendo.');
+    if (!sheet) {
+      sheet = ss.insertSheet(name);
+    } else if (sheet.getRange(1, 1).getValue() !== '') {
+      // La hoja ya existe con datos → solo asegura que tenga todas las columnas
+      asegurarColumnas_(sheet, headers);
+      Logger.log(name + ': hoja existente actualizada.');
       return;
     }
+    // Hoja nueva → escribe headers completos
     const r = sheet.getRange(1, 1, 1, headers.length);
     r.setValues([headers]);
     r.setFontWeight('bold');
     r.setBackground('#4A1D8B');
     r.setFontColor('#FFFFFF');
     sheet.setFrozenRows(1);
-    sheet.setColumnWidth(1, 160);
-    sheet.setColumnWidth(3, 220);
+    sheet.setColumnWidth(1, 140);
+    sheet.setColumnWidth(6, 220);
     Logger.log('✓ Hoja creada: ' + name + ' (' + headers.length + ' cols)');
   });
   Logger.log('Setup completado.');
 }
 
+// ─────────────────────────────────────────────────────────────
+// actualizarHeaders — ejecuta UNA VEZ si ya tienes hojas con
+// las columnas antiguas y quieres agregar las nuevas sin
+// borrar los datos existentes
+// ─────────────────────────────────────────────────────────────
+function actualizarHeaders() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  Object.entries(SHEET_HEADERS).forEach(([name, headers]) => {
+    const sheet = ss.getSheetByName(name);
+    if (!sheet) { Logger.log(name + ': hoja no encontrada, omitiendo.'); return; }
+    asegurarColumnas_(sheet, headers);
+  });
+  Logger.log('Headers actualizados en todas las hojas.');
+}
+
+// ─────────────────────────────────────────────────────────────
 // Pruebas locales en el editor
+// ─────────────────────────────────────────────────────────────
 function testGet()  { Logger.log(doGet({}).getContent()); }
+
 function testPost() {
-  const mock = { type:'proyecto', nombre:'Test', fecha:'2026-05-27', responsable:'Admin',
-    ubicacion:'CDMX', area:'Impacto Social', programa:'General', beneficiarios:100,
-    tipo_beneficiario:'Jóvenes', objetivo:'Prueba del sistema',
-    proposito:4, liderazgo:4, reputacion:3, sostenibilidad:4, cocreacion:3, gestion:4, valor:4,
-    g_ben_directos:80, g_horas_formacion:10, g_pct_mujeres:50 };
+  const mock = {
+    id: 'IS-test-001',
+    timestamp: new Date().toISOString(),
+    type: 'proyecto',
+    nombre: 'Test completo',
+    fecha: '2026-05-28',
+    responsable: 'Admin',
+    ubicacion: 'CDMX',
+    area: 'Impacto Social',
+    beneficiarios: 100,
+    tipo_beneficiario: 'Jóvenes (18–29)',
+    objetivo: 'Prueba del sistema con todos los campos',
+    programa: 'arranca',
+    duracion: '1–3 meses',
+    presupuesto: 50000,
+    aliados: 'ITESM',
+    indicador: '% participantes con empleo',
+    meta: '60%',
+    g_escuelas: 2,
+    g_horas_formacion: 40,
+    g_ben_directos: 100,
+    g_ben_indirectos: 300,
+    g_pct_mujeres: 45,
+    g_alianzas: 3,
+    g_prototipos: 1,
+    g_narrativas: 2,
+    g_pct_habilidades: 70,
+    g_pct_autonomia_mujeres: 50,
+    g_pct_becarios_sost: 30,
+    g_percepcion_clarios: '4 — Alto',
+    g_reconocimiento: '4 — Referente local',
+    g_satisfaccion: '5 — Muy satisfecho',
+    g_rondas_mentoria: 2,
+    g_canal_seguimiento: 'WhatsApp / Telegram',
+    af_pct_perfiles: 20,
+    af_pct_intervenidos: 80,
+    af_gimnasios: 1,
+    af_sesiones: 8,
+    af_obs: 'Test exitoso',
+    notas: 'Prueba de integración completa'
+  };
   Logger.log(doPost({ postData: { contents: JSON.stringify(mock) } }).getContent());
 }
