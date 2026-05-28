@@ -2035,25 +2035,43 @@ async function syncFromAPI() {
     const json = await res.json();
     if (json.status !== 'ok') throw new Error(json.message);
     const apiRecords = json.data || [];
-    // Merge: API records keyed by id/folio; keep local-only records
+
+    // IDs eliminados localmente — nunca los restauramos desde la API
+    const deletedIds = new Set(JSON.parse(localStorage.getItem('clarios_deleted_v2') || '[]'));
+
+    // Merge: API records keyed by folio/id; keep local-only records not in API
     const apiIds = new Set(apiRecords.map(r => r.folio || r.id));
     const localOnly = records.filter(r => !apiIds.has(r.folio) && !apiIds.has(r.id));
-    // Normalize API records
-    const normalized = apiRecords.map(r => ({
-      id: r.folio || ('API-' + Date.now() + Math.random()),
-      timestamp: r.fecha_registro || new Date().toISOString(),
-      type: r.type || 'proyecto',
-      ...r
-    }));
+
+    // Normalize API records, skipping deleted ones
+    const normalized = apiRecords
+      .filter(r => !deletedIds.has(r.folio) && !deletedIds.has(r.id))
+      .map(r => ({
+        id: r.folio || ('API-' + Date.now() + Math.random()),
+        timestamp: r.fecha_registro || new Date().toISOString(),
+        type: r.type || 'proyecto',
+        ...r
+      }));
+
     records = [...normalized, ...localOnly];
     localStorage.setItem('clarios_is_v2', JSON.stringify(records));
     filteredRecords = [...records];
     updateBadges();
-    if (currentView === 'dashboard') renderDashboard(filteredRecords);
+    refreshCurrentView();
     setSyncLabel('✓ Sync ' + new Date().toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'}));
   } catch (e) {
     setSyncLabel('⚠ Sin conexión');
   }
+}
+
+function refreshCurrentView() {
+  if (currentView === 'dashboard') renderDashboard(filteredRecords.length ? filteredRecords : records);
+  if (currentView === 'proyectos') renderList('proyecto', 'table-proyectos-wrap');
+  if (currentView === 'eventos') renderList('evento', 'table-eventos-wrap');
+  if (currentView === 'activaciones') renderList('activacion', 'table-activaciones-wrap');
+  if (currentView === 'folios') renderFolios();
+  if (currentView === 'tracking') renderTracking();
+  if (currentView === 'registros') renderRegistros();
 }
 
 // ═══════════════════════════════════════════════════
@@ -2779,16 +2797,18 @@ function closeModal(e) {
 // ═══════════════════════════════════════════════════
 function deleteRecord(id) {
   if (!confirm('¿Eliminar este registro permanentemente?')) return;
+  // Mark id as deleted so syncFromAPI never restores it
+  const deletedIds = JSON.parse(localStorage.getItem('clarios_deleted_v2') || '[]');
+  if (!deletedIds.includes(id)) {
+    deletedIds.push(id);
+    localStorage.setItem('clarios_deleted_v2', JSON.stringify(deletedIds));
+  }
   records = records.filter(r => r.id !== id);
   localStorage.setItem('clarios_is_v2', JSON.stringify(records));
+  filteredRecords = records.filter(r => filteredRecords.some(fr => fr.id === r.id));
   updateBadges();
   showToast('Registro eliminado');
-  // Re-render current view
-  if (['proyectos','eventos','activaciones'].includes(currentView)) {
-    const typeMap = { proyectos:'proyecto', eventos:'evento', activaciones:'activacion' };
-    renderList(typeMap[currentView], 'table-'+currentView+'-wrap');
-  }
-  if (currentView === 'registros') renderRegistros();
+  refreshCurrentView();
 }
 
 // ═══════════════════════════════════════════════════
