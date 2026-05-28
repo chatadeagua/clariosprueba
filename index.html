@@ -3,1030 +3,2949 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clarios IS — Registro de Impacto Social</title>
+<title>Clarios · Sistema de Indicadores IS</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg:    #08051A;
-  --surf:  #110D26;
-  --surf2: #1A1435;
-  --surf3: #251B4A;
-  --prim:  #6B3FC5;
-  --primh: #7D52D4;
-  --primd: #4E2E96;
-  --acc:   #A87DEA;
-  --t1: #EDE8F5; --t2: #C0AEDD; --t3: #8A7AAA;
-  --brd:  #2C1E52;
-  --ok:   #27AE60;
-  --warn: #E67E22;
-  --err:  #E74C3C;
-  --rad: 12px; --rads: 8px;
+  --bg:          #07050F;
+  --bg2:         #0D0A1C;
+  --bg3:         #13102A;
+  --surface:     #1A1635;
+  --surface2:    #221E42;
+  --purple:      #7C3AED;
+  --purple-mid:  #6D28D9;
+  --purple-lt:   #A78BFA;
+  --purple-glow: rgba(124,58,237,0.15);
+  --purple-b:    rgba(124,58,237,0.3);
+  --teal:        #0891B2;
+  --teal-lt:     #22D3EE;
+  --amber:       #F59E0B;
+  --amber-lt:    #FCD34D;
+  --green:       #10B981;
+  --green-lt:    #34D399;
+  --red:         #EF4444;
+  --white:       #FFFFFF;
+  --gray-1:      #E2D9F3;
+  --gray-2:      #9B8EC4;
+  --gray-3:      #4C4575;
+  --gray-4:      #2A2550;
+  --mono:        'DM Mono', monospace;
+  --sans:        'Barlow', sans-serif;
+  --cond:        'Barlow Condensed', sans-serif;
+  --r-sm:        8px;
+  --r-md:        12px;
+  --r-lg:        16px;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;font-size:14px;}
 
-/* TOPBAR */
-.topbar{position:sticky;top:0;z-index:100;background:var(--surf);border-bottom:1px solid var(--brd);display:flex;align-items:center;padding:0 1.5rem;height:56px;gap:1.5rem;}
-.logo{font-weight:700;font-size:1.05rem;color:var(--acc);letter-spacing:.5px;white-space:nowrap;}
-.logo span{color:var(--t3);font-weight:400;}
-.topnav{display:flex;gap:.25rem;flex:1;}
-.topnav button{background:none;border:none;color:var(--t2);padding:.45rem .9rem;border-radius:var(--rads);cursor:pointer;font-size:.85rem;transition:background .15s,color .15s;font-family:inherit;}
-.topnav button:hover{background:var(--surf3);color:var(--t1);}
-.topnav button.active{background:var(--surf3);color:var(--acc);font-weight:600;}
-.sync-wrap{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--t3);white-space:nowrap;}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--t3);flex-shrink:0;}
-.sync-dot.ok{background:var(--ok);}
-.sync-dot.spin{background:var(--warn);animation:blink 1s infinite;}
-.sync-dot.err{background:var(--err);}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* LAYOUT */
-.main{padding:1.75rem 2rem;max-width:1400px;margin:0 auto;}
-.section{display:none;}.section.active{display:block;}
-.page-hdr{margin-bottom:1.5rem;}
-.page-hdr h1{font-size:1.4rem;font-weight:700;margin-bottom:.2rem;}
-.page-hdr p{color:var(--t3);font-size:.85rem;}
+html { scroll-behavior: smooth; }
 
-/* KPI */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:1rem;margin-bottom:1.5rem;}
-.kpi-card{background:var(--surf2);border:1px solid var(--brd);border-radius:var(--rad);padding:1.25rem;position:relative;overflow:hidden;}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--prim);}
-.kpi-card.k2::before{background:var(--acc);}
-.kpi-card.k3::before{background:#4E2E96;}
-.kpi-card.k4::before{background:#8A5DD4;}
-.kpi-card.k5::before{background:#3D1E7C;}
-.kpi-lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:.5rem;}
-.kpi-val{font-size:1.9rem;font-weight:700;}
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--gray-1);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-/* CHARTS */
-.charts-grid{display:grid;grid-template-columns:1fr 2fr;gap:1rem;margin-bottom:1.5rem;}
-@media(max-width:768px){.charts-grid{grid-template-columns:1fr;}}
-.chart-card{background:var(--surf2);border:1px solid var(--brd);border-radius:var(--rad);padding:1.25rem;}
-.chart-card h3{font-size:.82rem;color:var(--t2);margin-bottom:1rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
-.chart-wrap{position:relative;height:230px;}
+/* ── ANIMATED BG ──────────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 800px 600px at 10% 20%, rgba(124,58,237,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 400px at 90% 80%, rgba(8,145,178,0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
 
-/* CARD */
-.card{background:var(--surf2);border:1px solid var(--brd);border-radius:var(--rad);padding:1.5rem;}
+/* ── SIDEBAR NAV ──────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 220px;
+  background: var(--bg2);
+  border-right: 1px solid var(--purple-b);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  transition: transform 0.3s ease;
+}
 
-/* TYPE SELECTOR */
-.type-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;}
-@media(max-width:580px){.type-selector{grid-template-columns:1fr;}}
-.type-card{background:var(--surf3);border:2px solid var(--brd);border-radius:var(--rad);padding:1.5rem 1.25rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
-.type-card:hover{border-color:var(--primd);}
-.type-card.selected{border-color:var(--prim);background:rgba(107,63,197,.15);}
-.type-icon{font-size:2.4rem;margin-bottom:.75rem;}
-.type-name{font-size:.95rem;font-weight:700;margin-bottom:.3rem;}
-.type-desc{font-size:.78rem;color:var(--t3);line-height:1.4;}
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--purple-b);
+}
 
-/* STEPS */
-.steps-ind{display:flex;align-items:center;gap:.4rem;margin-bottom:2rem;overflow-x:auto;padding-bottom:.25rem;}
-.sitem{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--t3);flex-shrink:0;}
-.sitem.active{color:var(--acc);}
-.sitem.done{color:var(--ok);}
-.snum{width:26px;height:26px;border-radius:50%;border:2px solid var(--brd);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;}
-.sitem.active .snum{border-color:var(--prim);background:var(--prim);color:#fff;}
-.sitem.done .snum{border-color:var(--ok);background:var(--ok);color:#fff;}
-.ssep{flex:1;min-width:16px;height:1px;background:var(--brd);}
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
 
-/* FORM */
-.form-step{display:none;}.form-step.active{display:block;}
-.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
-.form-grid.g3{grid-template-columns:repeat(3,1fr);}
-@media(max-width:600px){.form-grid,.form-grid.g3{grid-template-columns:1fr;}}
-.fg{display:flex;flex-direction:column;gap:.35rem;}
-.fg.full{grid-column:1/-1;}
-label{font-size:.78rem;color:var(--t2);font-weight:500;}
-.req{color:var(--err);margin-left:2px;}
-input,select,textarea{background:var(--surf3);border:1px solid var(--brd);color:var(--t1);border-radius:var(--rads);padding:.58rem .75rem;font-size:.85rem;width:100%;transition:border-color .15s;font-family:inherit;}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--prim);}
-input.err-f,select.err-f,textarea.err-f{border-color:var(--err);}
-textarea{resize:vertical;min-height:80px;}
-select option{background:var(--surf3);}
+.logo-bars {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 22px;
+}
 
-/* SLIDERS */
-.sliders-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;}
-@media(max-width:580px){.sliders-grid{grid-template-columns:1fr;}}
-.sg{display:flex;flex-direction:column;gap:.35rem;}
-.srow{display:flex;align-items:center;gap:.75rem;}
-.srow input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:5px;border-radius:3px;background:var(--brd);cursor:pointer;padding:0;border:none;}
-.srow input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;background:var(--prim);cursor:pointer;border:2px solid var(--acc);}
-.srow input[type=range]:focus{border:none;box-shadow:none;}
-.sval{min-width:26px;text-align:center;font-weight:700;color:var(--acc);font-size:.95rem;}
+.logo-bars span {
+  width: 5px;
+  background: var(--purple);
+  border-radius: 2px;
+}
+.logo-bars span:nth-child(1) { height: 14px; }
+.logo-bars span:nth-child(2) { height: 22px; }
+.logo-bars span:nth-child(3) { height: 10px; }
 
-/* BUTTONS */
-.form-actions{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--brd);}
-.btn{padding:.58rem 1.15rem;border-radius:var(--rads);border:none;cursor:pointer;font-size:.85rem;font-weight:600;transition:background .15s,transform .1s;font-family:inherit;}
-.btn:active{transform:scale(.98);}
-.btn-p{background:var(--prim);color:#fff;}
-.btn-p:hover{background:var(--primh);}
-.btn-p:disabled{background:var(--primd);opacity:.55;cursor:not-allowed;}
-.btn-g{background:var(--surf3);color:var(--t2);}
-.btn-g:hover{background:var(--brd);color:var(--t1);}
-.btn-sm{padding:.28rem .65rem;border-radius:var(--rads);border:1px solid var(--brd);background:var(--surf3);color:var(--t2);cursor:pointer;font-size:.78rem;transition:background .15s,color .15s;font-family:inherit;}
-.btn-sm:hover{background:var(--prim);color:#fff;border-color:var(--prim);}
-.sec-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);margin:1.25rem 0 .75rem;}
+.logo-text {
+  font-family: var(--cond);
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 1.5px;
+  color: var(--white);
+}
 
-/* FILTERS & TABLE */
-.filters-bar{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center;}
-.filters-bar select{width:auto;min-width:155px;}
-.tbl-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;}
-th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);padding:.7rem 1rem;border-bottom:1px solid var(--brd);white-space:nowrap;}
-td{padding:.7rem 1rem;border-bottom:1px solid var(--brd);font-size:.85rem;}
-tr:hover td{background:rgba(107,63,197,.05);}
-code{font-size:.78rem;color:var(--acc);font-family:'Courier New',monospace;}
+.logo-sub {
+  font-size: 10px;
+  color: var(--gray-3);
+  letter-spacing: 1px;
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-left: 32px;
+}
 
-.badge{display:inline-block;padding:.18rem .55rem;border-radius:20px;font-size:.73rem;font-weight:600;}
-.b-proyecto{background:rgba(107,63,197,.25);color:var(--acc);}
-.b-evento{background:rgba(168,125,234,.2);color:#C9A8F0;}
-.b-activacion{background:rgba(78,46,150,.28);color:#9B78D4;}
+.sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
 
-.sc-badge{display:inline-flex;align-items:center;justify-content:center;padding:.22rem .55rem;border-radius:20px;font-size:.78rem;font-weight:700;min-width:38px;}
-.sc-ok{background:rgba(39,174,96,.18);color:#27AE60;}
-.sc-warn{background:rgba(230,126,34,.18);color:#E67E22;}
-.sc-err{background:rgba(231,76,60,.18);color:#E74C3C;}
-.sc-nil{background:var(--surf3);color:var(--t3);}
-.tbl-count{padding:.6rem 0;font-size:.78rem;color:var(--t3);}
+.nav-section {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gray-3);
+  text-transform: uppercase;
+  padding: 12px 8px 6px;
+}
 
-/* MODAL */
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem;}
-.modal-ov.open{display:flex;}
-.modal{background:var(--surf2);border:1px solid var(--brd);border-radius:var(--rad);width:100%;max-width:700px;max-height:88vh;overflow-y:auto;}
-.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.5rem;border-bottom:1px solid var(--brd);position:sticky;top:0;background:var(--surf2);}
-.modal-hdr h2{font-size:1rem;font-weight:700;}
-.modal-x{background:none;border:none;color:var(--t3);cursor:pointer;font-size:1.2rem;padding:.2rem .4rem;border-radius:var(--rads);}
-.modal-x:hover{color:var(--t1);background:var(--surf3);}
-.modal-bd{padding:1.5rem;}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-2);
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  user-select: none;
+}
 
-/* DETAIL */
-.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-@media(max-width:560px){.det-grid{grid-template-columns:1fr;}}
-.det-sec{background:var(--surf3);border-radius:var(--rads);padding:1rem;}
-.det-sec.full{grid-column:1/-1;}
-.det-sec h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:.75rem;}
-dl{display:grid;grid-template-columns:auto 1fr;gap:.28rem .75rem;align-items:baseline;}
-dt{color:var(--t3);font-size:.78rem;white-space:nowrap;}
-dd{font-size:.85rem;}
-.sc-grid{display:flex;flex-direction:column;gap:.45rem;}
-.sc-row{display:grid;grid-template-columns:90px 1fr 26px;align-items:center;gap:.5rem;font-size:.78rem;}
-.sc-bar{height:5px;background:var(--brd);border-radius:3px;overflow:hidden;}
-.sc-fill{height:100%;border-radius:3px;}
+.nav-item:hover {
+  background: var(--purple-glow);
+  color: var(--gray-1);
+  border-color: var(--purple-b);
+}
 
-/* TOAST */
-.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:400;padding:.7rem 1.2rem;border-radius:var(--rads);font-size:.85rem;font-weight:500;transform:translateY(80px);opacity:0;transition:transform .28s,opacity .28s;max-width:360px;pointer-events:none;}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.success{background:#122B1D;border:1px solid var(--ok);color:#5ACA8A;}
-.toast.error{background:#2B1212;border:1px solid var(--err);color:#E88080;}
+.nav-item.active {
+  background: var(--purple-glow);
+  color: var(--purple-lt);
+  border-color: var(--purple-b);
+}
 
-.specific-fields{display:none;}
-.stabs-bar{display:flex;gap:0;border-bottom:1px solid var(--brd);margin-bottom:0;overflow-x:auto;}
-.stab{background:none;border:none;border-bottom:2px solid transparent;color:var(--t2);padding:.6rem 1.15rem;cursor:pointer;font-size:.85rem;font-family:inherit;white-space:nowrap;margin-bottom:-1px;transition:color .15s,border-color .15s;}
-.stab:hover{color:var(--t1);}
-.stab.active{color:var(--acc);border-bottom-color:var(--prim);font-weight:600;}
-.tab-pane{display:none;}.tab-pane.active{display:block;}
+.nav-item .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--purple);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-family: var(--mono);
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--purple-b);
+}
+
+.version-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--gray-3);
+}
+
+/* ── MAIN CONTENT ─────────────────────────────────────────── */
+.main {
+  margin-left: 220px;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── TOP BAR ──────────────────────────────────────────────── */
+.topbar {
+  position: sticky;
+  top: 0;
+  background: rgba(7,5,15,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--purple-b);
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 40;
+}
+
+.topbar-title {
+  font-family: var(--cond);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--white);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--r-sm);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--purple);
+  color: var(--white);
+}
+.btn-primary:hover { background: var(--purple-mid); transform: translateY(-1px); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--purple-lt);
+  border: 1px solid var(--purple-b);
+}
+.btn-ghost:hover { background: var(--purple-glow); }
+
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+
+/* ── VIEWS ────────────────────────────────────────────────── */
+.view { display: none; padding: 32px; animation: fadeUp 0.35s ease; }
+.view.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PAGE HEADER ──────────────────────────────────────────── */
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--purple-lt);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.page-title {
+  font-family: var(--cond);
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.page-title span { color: var(--purple-lt); }
+
+.page-desc {
+  font-size: 13px;
+  color: var(--gray-2);
+  line-height: 1.6;
+}
+
+/* ── STAT CARDS ───────────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent, var(--purple));
+}
+
+.stat-card:hover { border-color: var(--purple); }
+
+.stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--gray-3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.stat-num {
+  font-family: var(--cond);
+  font-size: 44px;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--gray-3);
+}
+
+.stat-icon {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 22px;
+  opacity: 0.3;
+}
+
+/* ── CHART GRID ───────────────────────────────────────────── */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.chart-card {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  padding: 24px;
+}
+
+.chart-card.wide { grid-column: 1 / -1; }
+
+.chart-title {
+  font-family: var(--cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--gray-2);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chart-container { position: relative; height: 220px; }
+
+/* ── DATA TABLE ───────────────────────────────────────────── */
+.table-card {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.table-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--purple-b);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table-title {
+  font-family: var(--cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--gray-2);
+  text-transform: uppercase;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead tr {
+  background: var(--bg3);
+}
+
+th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gray-3);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--purple-b);
+}
+
+td {
+  padding: 13px 16px;
+  font-size: 12px;
+  color: var(--gray-1);
+  border-bottom: 1px solid rgba(124,58,237,0.1);
+  vertical-align: middle;
+}
+
+tbody tr:hover { background: var(--purple-glow); }
+tbody tr:last-child td { border-bottom: none; }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-3);
+}
+
+.empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+.empty-state p { font-size: 13px; }
+
+/* ── TYPE BADGES ──────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.badge-proyecto  { background: rgba(124,58,237,0.2); color: var(--purple-lt); border: 1px solid rgba(124,58,237,0.3); }
+.badge-evento    { background: rgba(8,145,178,0.2);  color: var(--teal-lt);   border: 1px solid rgba(8,145,178,0.3); }
+.badge-activacion{ background: rgba(245,158,11,0.2); color: var(--amber-lt);  border: 1px solid rgba(245,158,11,0.3); }
+
+/* ── SELECTOR VIEW ────────────────────────────────────────── */
+.selector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 780px;
+}
+
+.type-card {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  padding: 36px 28px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.type-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--tc, var(--purple));
+  transform: scaleX(0);
+  transition: transform 0.2s;
+  transform-origin: left;
+}
+
+.type-card:hover { border-color: var(--tc, var(--purple)); transform: translateY(-3px); }
+.type-card:hover::before { transform: scaleX(1); }
+
+.type-icon {
+  font-size: 36px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.type-name {
+  font-family: var(--cond);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.type-desc {
+  font-size: 12px;
+  color: var(--gray-2);
+  line-height: 1.5;
+}
+
+.type-arrow {
+  margin-top: 20px;
+  font-size: 18px;
+  color: var(--tc, var(--purple));
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.type-card:hover .type-arrow { opacity: 1; transform: translateX(4px); }
+
+/* ── FORM ─────────────────────────────────────────────────── */
+.form-wrap {
+  max-width: 720px;
+}
+
+.progress-strip {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 32px;
+}
+
+.ps-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ps-step.active { color: var(--purple-lt); }
+.ps-step.done { color: var(--green); }
+
+.ps-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.ps-step.active .ps-dot { background: var(--purple); border-color: var(--purple); color: var(--white); }
+.ps-step.done .ps-dot { background: var(--green); border-color: var(--green); color: var(--white); }
+
+.ps-line {
+  flex: 1;
+  height: 1px;
+  background: var(--purple-b);
+  margin: 0 12px;
+}
+
+.ps-line.done { background: var(--green); }
+
+.form-section {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  padding: 28px;
+  margin-bottom: 20px;
+}
+
+.form-section-title {
+  font-family: var(--cond);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--purple-lt);
+  text-transform: uppercase;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-section-title::before {
+  content: '';
+  width: 4px;
+  height: 16px;
+  background: var(--purple);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.field-row {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.field-row.cols-2 { grid-template-columns: 1fr 1fr; }
+.field-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+.field label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--gray-3);
+  text-transform: uppercase;
+}
+
+.field label .req { color: var(--purple-lt); }
+
+.field input, .field select, .field textarea {
+  background: var(--bg3);
+  border: 1px solid var(--gray-4);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--gray-1);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  width: 100%;
+  appearance: none;
+}
+
+.field input::placeholder, .field textarea::placeholder { color: var(--gray-3); }
+
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+}
+
+.field.error input, .field.error select, .field.error textarea {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+}
+
+.field .err-msg {
+  font-size: 10px;
+  color: var(--red);
+  display: none;
+}
+.field.error .err-msg { display: block; }
+
+.field select option { background: var(--bg3); }
+.field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+.field .helper { font-size: 10px; color: var(--gray-3); line-height: 1.4; }
+
+/* ── FORM FOOTER ──────────────────────────────────────────── */
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--purple-b);
+}
+
+/* ── SUCCESS TOAST ────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  background: var(--green);
+  color: var(--white);
+  padding: 14px 20px;
+  border-radius: var(--r-md);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 999;
+  pointer-events: none;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── DETAIL MODAL ─────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7,5,15,0.8);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  width: 100%;
+  max-width: 580px;
+  max-height: 85vh;
+  overflow-y: auto;
+  animation: fadeUp 0.25s ease;
+}
+
+.modal-head {
+  padding: 24px 28px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.modal-body { padding: 20px 28px 28px; }
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--gray-2);
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--white); }
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.detail-item { display: flex; flex-direction: column; gap: 3px; }
+.detail-key { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--gray-3); text-transform: uppercase; }
+.detail-val { font-size: 13px; color: var(--gray-1); font-weight: 500; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 200;
+  background: var(--purple);
+  border: none;
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 20px;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .mobile-toggle { display: flex; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid { grid-template-columns: 1fr; }
+  .selector-grid { grid-template-columns: 1fr; }
+  .field-row.cols-2, .field-row.cols-3 { grid-template-columns: 1fr; }
+  .topbar { padding: 0 16px 0 60px; }
+  .view { padding: 24px 16px; }
+}
+
+@media (max-width: 540px) {
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .page-title { font-size: 28px; }
+}
+
+/* ── FILTER BAR ───────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 130px;
+}
+
+.filter-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--gray-3);
+  text-transform: uppercase;
+}
+
+.filter-select {
+  background: var(--bg3);
+  border: 1px solid var(--gray-4);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--gray-1);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  appearance: none;
+}
+
+.filter-select:focus { border-color: var(--purple); }
+.filter-select option { background: var(--bg3); }
+
+.filter-clear {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid rgba(239,68,68,0.2);
+  color: var(--red);
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  align-self: flex-end;
+}
+
+.filter-clear:hover { background: rgba(239,68,68,0.2); }
+
+.active-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--purple-glow);
+  border: 1px solid var(--purple-b);
+  color: var(--purple-lt);
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── DASHBOARD SECTION TITLES ─────────────────────────────── */
+.dash-section-title {
+  font-family: var(--cond);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: var(--gray-3);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dash-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--purple-b);
+}
+
+/* ── STAT GRID VARIANTS ───────────────────────────────────── */
+.stat-grid-6 { grid-template-columns: repeat(6,1fr); }
+.stat-grid-4 { grid-template-columns: repeat(4,1fr); }
+
+@media (max-width: 1200px) { .stat-grid-6 { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 900px)  { .stat-grid-6, .stat-grid-4 { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 540px)  { .stat-grid-6, .stat-grid-4 { grid-template-columns: 1fr 1fr; } }
+
+/* ── PROGRESS BAR IN STAT ─────────────────────────────────── */
+.stat-progress-wrap {
+  margin-top: 10px;
+  background: var(--gray-4);
+  border-radius: 4px;
+  height: 4px;
+  overflow: hidden;
+}
+
+.stat-progress {
+  height: 100%;
+  background: var(--accent, var(--purple));
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  width: 0%;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gray-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--purple); }
+
+/* ── UTIL ─────────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--purple-b); margin: 24px 0; }
+.text-muted { color: var(--gray-3); font-size: 12px; }
+.fw700 { font-weight: 700; }
+.gap-8 { display: flex; gap: 8px; align-items: center; }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<header class="topbar">
-  <div class="logo">Clarios <span>IS</span></div>
-  <nav class="topnav">
-    <button data-nav="dashboard" onclick="nav('dashboard')">Dashboard</button>
-    <button data-nav="registro"  onclick="nav('registro')">Nuevo Registro</button>
-    <button data-nav="listado"   onclick="nav('listado')">Listado</button>
-    <button data-nav="tracking"  onclick="nav('tracking')">Tracking Clarios</button>
-  </nav>
-  <div class="sync-wrap">
-    <div class="sync-dot" id="sdot"></div>
-    <span id="stxt">—</span>
-  </div>
-</header>
+<!-- MOBILE TOGGLE -->
+<button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
 
-<main class="main">
+<!-- TOAST -->
+<div class="toast" id="toast">✓ <span id="toast-msg">Registro guardado</span></div>
 
-<!-- ── DASHBOARD ─────────────────────────────────── -->
-<section id="s-dashboard" class="section active">
-  <div class="page-hdr">
-    <h1>Dashboard</h1>
-    <p>Resumen general del programa de Impacto Social Clarios</p>
-  </div>
-  <div class="kpi-grid">
-    <div class="kpi-card">    <div class="kpi-lbl">Total Registros</div><div class="kpi-val" id="k-tot">—</div></div>
-    <div class="kpi-card k2"> <div class="kpi-lbl">Beneficiarios</div>  <div class="kpi-val" id="k-ben">—</div></div>
-    <div class="kpi-card k3"> <div class="kpi-lbl">Proyectos</div>      <div class="kpi-val" id="k-pro">—</div></div>
-    <div class="kpi-card k4"> <div class="kpi-lbl">Eventos</div>        <div class="kpi-val" id="k-ev">—</div></div>
-    <div class="kpi-card k5"> <div class="kpi-lbl">Activaciones</div>   <div class="kpi-val" id="k-act">—</div></div>
-  </div>
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>Distribución por Tipo</h3>
-      <div class="chart-wrap"><canvas id="chart-donut"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Score IS Promedio por Dimensión</h3>
-      <div class="chart-wrap"><canvas id="chart-bar"></canvas></div>
-    </div>
-  </div>
-</section>
-
-<!-- ── REGISTRO ───────────────────────────────────── -->
-<section id="s-registro" class="section">
-  <div class="page-hdr">
-    <h1>Nuevo Registro</h1>
-    <p>Registra un proyecto, evento o activación de impacto social</p>
-  </div>
-  <div class="card">
-    <!-- Step indicator -->
-    <div class="steps-ind">
-      <div class="sitem active" id="si1"><div class="snum">1</div><span>Tipo</span></div>
-      <div class="ssep"></div>
-      <div class="sitem" id="si2"><div class="snum">2</div><span>Datos básicos</span></div>
-      <div class="ssep"></div>
-      <div class="sitem" id="si3"><div class="snum">3</div><span>Detalles</span></div>
-      <div class="ssep"></div>
-      <div class="sitem" id="si4"><div class="snum">4</div><span>Score IS</span></div>
-      <div class="ssep"></div>
-      <div class="sitem" id="si5"><div class="snum">5</div><span>Métricas</span></div>
-    </div>
-
-    <form id="reg-form" onsubmit="return false">
-
-      <!-- STEP 1 -->
-      <div class="form-step active" id="fstep-1">
-        <div class="type-selector">
-          <div class="type-card" data-type="proyecto" onclick="selectType('proyecto')">
-            <div class="type-icon">🏗️</div>
-            <div class="type-name">Proyecto</div>
-            <div class="type-desc">Iniciativa con duración y presupuesto definidos</div>
-          </div>
-          <div class="type-card" data-type="evento" onclick="selectType('evento')">
-            <div class="type-icon">📅</div>
-            <div class="type-name">Evento</div>
-            <div class="type-desc">Foro, taller, lanzamiento u actividad puntual</div>
-          </div>
-          <div class="type-card" data-type="activacion" onclick="selectType('activacion')">
-            <div class="type-icon">📣</div>
-            <div class="type-name">Activación</div>
-            <div class="type-desc">Campaña, movilización ciudadana o acción territorial</div>
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-p" id="btn-s1" onclick="nextStep()" disabled>Continuar →</button>
-        </div>
-      </div>
-
-      <!-- STEP 2 -->
-      <div class="form-step" id="fstep-2">
-        <div class="form-grid">
-          <div class="fg">
-            <label>Nombre <span class="req">*</span></label>
-            <input type="text" name="nombre" required placeholder="Nombre del registro">
-          </div>
-          <div class="fg">
-            <label>Fecha <span class="req">*</span></label>
-            <input type="date" name="fecha" required>
-          </div>
-          <div class="fg">
-            <label>Responsable <span class="req">*</span></label>
-            <input type="text" name="responsable" required placeholder="Nombre del responsable">
-          </div>
-          <div class="fg">
-            <label>Ubicación <span class="req">*</span></label>
-            <input type="text" name="ubicacion" required placeholder="Ciudad / estado">
-          </div>
-          <div class="fg">
-            <label>Área <span class="req">*</span></label>
-            <select name="area" required>
-              <option value="">Seleccionar área…</option>
-              <option>Impacto Social</option>
-              <option>Comunicación</option>
-              <option>Relaciones Institucionales</option>
-              <option>Sustentabilidad</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>Programa <span class="req">*</span></label>
-            <select name="programa" required>
-              <option value="">Seleccionar programa…</option>
-              <option>Arranca el Futuro</option>
-              <option>Guardianes del Planeta</option>
-              <option>Infraestructura</option>
-              <option>Activación Social</option>
-              <option>General</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>Beneficiarios <span class="req">*</span></label>
-            <input type="number" name="beneficiarios" required placeholder="Número total" min="0">
-          </div>
-          <div class="fg">
-            <label>Tipo de beneficiario <span class="req">*</span></label>
-            <input type="text" name="tipo_beneficiario" required placeholder="ej. Jóvenes, adultos mayores…">
-          </div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-g" onclick="prevStep()">← Atrás</button>
-          <button type="button" class="btn btn-p" onclick="nextStep()">Continuar →</button>
-        </div>
-      </div>
-
-      <!-- STEP 3 -->
-      <div class="form-step" id="fstep-3">
-        <div class="fg full" style="margin-bottom:1rem">
-          <label>Objetivo <span class="req">*</span></label>
-          <textarea name="objetivo" required placeholder="Describe el objetivo principal…"></textarea>
-        </div>
-
-        <!-- Proyecto -->
-        <div id="fld-proyecto" class="specific-fields">
-          <div class="sec-title">Campos de Proyecto</div>
-          <div class="form-grid">
-            <div class="fg"><label>Duración</label><input type="text" name="duracion" placeholder="ej. 6 meses"></div>
-            <div class="fg"><label>Presupuesto (MXN)</label><input type="number" name="presupuesto" placeholder="0" min="0"></div>
-            <div class="fg"><label>Aliados</label><input type="text" name="aliados" placeholder="Organizaciones aliadas"></div>
-            <div class="fg"><label>Indicador</label><input type="text" name="indicador" placeholder="Indicador clave de éxito"></div>
-            <div class="fg"><label>Meta</label><input type="text" name="meta" placeholder="Meta cuantitativa"></div>
-            <div class="fg"><label>Alineación ODS</label><input type="text" name="alineacion" placeholder="ej. ODS 4, ODS 10"></div>
-          </div>
-        </div>
-
-        <!-- Evento -->
-        <div id="fld-evento" class="specific-fields">
-          <div class="sec-title">Campos de Evento</div>
-          <div class="form-grid">
-            <div class="fg">
-              <label>Tipo de evento</label>
-              <select name="tipo_evento">
-                <option value="">Seleccionar…</option>
-                <option>Foro/Conferencia</option><option>Lanzamiento</option>
-                <option>Taller</option><option>Medios</option><option>Otro</option>
-              </select>
-            </div>
-            <div class="fg"><label>Asistentes</label><input type="number" name="asistentes" placeholder="Número de asistentes" min="0"></div>
-            <div class="fg">
-              <label>Modalidad</label>
-              <select name="modalidad">
-                <option value="">Seleccionar…</option>
-                <option>Presencial</option><option>Virtual</option><option>Híbrido</option>
-              </select>
-            </div>
-            <div class="fg">
-              <label>Cobertura de medios</label>
-              <select name="media"><option value="">Seleccionar…</option><option>Sí</option><option>No</option></select>
-            </div>
-            <div class="fg full"><label>Logística</label><textarea name="logistica" placeholder="Notas de logística…"></textarea></div>
-          </div>
-        </div>
-
-        <!-- Activación -->
-        <div id="fld-activacion" class="specific-fields">
-          <div class="sec-title">Campos de Activación</div>
-          <div class="form-grid">
-            <div class="fg">
-              <label>Tipo de activación</label>
-              <select name="tipo_activacion">
-                <option value="">Seleccionar…</option>
-                <option>Movilización ciudadana</option><option>Campaña digital</option>
-                <option>Territorial</option><option>Otro</option>
-              </select>
-            </div>
-            <div class="fg"><label>Canal</label><input type="text" name="canal" placeholder="ej. Redes sociales, radio…"></div>
-            <div class="fg"><label>Alcance estimado</label><input type="number" name="alcance" placeholder="Personas alcanzadas" min="0"></div>
-            <div class="fg"><label>Inversión (MXN)</label><input type="number" name="inversion" placeholder="0" min="0"></div>
-            <div class="fg full"><label>Mensaje clave</label><textarea name="mensaje" placeholder="Mensaje principal de la activación…"></textarea></div>
-          </div>
-        </div>
-
-        <div class="fg" style="margin-top:1rem">
-          <label>Notas adicionales</label>
-          <textarea name="notas" placeholder="Observaciones opcionales…"></textarea>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-g" onclick="prevStep()">← Atrás</button>
-          <button type="button" class="btn btn-p" onclick="nextStep()">Continuar →</button>
-        </div>
-      </div>
-
-      <!-- STEP 4 — Score IS -->
-      <div class="form-step" id="fstep-4">
-        <div class="sec-title" style="margin-top:0">Score IS — Evalúa del 1 al 5 cada dimensión</div>
-        <div class="sliders-grid">
-          <div class="sg"><label>Propósito</label><div class="srow"><input type="range" name="proposito" min="1" max="5" value="3" oninput="sv('proposito',this.value)"><span class="sval" id="sv-proposito">3</span></div></div>
-          <div class="sg"><label>Liderazgo</label><div class="srow"><input type="range" name="liderazgo" min="1" max="5" value="3" oninput="sv('liderazgo',this.value)"><span class="sval" id="sv-liderazgo">3</span></div></div>
-          <div class="sg"><label>Reputación</label><div class="srow"><input type="range" name="reputacion" min="1" max="5" value="3" oninput="sv('reputacion',this.value)"><span class="sval" id="sv-reputacion">3</span></div></div>
-          <div class="sg"><label>Sostenibilidad</label><div class="srow"><input type="range" name="sostenibilidad" min="1" max="5" value="3" oninput="sv('sostenibilidad',this.value)"><span class="sval" id="sv-sostenibilidad">3</span></div></div>
-          <div class="sg"><label>Cocreación</label><div class="srow"><input type="range" name="cocreacion" min="1" max="5" value="3" oninput="sv('cocreacion',this.value)"><span class="sval" id="sv-cocreacion">3</span></div></div>
-          <div class="sg"><label>Gestión</label><div class="srow"><input type="range" name="gestion" min="1" max="5" value="3" oninput="sv('gestion',this.value)"><span class="sval" id="sv-gestion">3</span></div></div>
-          <div class="sg"><label>Valor</label><div class="srow"><input type="range" name="valor" min="1" max="5" value="3" oninput="sv('valor',this.value)"><span class="sval" id="sv-valor">3</span></div></div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-g" onclick="prevStep()">← Atrás</button>
-          <button type="button" class="btn btn-p" onclick="nextStep()">Continuar →</button>
-        </div>
-      </div>
-
-      <!-- STEP 5 — Métricas -->
-      <div class="form-step" id="fstep-5">
-        <div class="sec-title" style="margin-top:0">Métricas Globales de Impacto</div>
-        <div class="form-grid g3">
-          <div class="fg"><label>Beneficiarios directos</label><input type="number" name="g_ben_directos" placeholder="0" min="0"></div>
-          <div class="fg"><label>Horas de formación</label><input type="number" name="g_horas_formacion" placeholder="0" min="0"></div>
-          <div class="fg"><label>% Mujeres beneficiarias</label><input type="number" name="g_pct_mujeres" placeholder="0" min="0" max="100"></div>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn btn-g" onclick="prevStep()">← Atrás</button>
-          <button type="button" class="btn btn-p" id="btn-submit" onclick="submitForm()">💾 Guardar Registro</button>
-        </div>
-      </div>
-
-    </form>
-  </div>
-</section>
-
-<!-- ── LISTADO ────────────────────────────────────── -->
-<section id="s-listado" class="section">
-  <div class="page-hdr">
-    <h1>Listado de Registros</h1>
-    <p>Todos los proyectos, eventos y activaciones registradas</p>
-  </div>
-  <div class="card">
-    <div class="filters-bar">
-      <select id="f-type" onchange="renderTable()">
-        <option value="">Todos los tipos</option>
-        <option value="proyecto">Proyectos</option>
-        <option value="evento">Eventos</option>
-        <option value="activacion">Activaciones</option>
-      </select>
-      <select id="f-prog" onchange="renderTable()">
-        <option value="">Todos los programas</option>
-        <option>Arranca el Futuro</option>
-        <option>Guardianes del Planeta</option>
-        <option>Infraestructura</option>
-        <option>Activación Social</option>
-        <option>General</option>
-      </select>
-      <button class="btn btn-g" onclick="loadData()" style="margin-left:auto">↻ Actualizar</button>
-    </div>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Folio</th><th>Nombre</th><th>Tipo</th><th>Área</th>
-            <th>Programa</th><th>Fecha</th><th>Score IS</th><th>Beneficiarios</th><th></th>
-          </tr>
-        </thead>
-        <tbody id="tbl-body">
-          <tr><td colspan="9" style="text-align:center;color:var(--t3);padding:2rem">Cargando…</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="tbl-count" id="tbl-count"></div>
-  </div>
-</section>
-
-<!-- ── TRACKING CLARIOS ───────────────────────────────── -->
-<section id="s-tracking" class="section">
-  <div class="page-hdr">
-    <h1>Tracking Clarios IS</h1>
-    <p>Monitoreo de indicadores de impacto social por dimensión</p>
-  </div>
-  <div class="stabs-bar">
-    <button class="stab active" data-tab="generales"  onclick="showTab('generales')">Indicadores Generales</button>
-    <button class="stab"        data-tab="impacto"    onclick="showTab('impacto')">Indicadores de Impacto</button>
-    <button class="stab"        data-tab="resultados" onclick="showTab('resultados')">Resultados</button>
-    <button class="stab"        data-tab="reputacion" onclick="showTab('reputacion')">Reputación</button>
-  </div>
-
-  <!-- TAB: GENERALES -->
-  <div class="tab-pane active" id="tab-generales">
-    <div class="kpi-grid" style="margin-top:1.25rem">
-      <div class="kpi-card">   <div class="kpi-lbl">Ben. Directos Totales</div> <div class="kpi-val" id="tg-ben-dir">—</div></div>
-      <div class="kpi-card k2"><div class="kpi-lbl">Horas de Formación</div>   <div class="kpi-val" id="tg-horas">—</div></div>
-      <div class="kpi-card k3"><div class="kpi-lbl">% Mujeres Promedio</div>   <div class="kpi-val" id="tg-mujeres">—</div></div>
-      <div class="kpi-card k4"><div class="kpi-lbl">Inversión Total (MXN)</div><div class="kpi-val" id="tg-inversion">—</div></div>
-    </div>
-    <div class="charts-grid">
-      <div class="chart-card">
-        <h3>Beneficiarios por Programa</h3>
-        <div class="chart-wrap"><canvas id="c-ben-prog"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3>Distribución por Área</h3>
-        <div class="chart-wrap"><canvas id="c-area-donut"></canvas></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB: IMPACTO -->
-  <div class="tab-pane" id="tab-impacto">
-    <div style="margin-top:1.25rem;display:grid;grid-template-columns:220px 1fr;gap:1rem;margin-bottom:1rem">
-      <div class="card" style="text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem">
-        <div class="kpi-lbl">Score IS Global</div>
-        <div id="ti-score-global" style="font-size:3rem;font-weight:700;color:var(--acc)">—</div>
-        <div style="font-size:.75rem;color:var(--t3)">Promedio general</div>
-      </div>
-      <div class="chart-card">
-        <h3>Score IS por Tipo de Registro</h3>
-        <div class="chart-wrap"><canvas id="c-score-tipo"></canvas></div>
-      </div>
-    </div>
-    <div class="card">
-      <div style="font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:1rem">Score IS por Programa</div>
-      <div id="ti-prog-table"></div>
-    </div>
-  </div>
-
-  <!-- TAB: RESULTADOS -->
-  <div class="tab-pane" id="tab-resultados">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.25rem;margin-bottom:1rem">
-      <div class="card">
-        <div style="font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:1rem">Resumen por Programa</div>
-        <div id="tr-resumen"></div>
-      </div>
-      <div class="card">
-        <div style="font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:1rem">Top 5 — Mayor Score IS</div>
-        <div id="tr-top5"></div>
-      </div>
-    </div>
-    <div class="card">
-      <div style="font-size:.82rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:1rem">Registros Recientes</div>
-      <div id="tr-recientes"></div>
-    </div>
-  </div>
-
-  <!-- TAB: REPUTACIÓN -->
-  <div class="tab-pane" id="tab-reputacion">
-    <div class="kpi-grid" style="margin-top:1.25rem">
-      <div class="kpi-card">   <div class="kpi-lbl">Score Reputación Prom.</div><div class="kpi-val" id="trep-score">—</div></div>
-      <div class="kpi-card k2"><div class="kpi-lbl">Score Liderazgo Prom.</div> <div class="kpi-val" id="trep-lid">—</div></div>
-      <div class="kpi-card k3"><div class="kpi-lbl">Eventos con Medios</div>    <div class="kpi-val" id="trep-medios">—</div></div>
-      <div class="kpi-card k4"><div class="kpi-lbl">Foros / Conferencias</div>  <div class="kpi-val" id="trep-foros">—</div></div>
-      <div class="kpi-card k5"><div class="kpi-lbl">Proy. con Aliados</div>     <div class="kpi-val" id="trep-aliados">—</div></div>
-    </div>
-    <div class="chart-card" style="margin-top:1rem">
-      <h3>Reputación y Liderazgo por Tipo de Registro</h3>
-      <div class="chart-wrap"><canvas id="c-rep-bar"></canvas></div>
-    </div>
-  </div>
-</section>
-
-</main>
-
-<!-- MODAL -->
-<div class="modal-ov" id="modal" onclick="if(event.target===this)closeModal()">
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal">
-    <div class="modal-hdr">
-      <h2 id="modal-title">Detalle</h2>
-      <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="modal-head">
+      <div>
+        <div id="modal-badge"></div>
+        <div style="font-family:var(--cond);font-size:22px;font-weight:800;color:var(--white);margin-top:8px" id="modal-title"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">×</button>
     </div>
-    <div class="modal-bd" id="modal-bd"></div>
+    <div class="modal-body">
+      <div class="detail-grid" id="modal-grid"></div>
+    </div>
   </div>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-bars"><span></span><span></span><span></span></div>
+      <span class="logo-text">CLARIOS</span>
+    </div>
+    <div class="logo-sub">Sistema IS · Indicadores</div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section">Panel</div>
+    <div class="nav-item active" onclick="navigate('dashboard')">
+      <span class="nav-icon">◈</span> Dashboard
+    </div>
+
+    <div class="nav-section">Registro</div>
+    <div class="nav-item" onclick="navigate('nuevo')">
+      <span class="nav-icon">＋</span> Nueva actividad
+    </div>
+    <div class="nav-item" onclick="navigate('proyectos')">
+      <span class="nav-icon">◉</span> Proyectos
+      <span class="nav-badge" id="badge-proyectos">0</span>
+    </div>
+    <div class="nav-item" onclick="navigate('eventos')">
+      <span class="nav-icon">◈</span> Eventos
+      <span class="nav-badge" id="badge-eventos" style="background:var(--teal)">0</span>
+    </div>
+    <div class="nav-item" onclick="navigate('activaciones')">
+      <span class="nav-icon">◆</span> Activaciones
+      <span class="nav-badge" id="badge-activaciones" style="background:var(--amber)">0</span>
+    </div>
+
+    <div class="nav-section">Seguimiento</div>
+    <div class="nav-item" onclick="navigate('folios')">
+      <span class="nav-icon">📋</span> Folios activos
+    </div>
+    <div class="nav-item" onclick="navigate('tracking')">
+      <span class="nav-icon">📊</span> Tracking centralizado
+    </div>
+    <div class="nav-item" onclick="navigate('impact-kit')">
+      <span class="nav-icon">✦</span> Clarios Impact Kit
+    </div>
+
+    <div class="nav-section">Datos</div>
+    <div class="nav-item" onclick="exportCSV()">
+      <span class="nav-icon">↓</span> Exportar CSV
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="version-tag">v1.0.0 · Clarios IS 2026</div>
+    <div id="sync-label" style="font-family:var(--mono);font-size:9px;color:var(--gray-3);margin-top:4px"></div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Exportar</button>
+      <button class="btn btn-primary btn-sm" onclick="navigate('nuevo')">＋ Nueva actividad</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       VIEW: DASHBOARD
+  ════════════════════════════ -->
+  <div class="view active" id="view-dashboard">
+    <div class="page-header">
+      <div class="page-eyebrow">Panel de control</div>
+      <div class="page-title">Indicadores <span>en tiempo real</span></div>
+      <div class="page-desc">Registros capturados automáticamente. Usa los filtros para segmentar por periodo, año o programa.</div>
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <div class="filter-label">Año</div>
+        <select class="filter-select" id="fil-year" onchange="applyFilters()">
+          <option value="">Todos</option>
+          <option value="2024">2024</option>
+          <option value="2025" selected>2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Periodo</div>
+        <select class="filter-select" id="fil-period" onchange="applyFilters()">
+          <option value="">Todo el año</option>
+          <option value="Q1">Q1 — Ene–Mar</option>
+          <option value="Q2">Q2 — Abr–Jun</option>
+          <option value="Q3">Q3 — Jul–Sep</option>
+          <option value="Q4">Q4 — Oct–Dic</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Fecha desde</div>
+        <input type="date" class="filter-select" id="fil-from" onchange="applyFilters()">
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Fecha hasta</div>
+        <input type="date" class="filter-select" id="fil-to" onchange="applyFilters()">
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Programa</div>
+        <select class="filter-select" id="fil-programa" onchange="applyFilters()">
+          <option value="">Todos los programas</option>
+          <option value="arranca">Arranca el Futuro</option>
+          <option value="guardianes">Guardianes del Planeta</option>
+          <option value="infraestructura">Infraestructura Resiliente</option>
+          <option value="activacion_social">Activación Social</option>
+          <option value="general">General</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Tipo</div>
+        <select class="filter-select" id="fil-type" onchange="applyFilters()">
+          <option value="">Todos los tipos</option>
+          <option value="proyecto">Proyecto</option>
+          <option value="evento">Evento</option>
+          <option value="activacion">Activación</option>
+        </select>
+      </div>
+      <button class="filter-clear" onclick="clearFilters()">✕ Limpiar</button>
+    </div>
+
+    <!-- FILTER ACTIVE PILL -->
+    <div id="filter-active-bar" style="display:none;margin-bottom:20px">
+      <div class="active-filter-pill" id="filter-pill-text"></div>
+    </div>
+
+    <!-- SECTION: ACTIVIDAD -->
+    <div class="dash-section-title">Actividad general</div>
+    <div class="stat-grid stat-grid-6">
+      <div class="stat-card" style="--accent:var(--purple)">
+        <div class="stat-icon">◈</div>
+        <div class="stat-label">Total actividades</div>
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-sub">Registros en sistema</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--purple-lt)">
+        <div class="stat-icon">◉</div>
+        <div class="stat-label">Proyectos</div>
+        <div class="stat-num" id="stat-proyectos">0</div>
+        <div class="stat-sub">Iniciativas</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--teal)">
+        <div class="stat-icon">◈</div>
+        <div class="stat-label">Eventos</div>
+        <div class="stat-num" id="stat-eventos">0</div>
+        <div class="stat-sub">Realizados</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--amber)">
+        <div class="stat-icon">◆</div>
+        <div class="stat-label">Activaciones</div>
+        <div class="stat-num" id="stat-activaciones">0</div>
+        <div class="stat-sub">Ejecutadas</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--green)">
+        <div class="stat-icon">♡</div>
+        <div class="stat-label">Ben. directos</div>
+        <div class="stat-num" id="stat-ben-dir">0</div>
+        <div class="stat-sub">Meta: —</div>
+      </div>
+      <div class="stat-card" style="--accent:var(--teal-lt)">
+        <div class="stat-icon">⊙</div>
+        <div class="stat-label">Ben. indirectos</div>
+        <div class="stat-num" id="stat-ben-ind">0</div>
+        <div class="stat-sub">Meta: 32,000</div>
+      </div>
+    </div>
+
+    <!-- SECTION: INDICADORES GENERALES RESULTADO -->
+    <div class="dash-section-title" style="margin-top:8px">Indicadores generales — Resultado</div>
+    <div class="stat-grid stat-grid-4">
+      <div class="stat-card" style="--accent:#A78BFA">
+        <div class="stat-icon">🏫</div>
+        <div class="stat-label">Escuelas beneficiadas</div>
+        <div class="stat-num" id="stat-escuelas">0</div>
+        <div class="stat-sub">Meta 2026: 17</div>
+        <div class="stat-progress-wrap"><div class="stat-progress" id="prog-escuelas"></div></div>
+      </div>
+      <div class="stat-card" style="--accent:#34D399">
+        <div class="stat-icon">⏱</div>
+        <div class="stat-label">Horas de formación</div>
+        <div class="stat-num" id="stat-horas">0</div>
+        <div class="stat-sub">Meta 2026: 900 hrs</div>
+        <div class="stat-progress-wrap"><div class="stat-progress" id="prog-horas"></div></div>
+      </div>
+      <div class="stat-card" style="--accent:#F472B6">
+        <div class="stat-icon">♀</div>
+        <div class="stat-label">% Mujeres participantes</div>
+        <div class="stat-num" id="stat-mujeres">0<span style="font-size:22px">%</span></div>
+        <div class="stat-sub">Promedio del periodo</div>
+      </div>
+      <div class="stat-card" style="--accent:#22D3EE">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-label">Alianzas activas</div>
+        <div class="stat-num" id="stat-alianzas">0</div>
+        <div class="stat-sub">Meta 2026: 15</div>
+        <div class="stat-progress-wrap"><div class="stat-progress" id="prog-alianzas"></div></div>
+      </div>
+    </div>
+
+    <!-- SECTION: INDICADORES GENERALES IMPACTO -->
+    <div class="dash-section-title" style="margin-top:8px">Indicadores generales — Impacto</div>
+    <div class="stat-grid stat-grid-4">
+      <div class="stat-card" style="--accent:#7C3AED">
+        <div class="stat-icon">📈</div>
+        <div class="stat-label">% mejora en habilidades</div>
+        <div class="stat-num" id="stat-habilidades">0<span style="font-size:22px">%</span></div>
+        <div class="stat-sub">Técnicas, digitales, liderazgo</div>
+      </div>
+      <div class="stat-card" style="--accent:#F472B6">
+        <div class="stat-icon">💻</div>
+        <div class="stat-label">% mujeres autonomía digital</div>
+        <div class="stat-num" id="stat-autonomia">0<span style="font-size:22px">%</span></div>
+        <div class="stat-sub">Mayor seguridad y autonomía</div>
+      </div>
+      <div class="stat-card" style="--accent:#34D399">
+        <div class="stat-icon">🌱</div>
+        <div class="stat-label">% becarios en sostenibilidad</div>
+        <div class="stat-num" id="stat-becarios">0<span style="font-size:22px">%</span></div>
+        <div class="stat-sub">Trayectorias vinculadas</div>
+      </div>
+      <div class="stat-card" style="--accent:#FCD34D">
+        <div class="stat-icon">♻</div>
+        <div class="stat-label">Prototipos circulares</div>
+        <div class="stat-num" id="stat-prototipos">0</div>
+        <div class="stat-sub">Con enfoque EC</div>
+      </div>
+    </div>
+
+    <!-- SECTION: REPUTACIÓN -->
+    <div class="dash-section-title" style="margin-top:8px">Reputación y proceso</div>
+    <div class="stat-grid stat-grid-4">
+      <div class="stat-card" style="--accent:#A78BFA">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-label">Reconocimiento CLARIOS</div>
+        <div class="stat-num" id="stat-reconocimiento">—</div>
+        <div class="stat-sub">Nivel promedio (1–5)</div>
+      </div>
+      <div class="stat-card" style="--accent:#22D3EE">
+        <div class="stat-icon">😊</div>
+        <div class="stat-label">Satisfacción estudiantes</div>
+        <div class="stat-num" id="stat-satisfaccion">—</div>
+        <div class="stat-sub">Nivel promedio (1–5)</div>
+      </div>
+      <div class="stat-card" style="--accent:#F59E0B">
+        <div class="stat-icon">📣</div>
+        <div class="stat-label">Narrativas en medios</div>
+        <div class="stat-num" id="stat-narrativas">0</div>
+        <div class="stat-sub">Notas, publicaciones, menciones</div>
+      </div>
+      <div class="stat-card" style="--accent:#34D399">
+        <div class="stat-icon">🎓</div>
+        <div class="stat-label">Rondas de mentoría</div>
+        <div class="stat-num" id="stat-mentoria">0</div>
+        <div class="stat-sub">Seguimiento a egresados</div>
+      </div>
+    </div>
+
+    <!-- SECTION: PROGRAMA ESPECÍFICO (condicional) -->
+    <div id="prog-dashboard-section" style="display:none">
+      <div class="dash-section-title" id="prog-dashboard-title" style="margin-top:8px">Indicadores de programa</div>
+      <div class="stat-grid stat-grid-4" id="prog-dashboard-grid"></div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="dash-section-title" style="margin-top:8px">Visualizaciones</div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <div class="chart-title">Distribución por tipo</div>
+        <div class="chart-container"><canvas id="chart-donut"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Beneficiarios por programa</div>
+        <div class="chart-container"><canvas id="chart-bar"></canvas></div>
+      </div>
+      <div class="chart-card wide">
+        <div class="chart-title">Actividades por mes</div>
+        <div class="chart-container" style="height:180px"><canvas id="chart-line"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Horas de formación por mes</div>
+        <div class="chart-container"><canvas id="chart-horas"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">% Mujeres por actividad</div>
+        <div class="chart-container"><canvas id="chart-mujeres"></canvas></div>
+      </div>
+    </div>
+
+    <!-- RECENT TABLE -->
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">Actividades del periodo</div>
+        <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Exportar vista →</button>
+      </div>
+      <div id="table-recent"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       VIEW: NUEVO — SELECTOR
+  ════════════════════════════ -->
+  <div class="view" id="view-nuevo">
+    <div class="page-header">
+      <div class="page-eyebrow">Registro</div>
+      <div class="page-title">Nueva <span>actividad</span></div>
+      <div class="page-desc">Selecciona el tipo de actividad que vas a registrar. Cada tipo tiene indicadores específicos.</div>
+    </div>
+
+    <div class="selector-grid">
+      <div class="type-card" style="--tc:var(--purple)" onclick="startForm('proyecto')">
+        <span class="type-icon">◉</span>
+        <div class="type-name">Proyecto</div>
+        <div class="type-desc">Iniciativas con duración, presupuesto, aliados e indicadores de impacto a mediano y largo plazo.</div>
+        <div class="type-arrow">→</div>
+      </div>
+      <div class="type-card" style="--tc:var(--teal)" onclick="startForm('evento')">
+        <span class="type-icon">◈</span>
+        <div class="type-name">Evento</div>
+        <div class="type-desc">Actividades puntuales con asistentes, logística y objetivos de engagement comunitario.</div>
+        <div class="type-arrow">→</div>
+      </div>
+      <div class="type-card" style="--tc:var(--amber)" onclick="startForm('activacion')">
+        <span class="type-icon">◆</span>
+        <div class="type-name">Activación</div>
+        <div class="type-desc">Acciones de comunicación, movilización o presencia de marca con alcance estimado.</div>
+        <div class="type-arrow">→</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       VIEW: FORM PART 1
+  ════════════════════════════ -->
+  <div class="view" id="view-form1">
+    <div class="page-header">
+      <div class="page-eyebrow" id="form1-eyebrow">Proyecto · Paso 1 de 2</div>
+      <div class="page-title" id="form1-title">Información <span>general</span></div>
+    </div>
+
+    <div class="form-wrap">
+      <div class="progress-strip">
+        <div class="ps-step active" id="ps1">
+          <div class="ps-dot">1</div> General
+        </div>
+        <div class="ps-line" id="ps-line"></div>
+        <div class="ps-step" id="ps2">
+          <div class="ps-dot">2</div> <span id="ps2-label">Específico</span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Datos de la iniciativa</div>
+        <div class="field-row">
+          <div class="field" id="f-nombre">
+            <label>Nombre de la iniciativa <span class="req">*</span></label>
+            <input type="text" id="f_nombre" placeholder="Nombre descriptivo de la actividad">
+            <div class="err-msg">Campo requerido</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field" id="f-fecha">
+            <label>Fecha <span class="req">*</span></label>
+            <input type="date" id="f_fecha">
+            <div class="err-msg">Campo requerido</div>
+          </div>
+          <div class="field" id="f-responsable">
+            <label>Responsable <span class="req">*</span></label>
+            <input type="text" id="f_responsable" placeholder="Nombre del coordinador">
+            <div class="err-msg">Campo requerido</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field" id="f-ubicacion">
+            <label>Ubicación <span class="req">*</span></label>
+            <input type="text" id="f_ubicacion" placeholder="Ciudad, municipio o planta">
+            <div class="err-msg">Campo requerido</div>
+          </div>
+          <div class="field" id="f-area">
+            <label>Área involucrada <span class="req">*</span></label>
+            <select id="f_area">
+              <option value="">Selecciona...</option>
+              <option>Impacto Social</option>
+              <option>Comunicación</option>
+              <option>Recursos Humanos</option>
+              <option>Operaciones</option>
+              <option>Sustentabilidad</option>
+              <option>Ventas / Marketing</option>
+              <option>Dirección General</option>
+            </select>
+            <div class="err-msg">Campo requerido</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field" id="f-beneficiarios">
+            <label>Número de beneficiarios <span class="req">*</span></label>
+            <input type="number" id="f_beneficiarios" placeholder="0" min="0">
+            <div class="err-msg">Ingresa un número válido</div>
+          </div>
+          <div class="field">
+            <label>Tipo de beneficiario principal</label>
+            <select id="f_tipo_beneficiario">
+              <option value="">Selecciona...</option>
+              <option>Niños y adolescentes</option>
+              <option>Jóvenes (18–29)</option>
+              <option>Mujeres adultas</option>
+              <option>Comunidad general</option>
+              <option>Empleados Clarios</option>
+              <option>Mixto</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field" id="f-objetivo">
+            <label>Objetivo de la actividad <span class="req">*</span></label>
+            <textarea id="f_objetivo" placeholder="¿Qué busca lograr esta actividad?" rows="3"></textarea>
+            <div class="err-msg">Campo requerido</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INDICADORES GENERALES -->
+      <div class="form-section">
+        <div class="form-section-title">Indicadores Generales — Resultado</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Escuelas beneficiadas</label>
+            <input type="number" id="g_escuelas" placeholder="0" min="0">
+            <div class="helper">Primaria, secundaria, preparatoria, universidad · Meta 2026: 17</div>
+          </div>
+          <div class="field">
+            <label>Total horas de formación impartidas</label>
+            <input type="number" id="g_horas_formacion" placeholder="0" min="0">
+            <div class="helper">Acumuladas en esta actividad · Meta 2026: 900 hrs</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Beneficiarios directos estimados</label>
+            <input type="number" id="g_ben_directos" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Beneficiarios indirectos estimados</label>
+            <input type="number" id="g_ben_indirectos" placeholder="0" min="0">
+            <div class="helper">Meta 2026: 32,000</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>% mujeres participantes</label>
+            <input type="number" id="g_pct_mujeres" placeholder="0" min="0" max="100">
+            <div class="helper">Porcentaje del total de participantes</div>
+          </div>
+          <div class="field">
+            <label>Alianzas activas (universidades, ONGs, gobierno, centros)</label>
+            <input type="number" id="g_alianzas" placeholder="0" min="0">
+            <div class="helper">Meta 2026: 15 alianzas</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Proyectos / prototipos con enfoque circular</label>
+            <input type="number" id="g_prototipos" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Narrativas positivas en medios o plataformas</label>
+            <input type="number" id="g_narrativas" placeholder="0" min="0">
+            <div class="helper">Notas de prensa, publicaciones, menciones</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Indicadores Generales — Impacto</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>% participantes con mejora en habilidades técnicas / digitales / liderazgo</label>
+            <input type="number" id="g_pct_habilidades" placeholder="0" min="0" max="100">
+          </div>
+          <div class="field">
+            <label>% mujeres con mayor autonomía y seguridad digital</label>
+            <input type="number" id="g_pct_autonomia_mujeres" placeholder="0" min="0" max="100">
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>% becarios en trayectorias vinculadas a sostenibilidad</label>
+            <input type="number" id="g_pct_becarios_sost" placeholder="0" min="0" max="100">
+          </div>
+          <div class="field">
+            <label>Grado de percepción de CLARIOS (encuesta confianza)</label>
+            <select id="g_percepcion_clarios">
+              <option value="">Selecciona...</option>
+              <option>1 — Muy bajo</option>
+              <option>2 — Bajo</option>
+              <option>3 — Medio</option>
+              <option>4 — Alto</option>
+              <option>5 — Muy alto / Líder reconocido</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Indicadores Generales — Reputación y Proceso</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Grado de reconocimiento de CLARIOS</label>
+            <select id="g_reconocimiento">
+              <option value="">Selecciona...</option>
+              <option>1 — No conocido</option>
+              <option>2 — Poco conocido</option>
+              <option>3 — Conocido en la comunidad</option>
+              <option>4 — Referente local</option>
+              <option>5 — Referente regional / nacional</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Nivel de satisfacción de estudiantes y docentes</label>
+            <select id="g_satisfaccion">
+              <option value="">Selecciona...</option>
+              <option>1 — Muy insatisfecho</option>
+              <option>2 — Insatisfecho</option>
+              <option>3 — Neutral</option>
+              <option>4 — Satisfecho</option>
+              <option>5 — Muy satisfecho</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Rondas de mentoría / seguimiento con egresados</label>
+            <input type="number" id="g_rondas_mentoria" placeholder="0" min="0">
+            <div class="helper">Incluye sesiones presenciales, videollamadas o email</div>
+          </div>
+          <div class="field">
+            <label>Canal principal de seguimiento a egresados</label>
+            <select id="g_canal_seguimiento">
+              <option value="">Selecciona...</option>
+              <option>Email</option>
+              <option>WhatsApp / Telegram</option>
+              <option>Reunión presencial</option>
+              <option>Videollamada</option>
+              <option>Mixto</option>
+              <option>No aplica</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn btn-ghost" onclick="navigate('nuevo')">← Cancelar</button>
+        <button class="btn btn-primary" onclick="goToStep2()">Siguiente → Indicadores del programa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       VIEW: FORM PART 2
+  ════════════════════════════ -->
+  <div class="view" id="view-form2">
+    <div class="page-header">
+      <div class="page-eyebrow" id="form2-eyebrow">Proyecto · Paso 2 de 2</div>
+      <div class="page-title" id="form2-title">Datos <span>específicos</span></div>
+    </div>
+
+    <div class="form-wrap">
+      <div class="progress-strip">
+        <div class="ps-step done"><div class="ps-dot">✓</div> General</div>
+        <div class="ps-line done"></div>
+        <div class="ps-step active"><div class="ps-dot">2</div> <span id="ps2b-label">Específico</span></div>
+      </div>
+
+      <!-- PROGRAMA SELECTOR (visible always in step 2) -->
+      <div class="form-section">
+        <div class="form-section-title">Programa</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Programa al que pertenece esta actividad <span class="req">*</span></label>
+            <select id="f_programa" onchange="onProgramaChange()">
+              <option value="">Selecciona el programa...</option>
+              <option value="arranca">Arranca el Futuro — Gimnasios de Innovación</option>
+              <option value="guardianes">Guardianes del Planeta</option>
+              <option value="infraestructura">Infraestructura Resiliente</option>
+              <option value="activacion_social">Activación Social</option>
+              <option value="general">General / Sin programa específico</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROYECTO fields -->
+      <div id="fields-proyecto" class="form-section" style="display:none">
+        <div class="form-section-title">Detalles del proyecto</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Duración estimada</label>
+            <select id="p_duracion">
+              <option value="">Selecciona...</option>
+              <option>1–3 meses</option>
+              <option>3–6 meses</option>
+              <option>6–12 meses</option>
+              <option>Más de 1 año</option>
+              <option>Permanente</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Presupuesto estimado (USD)</label>
+            <input type="number" id="p_presupuesto" placeholder="0.00" min="0">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Organizaciones aliadas</label>
+            <input type="text" id="p_aliados" placeholder="Ej. ITESM · Gobierno Municipal · OSC Creamos">
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Indicador de impacto principal</label>
+            <input type="text" id="p_indicador" placeholder="Ej. % empleo formal post-programa">
+          </div>
+          <div class="field">
+            <label>Meta del indicador</label>
+            <input type="text" id="p_meta" placeholder="Ej. 60% en 6 meses">
+          </div>
+        </div>
+      </div>
+
+      <!-- EVENTO fields -->
+      <div id="fields-evento" class="form-section" style="display:none">
+        <div class="form-section-title">Detalles del evento</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Tipo de evento</label>
+            <select id="e_tipo">
+              <option value="">Selecciona...</option>
+              <option>Foro / Conferencia</option>
+              <option>Taller / Workshop</option>
+              <option>Ceremonia / Entrega</option>
+              <option>Actividad comunitaria</option>
+              <option>Evento deportivo / recreativo</option>
+              <option>Visita de campo</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Número de asistentes</label>
+            <input type="number" id="e_asistentes" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Modalidad</label>
+            <select id="e_modalidad">
+              <option value="">Selecciona...</option>
+              <option>Presencial</option>
+              <option>Virtual</option>
+              <option>Híbrido</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>¿Hubo cobertura mediática?</label>
+            <select id="e_media">
+              <option>No</option>
+              <option>Sí — redes sociales</option>
+              <option>Sí — medios locales</option>
+              <option>Sí — medios nacionales</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Logística / observaciones</label>
+            <textarea id="e_logistica" placeholder="Sede, materiales, proveedores, observaciones relevantes." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVACION fields -->
+      <div id="fields-activacion" class="form-section" style="display:none">
+        <div class="form-section-title">Detalles de la activación</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Tipo de activación</label>
+            <select id="a_tipo">
+              <option value="">Selecciona...</option>
+              <option>Campaña digital</option>
+              <option>Presencia en punto de venta</option>
+              <option>Activación BTL</option>
+              <option>Relaciones comunitarias</option>
+              <option>Voluntariado corporativo</option>
+              <option>Movilización ciudadana</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Canal principal</label>
+            <select id="a_canal">
+              <option value="">Selecciona...</option>
+              <option>Redes sociales</option>
+              <option>Presencial / territorial</option>
+              <option>Medios de comunicación</option>
+              <option>Email / CRM</option>
+              <option>Evento en punto</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Alcance estimado (personas)</label>
+            <input type="number" id="a_alcance" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Inversión en activación (USD)</label>
+            <input type="number" id="a_inversion" placeholder="0.00" min="0">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Mensaje central de la activación</label>
+            <textarea id="a_mensaje" placeholder="¿Qué mensaje principal se comunicó?" rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PROGRAM-SPECIFIC INDICATORS ─────────────────────── -->
+
+      <!-- ARRANCA EL FUTURO — Gimnasios de Innovación -->
+      <div id="prog-arranca" class="form-section" style="display:none">
+        <div class="form-section-title" style="color:#A78BFA">◉ Arranca el Futuro — Gimnasios de Innovación</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>% de perfiles detectados (talento identificado)</label>
+            <input type="number" id="af_pct_perfiles" placeholder="0" min="0" max="100">
+            <div class="helper">Del total de participantes, % con perfil técnico destacado</div>
+          </div>
+          <div class="field">
+            <label>% de alumnos actualmente intervenidos</label>
+            <input type="number" id="af_pct_intervenidos" placeholder="0" min="0" max="100">
+            <div class="helper">Del universo escolar accesible en la planta</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Número de Gimnasios de Innovación activos</label>
+            <input type="number" id="af_gimnasios" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Número de sesiones realizadas en el periodo</label>
+            <input type="number" id="af_sesiones" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Observaciones del programa</label>
+            <textarea id="af_obs" placeholder="Avances, retos, próximos pasos de Arranca el Futuro..." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- GUARDIANES DEL PLANETA -->
+      <div id="prog-guardianes" class="form-section" style="display:none">
+        <div class="form-section-title" style="color:#34D399">♻ Guardianes del Planeta — Liderazgo Comunitario</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Estudiantes formados como "Guardianes del Planeta"</label>
+            <input type="number" id="gp_guardianes" placeholder="0" min="0">
+            <div class="helper">Indicador de Resultado</div>
+          </div>
+          <div class="field">
+            <label>Total de residuos recuperados (kg)</label>
+            <input type="number" id="gp_residuos_kg" placeholder="0" min="0">
+            <div class="helper">Indicador de Resultado · Meta acumulada: 8,000 kg</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Escuelas con estaciones de reciclaje funcionales</label>
+            <input type="number" id="gp_estaciones" placeholder="0" min="0">
+            <div class="helper">Indicador de Resultado</div>
+          </div>
+          <div class="field">
+            <label>Tipo de residuos principales recolectados</label>
+            <select id="gp_tipo_residuos">
+              <option value="">Selecciona...</option>
+              <option>Baterías / electrónicos</option>
+              <option>Plástico</option>
+              <option>Papel / cartón</option>
+              <option>Mixto</option>
+              <option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Observaciones del programa</label>
+            <textarea id="gp_obs" placeholder="Avances, logros, retos de Guardianes del Planeta..." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFRAESTRUCTURA RESILIENTE -->
+      <div id="prog-infraestructura" class="form-section" style="display:none">
+        <div class="form-section-title" style="color:#22D3EE">⬡ Infraestructura Resiliente</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Árboles reforestados</label>
+            <input type="number" id="inf_arboles" placeholder="0" min="0">
+            <div class="helper">Indicador de Impacto</div>
+          </div>
+          <div class="field">
+            <label>Intervenciones sostenibles realizadas (espacios públicos)</label>
+            <input type="number" id="inf_intervenciones" placeholder="0" min="0">
+            <div class="helper">Indicador de Resultado</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Espacios con acceso digital o bibliotecas circulares activadas</label>
+            <input type="number" id="inf_espacios_digitales" placeholder="0" min="0">
+            <div class="helper">Indicador de Resultado</div>
+          </div>
+          <div class="field">
+            <label>Tipo de infraestructura principal</label>
+            <select id="inf_tipo">
+              <option value="">Selecciona...</option>
+              <option>Espacio verde / parque</option>
+              <option>Biblioteca / centro de aprendizaje</option>
+              <option>Centro comunitario digital</option>
+              <option>Infraestructura de reciclaje</option>
+              <option>Mixto</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Observaciones del programa</label>
+            <textarea id="inf_obs" placeholder="Avances, comunidades intervenidas, próximos pasos..." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVACIÓN SOCIAL -->
+      <div id="prog-activacion_social" class="form-section" style="display:none">
+        <div class="form-section-title" style="color:#FCD34D">◆ Activación Social</div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Voluntarios de CLARIOS movilizados activamente</label>
+            <input type="number" id="as_voluntarios" placeholder="0" min="0">
+            <div class="helper">Indicador de Proceso Social</div>
+          </div>
+          <div class="field">
+            <label>Número total de eventos en el periodo</label>
+            <input type="number" id="as_num_eventos" placeholder="0" min="0">
+            <div class="helper">Indicador de Proceso Social</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Tipo de activación social principal</label>
+            <select id="as_tipo">
+              <option value="">Selecciona...</option>
+              <option>Voluntariado corporativo</option>
+              <option>Movilización comunitaria</option>
+              <option>Campaña de sensibilización</option>
+              <option>Feria / exposición</option>
+              <option>Mixto</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Horas de voluntariado aportadas</label>
+            <input type="number" id="as_horas_voluntariado" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Observaciones de la activación</label>
+            <textarea id="as_obs" placeholder="Contexto, logros, participación destacada..." rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Notas adicionales</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Observaciones / contexto</label>
+            <textarea id="f_notas" placeholder="Cualquier información adicional relevante para el seguimiento." rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn btn-ghost" onclick="navigate('form1')">← Regresar</button>
+        <button class="btn btn-primary" onclick="saveRecord()">✓ Guardar registro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       VIEW: LISTS
+  ════════════════════════════ -->
+  <div class="view" id="view-proyectos">
+    <div class="page-header">
+      <div class="page-eyebrow">Registros</div>
+      <div class="page-title"><span>Proyectos</span></div>
+    </div>
+    <div class="table-card" id="table-proyectos-wrap"></div>
+  </div>
+
+  <div class="view" id="view-eventos">
+    <div class="page-header">
+      <div class="page-eyebrow">Registros</div>
+      <div class="page-title"><span>Eventos</span></div>
+    </div>
+    <div class="table-card" id="table-eventos-wrap"></div>
+  </div>
+
+  <div class="view" id="view-activaciones">
+    <div class="page-header">
+      <div class="page-eyebrow">Registros</div>
+      <div class="page-title"><span>Activaciones</span></div>
+    </div>
+    <div class="table-card" id="table-activaciones-wrap"></div>
+  </div>
+  <!-- ═══ FOLIOS ACTIVOS ═══ -->
+  <div class="view" id="view-folios">
+    <div class="page-header">
+      <div class="page-eyebrow">Seguimiento</div>
+      <div class="page-title">Folios <span>Activos</span></div>
+      <div class="page-desc">Todas las iniciativas registradas que requieren seguimiento activo por parte del equipo IS.</div>
+    </div>
+    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+      <select id="folio-filter-status" onchange="renderFolios()" style="background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:8px 12px;border-radius:8px;font-family:var(--sans);font-size:12px;">
+        <option value="">Todos los estados</option>
+        <option value="en-revision">En revisión</option>
+        <option value="aprobado">Aprobado</option>
+        <option value="pendiente">Pendiente info</option>
+      </select>
+      <select id="folio-filter-type" onchange="renderFolios()" style="background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:8px 12px;border-radius:8px;font-family:var(--sans);font-size:12px;">
+        <option value="">Todos los tipos</option>
+        <option value="proyecto">Proyecto</option>
+        <option value="evento">Evento</option>
+        <option value="activacion">Activación</option>
+      </select>
+    </div>
+    <div class="table-card" id="table-folios-wrap"></div>
+  </div>
+
+  <!-- ═══ TRACKING CENTRALIZADO ═══ -->
+  <div class="view" id="view-tracking">
+    <div class="page-header">
+      <div class="page-eyebrow">Seguimiento</div>
+      <div class="page-title">Tracking <span>Centralizado</span></div>
+      <div class="page-desc">Vista consolidada de todas las actividades con folio, calificación por eje del Chart de Valor Social e información clave para monitoreo estratégico.</div>
+    </div>
+    <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
+      <div class="stat-card" style="--accent:var(--purple)"><div class="stat-icon">◈</div><div class="stat-label">Total registros</div><div class="stat-num" id="tk-total">0</div></div>
+      <div class="stat-card" style="--accent:var(--green)"><div class="stat-icon">✓</div><div class="stat-label">Score ≥ 4.0</div><div class="stat-num" id="tk-approved">0</div></div>
+      <div class="stat-card" style="--accent:var(--amber)"><div class="stat-icon">⚠</div><div class="stat-label">Score 3–3.9</div><div class="stat-num" id="tk-mid">0</div></div>
+      <div class="stat-card" style="--accent:var(--red)"><div class="stat-icon">✗</div><div class="stat-label">Score &lt; 3.0</div><div class="stat-num" id="tk-low">0</div></div>
+    </div>
+    <div class="table-card" id="table-tracking-wrap"></div>
+  </div>
+
+  <!-- ═══ IMPACT KIT EMBED ═══ -->
+  <div class="view" id="view-impact-kit">
+    <div class="page-header">
+      <div class="page-eyebrow">Herramienta</div>
+      <div class="page-title">Clarios <span>Impact Kit</span></div>
+      <div class="page-desc">Regista una nueva iniciativa, evalúa su alineación con el Modelo IS y genera un folio de seguimiento.</div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:16px;padding:32px;text-align:center;margin-bottom:24px;">
+      <div style="font-size:48px;margin-bottom:16px;">✦</div>
+      <div style="font-family:var(--cond);font-size:24px;font-weight:800;color:var(--white);margin-bottom:8px;">Clarios Impact Kit</div>
+      <div style="font-size:13px;color:var(--gray-2);margin-bottom:28px;line-height:1.6;max-width:500px;margin-left:auto;margin-right:auto;">Formulario de registro en dos etapas: evaluación de viabilidad con Chart de Valor Social y captura completa del proyecto.</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="window.open('clarios-impact-kit.html','_blank')" style="font-size:14px;padding:14px 32px;">
+          Abrir Impact Kit →
+        </button>
+        <button class="btn btn-ghost" onclick="window.open('clarios-impact-kit.html','_blank')" style="font-size:14px;padding:14px 24px;">
+          Abrir en nueva ventana
+        </button>
+      </div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:12px;padding:24px;">
+      <div style="font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:1px;color:var(--gray-2);text-transform:uppercase;margin-bottom:16px;">¿Qué evalúa el Impact Kit?</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
+        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Valor Compartido</div>
+        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Liderazgo</div>
+        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Sostenibilidad</div>
+        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Propósito</div>
+        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Gestión</div>
+        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Cocreación</div>
+        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Reputación</div>
+      </div>
+    </div>
+  </div>
+
+</div>
 
 <script>
-// ─── CONFIG ──────────────────────────────────────────────
-// Reemplaza con la URL de tu Google Apps Script Web App desplegado
+// ═══════════════════════════════════════════════════
+// API
+// ═══════════════════════════════════════════════════
 const API_URL = 'https://script.google.com/macros/s/AKfycbyOTcuEiLodVWdgHGdWC4X3GgJLdZT2ecJ2GJXl14zD56NH0YZcReh69utG4VX9FA3T/exec';
 
-// ─── STATE ───────────────────────────────────────────────
-let records = [];
-let fStep = 1;
-let fType = '';
-let cDonut = null, cBar = null;
-
-// ─── INIT ────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  setSyncStatus('idle');
-  nav('dashboard');
-  loadData();
-  setInterval(loadData, 60000);
-});
-
-// ─── NAVIGATION ──────────────────────────────────────────
-function nav(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('s-' + name).classList.add('active');
-  document.querySelectorAll('.topnav button').forEach(b =>
-    b.classList.toggle('active', b.dataset.nav === name));
+function setSyncLabel(msg) {
+  const el = document.getElementById('sync-label');
+  if (el) el.textContent = msg;
 }
 
-// ─── DATA ────────────────────────────────────────────────
-async function loadData() {
-  setSyncStatus('syncing');
+async function postToAPI(record) {
   try {
-    const res = await fetch(API_URL + (API_URL.includes('?') ? '&' : '?') + '_=' + Date.now());
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ ...record, type: record.type })
+    });
+  } catch (_) { /* fail silently */ }
+}
+
+async function syncFromAPI() {
+  setSyncLabel('⟳ Sincronizando...');
+  try {
+    const res = await fetch(API_URL);
     const json = await res.json();
     if (json.status !== 'ok') throw new Error(json.message);
-    records = json.data || [];
-    setSyncStatus('ok');
+    const apiRecords = json.data || [];
+    // Merge: API records keyed by id/folio; keep local-only records
+    const apiIds = new Set(apiRecords.map(r => r.folio || r.id));
+    const localOnly = records.filter(r => !apiIds.has(r.folio) && !apiIds.has(r.id));
+    // Normalize API records
+    const normalized = apiRecords.map(r => ({
+      id: r.folio || ('API-' + Date.now() + Math.random()),
+      timestamp: r.fecha_registro || new Date().toISOString(),
+      type: r.type || 'proyecto',
+      ...r
+    }));
+    records = [...normalized, ...localOnly];
+    localStorage.setItem('clarios_is', JSON.stringify(records));
+    filteredRecords = [...records];
+    updateBadges();
+    if (currentView === 'dashboard') renderDashboard(filteredRecords);
+    setSyncLabel('✓ Sync ' + new Date().toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'}));
   } catch (e) {
-    setSyncStatus('error');
-    if (!records.length) records = mockData();
+    setSyncLabel('⚠ Sin conexión');
   }
-  renderDashboard();
-  renderTable();
-  renderTracking();
 }
 
-function mockData() {
-  return [
-    { folio:'PRO-0001-2026', type:'proyecto', nombre:'Taller STEM Escuelas', fecha:'2026-02-15',
-      responsable:'Ana López', area:'Impacto Social', programa:'Arranca el Futuro',
-      beneficiarios:240, tipo_beneficiario:'Jóvenes', objetivo:'Fomentar interés en ciencia y tecnología',
-      proposito:4, liderazgo:4, reputacion:3, sostenibilidad:4, cocreacion:3, gestion:4, valor:4 },
-    { folio:'EVE-0001-2026', type:'evento', nombre:'Foro Sostenibilidad 2026', fecha:'2026-03-10',
-      responsable:'Carlos Ruiz', area:'Sustentabilidad', programa:'Guardianes del Planeta',
-      beneficiarios:350, tipo_beneficiario:'Empresarios y sociedad civil', objetivo:'Generar agenda de sustentabilidad regional',
-      proposito:5, liderazgo:4, reputacion:5, sostenibilidad:5, cocreacion:4, gestion:4, valor:5 },
-    { folio:'ACT-0001-2026', type:'activacion', nombre:'Campaña Reciclaje Digital', fecha:'2026-04-01',
-      responsable:'María Torres', area:'Comunicación', programa:'Guardianes del Planeta',
-      beneficiarios:1200, tipo_beneficiario:'Público general', objetivo:'Concientizar sobre reciclaje electrónico',
-      proposito:3, liderazgo:3, reputacion:4, sostenibilidad:4, cocreacion:2, gestion:3, valor:3 },
-    { folio:'PRO-0002-2026', type:'proyecto', nombre:'Infraestructura Comunitaria Monterrey', fecha:'2026-04-20',
-      responsable:'Luis Mendoza', area:'Relaciones Institucionales', programa:'Infraestructura',
-      beneficiarios:580, tipo_beneficiario:'Familias de bajos recursos', objetivo:'Mejorar infraestructura básica en colonias vulnerables',
-      proposito:5, liderazgo:5, reputacion:4, sostenibilidad:5, cocreacion:4, gestion:5, valor:5 },
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+let records = JSON.parse(localStorage.getItem('clarios_is') || '[]');
+let currentType = '';
+let formData1 = {};
+let chartDonut, chartBar, chartLine;
+let currentView = 'dashboard';
+
+const COLORS = {
+  proyecto:   '#7C3AED',
+  evento:     '#0891B2',
+  activacion: '#F59E0B'
+};
+
+const LABELS = {
+  proyecto:   'Proyecto',
+  evento:     'Evento',
+  activacion: 'Activación'
+};
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function navigate(view) {
+  // Hide all views
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+  // Map shortcuts
+  const viewMap = {
+    form1:      'form1',
+    nuevo:      'nuevo',
+    dashboard:  'dashboard',
+    proyectos:  'proyectos',
+    eventos:    'eventos',
+    activaciones:'activaciones'
+  };
+
+  const target = viewMap[view] || view;
+  const el = document.getElementById('view-' + target);
+  if (el) el.classList.add('active');
+
+  // Update nav items
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navMap = { dashboard:'dashboard', nuevo:'nuevo', proyectos:'proyectos', eventos:'eventos', activaciones:'activaciones' };
+  const navKey = Object.keys(navMap).find(k => k === view);
+  if (navKey) {
+    const items = document.querySelectorAll('.nav-item');
+    items.forEach(item => {
+      if (item.textContent.trim().startsWith(navMap[navKey] === 'dashboard' ? '◈' : '') && item.onclick && item.onclick.toString().includes(navKey)) {
+        item.classList.add('active');
+      }
+    });
+  }
+
+  // Update topbar
+  const titles = {
+    dashboard: 'Dashboard · Indicadores IS',
+    nuevo: 'Nueva actividad',
+    proyectos: 'Proyectos',
+    eventos: 'Eventos',
+    activaciones: 'Activaciones',
+    form1: 'Registro · Paso 1',
+    form2: 'Registro · Paso 2',
+    folios: 'Folios Activos',
+    tracking: 'Tracking Centralizado',
+    'impact-kit': 'Clarios Impact Kit'
+  };
+  document.getElementById('topbar-title').textContent = titles[view] || 'Clarios IS';
+
+  currentView = view;
+
+  // Refresh relevant view
+  if (view === 'dashboard') renderDashboard(filteredRecords.length ? filteredRecords : records);
+  if (view === 'proyectos') renderList('proyecto', 'table-proyectos-wrap');
+  if (view === 'eventos') renderList('evento', 'table-eventos-wrap');
+  if (view === 'activaciones') renderList('activacion', 'table-activaciones-wrap');
+  if (view === 'folios') renderFolios();
+  if (view === 'tracking') renderTracking();
+
+  // Close sidebar on mobile
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════════════════════════════════════
+// FORM FLOW
+// ═══════════════════════════════════════════════════
+function startForm(type) {
+  currentType = type;
+  formData1 = {};
+
+  // Reset form fields
+  ['f_nombre','f_fecha','f_responsable','f_ubicacion','f_objetivo','f_notas'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['f_area','f_tipo_beneficiario'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f_beneficiarios').value = '';
+
+  // Reset general indicator fields
+  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
+  numFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const selFields = ['g_percepcion_clarios','g_reconocimiento','g_satisfaccion','g_canal_seguimiento','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
+  selFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  // Hide all program sections
+  ['arranca','guardianes','infraestructura','activacion_social'].forEach(p => {
+    const el = document.getElementById('prog-' + p);
+    if (el) el.style.display = 'none';
+  });
+
+  // Clear errors
+  document.querySelectorAll('.field.error').forEach(f => f.classList.remove('error'));
+
+  const typeLabels = { proyecto: 'Proyecto', evento: 'Evento', activacion: 'Activación' };
+  const label = typeLabels[type];
+
+  document.getElementById('form1-eyebrow').textContent = `${label} · Paso 1 de 2`;
+  document.getElementById('form1-title').innerHTML = `Información <span>general</span>`;
+  document.getElementById('form2-eyebrow').textContent = `${label} · Paso 2 de 2`;
+  document.getElementById('ps2-label').textContent = label === 'Proyecto' ? 'Proyecto' : label === 'Evento' ? 'Evento' : 'Activación';
+  document.getElementById('ps2b-label').textContent = document.getElementById('ps2-label').textContent;
+
+  // Reset progress steps
+  document.getElementById('ps1').className = 'ps-step active';
+  document.getElementById('ps1').querySelector('.ps-dot').textContent = '1';
+  document.getElementById('ps2').className = 'ps-step';
+  document.getElementById('ps2').querySelector('.ps-dot').textContent = '2';
+  document.getElementById('ps-line').className = 'ps-line';
+
+  navigate('form1');
+}
+
+function goToStep2() {
+  // Validate step 1
+  const required = [
+    { el: 'f_nombre', field: 'f-nombre' },
+    { el: 'f_fecha', field: 'f-fecha' },
+    { el: 'f_responsable', field: 'f-responsable' },
+    { el: 'f_ubicacion', field: 'f-ubicacion' },
+    { el: 'f_area', field: 'f-area' },
+    { el: 'f_beneficiarios', field: 'f-beneficiarios' },
+    { el: 'f_objetivo', field: 'f-objetivo' },
   ];
+
+  let valid = true;
+  required.forEach(r => {
+    const el = document.getElementById(r.el);
+    const field = document.getElementById(r.field);
+    const val = el.value.trim();
+    const isEmpty = !val || (r.el === 'f_beneficiarios' && parseInt(val) < 0);
+    if (isEmpty) {
+      field.classList.add('error');
+      valid = false;
+    } else {
+      field.classList.remove('error');
+    }
+  });
+
+  if (!valid) {
+    document.querySelector('.field.error').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Store step 1 data
+  formData1 = {
+    nombre:          document.getElementById('f_nombre').value.trim(),
+    fecha:           document.getElementById('f_fecha').value,
+    responsable:     document.getElementById('f_responsable').value.trim(),
+    ubicacion:       document.getElementById('f_ubicacion').value.trim(),
+    area:            document.getElementById('f_area').value,
+    beneficiarios:   parseInt(document.getElementById('f_beneficiarios').value) || 0,
+    tipo_beneficiario: document.getElementById('f_tipo_beneficiario').value,
+    objetivo:        document.getElementById('f_objetivo').value.trim(),
+  };
+
+  // Show correct specific fields
+  ['proyecto','evento','activacion'].forEach(t => {
+    document.getElementById('fields-' + t).style.display = t === currentType ? 'block' : 'none';
+  });
+
+  // Update progress
+  document.getElementById('ps1').className = 'ps-step done';
+  document.getElementById('ps1').querySelector('.ps-dot').textContent = '✓';
+  document.getElementById('ps-line').className = 'ps-line done';
+  document.getElementById('ps2').className = 'ps-step active';
+
+  // Show step 2
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-form2').classList.add('active');
+  document.getElementById('topbar-title').textContent = 'Registro · Paso 2';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── SYNC STATUS ─────────────────────────────────────────
-function setSyncStatus(status) {
-  const dot = document.getElementById('sdot');
-  const txt = document.getElementById('stxt');
-  const now = new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
-  dot.className = 'sync-dot';
-  if (status === 'syncing') { dot.classList.add('spin'); txt.textContent = 'Sincronizando…'; }
-  else if (status === 'ok')  { dot.classList.add('ok');   txt.textContent = '✓ Sincronizado ' + now; }
-  else if (status === 'error'){ dot.classList.add('err'); txt.textContent = 'Sin conexión'; }
-  else txt.textContent = '—';
+function onProgramaChange() {
+  const val = document.getElementById('f_programa').value;
+  const programas = ['arranca','guardianes','infraestructura','activacion_social'];
+  programas.forEach(p => {
+    document.getElementById('prog-' + p).style.display = p === val ? 'block' : 'none';
+  });
 }
 
-// ─── DASHBOARD ───────────────────────────────────────────
-function renderDashboard() {
-  const p = records.filter(r=>r.type==='proyecto').length;
-  const e = records.filter(r=>r.type==='evento').length;
-  const a = records.filter(r=>r.type==='activacion').length;
-  const ben = records.reduce((s,r)=>s+(parseInt(r.beneficiarios)||0),0);
-  document.getElementById('k-tot').textContent = records.length;
-  document.getElementById('k-ben').textContent = ben.toLocaleString('es-MX');
-  document.getElementById('k-pro').textContent = p;
-  document.getElementById('k-ev').textContent  = e;
-  document.getElementById('k-act').textContent = a;
-  drawCharts(p, e, a);
+function saveRecord() {
+  const id = 'IS-' + Date.now();
+  const timestamp = new Date().toISOString();
+
+  // Build activity-type specific data
+  let specific = {};
+  if (currentType === 'proyecto') {
+    specific = {
+      duracion:    document.getElementById('p_duracion').value,
+      presupuesto: parseFloat(document.getElementById('p_presupuesto').value) || 0,
+      aliados:     document.getElementById('p_aliados').value.trim(),
+      indicador:   document.getElementById('p_indicador').value.trim(),
+      meta:        document.getElementById('p_meta').value.trim(),
+    };
+  } else if (currentType === 'evento') {
+    specific = {
+      tipo_evento: document.getElementById('e_tipo').value,
+      asistentes:  parseInt(document.getElementById('e_asistentes').value) || 0,
+      modalidad:   document.getElementById('e_modalidad').value,
+      media:       document.getElementById('e_media').value,
+      logistica:   document.getElementById('e_logistica').value.trim(),
+    };
+  } else if (currentType === 'activacion') {
+    specific = {
+      tipo_activacion: document.getElementById('a_tipo').value,
+      canal:           document.getElementById('a_canal').value,
+      alcance:         parseInt(document.getElementById('a_alcance').value) || 0,
+      inversion:       parseFloat(document.getElementById('a_inversion').value) || 0,
+      mensaje:         document.getElementById('a_mensaje').value.trim(),
+    };
+  }
+
+  // General indicators (always captured)
+  const generales = {
+    g_escuelas:              parseInt(document.getElementById('g_escuelas').value) || 0,
+    g_horas_formacion:       parseInt(document.getElementById('g_horas_formacion').value) || 0,
+    g_ben_directos:          parseInt(document.getElementById('g_ben_directos').value) || 0,
+    g_ben_indirectos:        parseInt(document.getElementById('g_ben_indirectos').value) || 0,
+    g_pct_mujeres:           parseFloat(document.getElementById('g_pct_mujeres').value) || 0,
+    g_alianzas:              parseInt(document.getElementById('g_alianzas').value) || 0,
+    g_prototipos:            parseInt(document.getElementById('g_prototipos').value) || 0,
+    g_narrativas:            parseInt(document.getElementById('g_narrativas').value) || 0,
+    g_pct_habilidades:       parseFloat(document.getElementById('g_pct_habilidades').value) || 0,
+    g_pct_autonomia_mujeres: parseFloat(document.getElementById('g_pct_autonomia_mujeres').value) || 0,
+    g_pct_becarios_sost:     parseFloat(document.getElementById('g_pct_becarios_sost').value) || 0,
+    g_percepcion_clarios:    document.getElementById('g_percepcion_clarios').value,
+    g_reconocimiento:        document.getElementById('g_reconocimiento').value,
+    g_satisfaccion:          document.getElementById('g_satisfaccion').value,
+    g_rondas_mentoria:       parseInt(document.getElementById('g_rondas_mentoria').value) || 0,
+    g_canal_seguimiento:     document.getElementById('g_canal_seguimiento').value,
+  };
+
+  // Program-specific indicators
+  const programa = document.getElementById('f_programa').value;
+  let progData = { programa };
+
+  if (programa === 'arranca') {
+    progData = { ...progData,
+      af_pct_perfiles:    parseFloat(document.getElementById('af_pct_perfiles').value) || 0,
+      af_pct_intervenidos:parseFloat(document.getElementById('af_pct_intervenidos').value) || 0,
+      af_gimnasios:       parseInt(document.getElementById('af_gimnasios').value) || 0,
+      af_sesiones:        parseInt(document.getElementById('af_sesiones').value) || 0,
+      af_obs:             document.getElementById('af_obs').value.trim(),
+    };
+  } else if (programa === 'guardianes') {
+    progData = { ...progData,
+      gp_guardianes:    parseInt(document.getElementById('gp_guardianes').value) || 0,
+      gp_residuos_kg:   parseFloat(document.getElementById('gp_residuos_kg').value) || 0,
+      gp_estaciones:    parseInt(document.getElementById('gp_estaciones').value) || 0,
+      gp_tipo_residuos: document.getElementById('gp_tipo_residuos').value,
+      gp_obs:           document.getElementById('gp_obs').value.trim(),
+    };
+  } else if (programa === 'infraestructura') {
+    progData = { ...progData,
+      inf_arboles:           parseInt(document.getElementById('inf_arboles').value) || 0,
+      inf_intervenciones:    parseInt(document.getElementById('inf_intervenciones').value) || 0,
+      inf_espacios_digitales:parseInt(document.getElementById('inf_espacios_digitales').value) || 0,
+      inf_tipo:              document.getElementById('inf_tipo').value,
+      inf_obs:               document.getElementById('inf_obs').value.trim(),
+    };
+  } else if (programa === 'activacion_social') {
+    progData = { ...progData,
+      as_voluntarios:        parseInt(document.getElementById('as_voluntarios').value) || 0,
+      as_num_eventos:        parseInt(document.getElementById('as_num_eventos').value) || 0,
+      as_tipo:               document.getElementById('as_tipo').value,
+      as_horas_voluntariado: parseInt(document.getElementById('as_horas_voluntariado').value) || 0,
+      as_obs:                document.getElementById('as_obs').value.trim(),
+    };
+  }
+
+  const record = {
+    id, timestamp, type: currentType,
+    ...formData1, ...specific, ...generales, ...progData,
+    notas: document.getElementById('f_notas').value.trim(),
+  };
+
+  records.unshift(record);
+  localStorage.setItem('clarios_is', JSON.stringify(records));
+  updateBadges();
+  postToAPI(record);
+
+  showToast(`${LABELS[currentType]} registrado exitosamente`);
+  navigate('dashboard');
 }
 
-function drawCharts(p, e, a) {
-  const gc = 'rgba(44,30,82,.55)';
-  const tc = '#8A7AAA';
-  const lc = '#C0AEDD';
+// ═══════════════════════════════════════════════════
+// FILTERS
+// ═══════════════════════════════════════════════════
+let filteredRecords = [];
 
-  // Donut
-  const dc = document.getElementById('chart-donut').getContext('2d');
-  if (cDonut) cDonut.destroy();
-  cDonut = new Chart(dc, {
+function getFilteredRecords() {
+  const year    = document.getElementById('fil-year').value;
+  const period  = document.getElementById('fil-period').value;
+  const from    = document.getElementById('fil-from').value;
+  const to      = document.getElementById('fil-to').value;
+  const prog    = document.getElementById('fil-programa').value;
+  const type    = document.getElementById('fil-type').value;
+
+  const Q = { Q1:['01','02','03'], Q2:['04','05','06'], Q3:['07','08','09'], Q4:['10','11','12'] };
+
+  return records.filter(r => {
+    const d = (r.fecha || r.timestamp.slice(0,10));
+    const [ry, rm] = d.split('-');
+
+    if (year   && ry !== year) return false;
+    if (period && !Q[period].includes(rm)) return false;
+    if (from   && d < from) return false;
+    if (to     && d > to)   return false;
+    if (prog   && r.programa !== prog) return false;
+    if (type   && r.type !== type) return false;
+    return true;
+  });
+}
+
+function applyFilters() {
+  filteredRecords = getFilteredRecords();
+
+  // Build active filter label
+  const year   = document.getElementById('fil-year').value;
+  const period = document.getElementById('fil-period').value;
+  const from   = document.getElementById('fil-from').value;
+  const to     = document.getElementById('fil-to').value;
+  const prog   = document.getElementById('fil-programa').value;
+  const type   = document.getElementById('fil-type').value;
+  const parts  = [];
+  if (year)   parts.push(year);
+  if (period) parts.push(period);
+  if (from)   parts.push('Desde ' + formatDate(from));
+  if (to)     parts.push('Hasta ' + formatDate(to));
+  const progLabels = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura', activacion_social:'Activación Social', general:'General' };
+  if (prog)  parts.push(progLabels[prog] || prog);
+  if (type)  parts.push(LABELS[type] || type);
+
+  const bar = document.getElementById('filter-active-bar');
+  if (parts.length) {
+    bar.style.display = 'block';
+    document.getElementById('filter-pill-text').textContent = '🔍 Filtrando: ' + parts.join(' · ') + ' — ' + filteredRecords.length + ' registro(s)';
+  } else {
+    bar.style.display = 'none';
+  }
+
+  renderDashboard(filteredRecords);
+}
+
+function clearFilters() {
+  ['fil-year','fil-period','fil-from','fil-to','fil-programa','fil-type'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el.tagName === 'SELECT') el.value = '';
+    else el.value = '';
+  });
+  document.getElementById('filter-active-bar').style.display = 'none';
+  filteredRecords = [...records];
+  renderDashboard(filteredRecords);
+}
+
+// ═══════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════
+function renderDashboard(data) {
+  if (!data) data = filteredRecords.length || document.getElementById('fil-year').value ? filteredRecords : records;
+
+  const byType = { proyecto:0, evento:0, activacion:0 };
+  let totalBenDir = 0, totalBenInd = 0;
+  let totalEscuelas = 0, totalHoras = 0, totalAlianzas = 0, totalPrototipos = 0, totalNarrativas = 0, totalMentoria = 0;
+  let sumMujeres = 0, cntMujeres = 0;
+  let sumHabilidades = 0, cntHabilidades = 0;
+  let sumAutonomia = 0, cntAutonomia = 0;
+  let sumBecarios = 0, cntBecarios = 0;
+  let sumReconocimiento = 0, cntReconocimiento = 0;
+  let sumSatisfaccion = 0, cntSatisfaccion = 0;
+
+  // Program-specific aggregates
+  const prog = { guardianes:{ guardianes:0, residuos:0, estaciones:0 }, arranca:{ perfiles:0, intervenidos:0, gimnasios:0, sesiones:0 }, infraestructura:{ arboles:0, intervenciones:0, digitales:0 }, activacion_social:{ voluntarios:0, eventos:0, horas_vol:0 } };
+
+  data.forEach(r => {
+    byType[r.type] = (byType[r.type]||0) + 1;
+    totalBenDir  += parseInt(r.g_ben_directos)  || parseInt(r.beneficiarios) || 0;
+    totalBenInd  += parseInt(r.g_ben_indirectos) || 0;
+    totalEscuelas += parseInt(r.g_escuelas) || 0;
+    totalHoras    += parseInt(r.g_horas_formacion) || 0;
+    totalAlianzas += parseInt(r.g_alianzas) || 0;
+    totalPrototipos += parseInt(r.g_prototipos) || 0;
+    totalNarrativas += parseInt(r.g_narrativas) || 0;
+    totalMentoria   += parseInt(r.g_rondas_mentoria) || 0;
+
+    if (r.g_pct_mujeres)         { sumMujeres      += parseFloat(r.g_pct_mujeres);      cntMujeres++; }
+    if (r.g_pct_habilidades)     { sumHabilidades   += parseFloat(r.g_pct_habilidades);  cntHabilidades++; }
+    if (r.g_pct_autonomia_mujeres){ sumAutonomia    += parseFloat(r.g_pct_autonomia_mujeres); cntAutonomia++; }
+    if (r.g_pct_becarios_sost)   { sumBecarios      += parseFloat(r.g_pct_becarios_sost); cntBecarios++; }
+
+    const reconNum = parseInt((r.g_reconocimiento||'').charAt(0));
+    const satNum   = parseInt((r.g_satisfaccion||'').charAt(0));
+    if (reconNum) { sumReconocimiento += reconNum; cntReconocimiento++; }
+    if (satNum)   { sumSatisfaccion   += satNum;   cntSatisfaccion++; }
+
+    if (r.programa === 'guardianes')      { prog.guardianes.guardianes += parseInt(r.gp_guardianes)||0; prog.guardianes.residuos += parseFloat(r.gp_residuos_kg)||0; prog.guardianes.estaciones += parseInt(r.gp_estaciones)||0; }
+    if (r.programa === 'arranca')         { prog.arranca.perfiles += parseFloat(r.af_pct_perfiles)||0; prog.arranca.intervenidos += parseFloat(r.af_pct_intervenidos)||0; prog.arranca.gimnasios += parseInt(r.af_gimnasios)||0; prog.arranca.sesiones += parseInt(r.af_sesiones)||0; }
+    if (r.programa === 'infraestructura') { prog.infraestructura.arboles += parseInt(r.inf_arboles)||0; prog.infraestructura.intervenciones += parseInt(r.inf_intervenciones)||0; prog.infraestructura.digitales += parseInt(r.inf_espacios_digitales)||0; }
+    if (r.programa === 'activacion_social'){ prog.activacion_social.voluntarios += parseInt(r.as_voluntarios)||0; prog.activacion_social.eventos += parseInt(r.as_num_eventos)||0; prog.activacion_social.horas_vol += parseInt(r.as_horas_voluntariado)||0; }
+  });
+
+  const avg = (sum, cnt) => cnt ? (sum / cnt).toFixed(1) : '—';
+  const pct = (sum, cnt) => cnt ? Math.round(sum / cnt) + '%' : '0%';
+
+  // Activity stats
+  setText('stat-total', data.length);
+  setText('stat-proyectos', byType.proyecto);
+  setText('stat-eventos', byType.evento);
+  setText('stat-activaciones', byType.activacion);
+  setText('stat-ben-dir', totalBenDir.toLocaleString('es-MX'));
+  setText('stat-ben-ind', totalBenInd.toLocaleString('es-MX'));
+
+  // Resultado
+  setText('stat-escuelas', totalEscuelas);
+  setText('stat-horas', totalHoras.toLocaleString('es-MX'));
+  setText('stat-mujeres', cntMujeres ? Math.round(sumMujeres/cntMujeres) : 0);
+  setText('stat-alianzas', totalAlianzas);
+
+  // Progress bars
+  setBar('prog-escuelas', totalEscuelas, 17);
+  setBar('prog-horas', totalHoras, 900);
+  setBar('prog-alianzas', totalAlianzas, 15);
+
+  // Impacto
+  setText('stat-habilidades', cntHabilidades ? Math.round(sumHabilidades/cntHabilidades) : 0);
+  setText('stat-autonomia', cntAutonomia ? Math.round(sumAutonomia/cntAutonomia) : 0);
+  setText('stat-becarios', cntBecarios ? Math.round(sumBecarios/cntBecarios) : 0);
+  setText('stat-prototipos', totalPrototipos);
+
+  // Reputación
+  setText('stat-reconocimiento', cntReconocimiento ? avg(sumReconocimiento, cntReconocimiento) : '—');
+  setText('stat-satisfaccion', cntSatisfaccion ? avg(sumSatisfaccion, cntSatisfaccion) : '—');
+  setText('stat-narrativas', totalNarrativas);
+  setText('stat-mentoria', totalMentoria);
+
+  // Program-specific section
+  renderProgSection(prog, document.getElementById('fil-programa').value);
+
+  renderCharts(data, byType, prog);
+  renderRecentTable(data);
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function setBar(id, val, max) {
+  const el = document.getElementById(id);
+  if (el) el.style.width = Math.min(100, Math.round((val/max)*100)) + '%';
+}
+
+function renderProgSection(prog, activeProg) {
+  const section = document.getElementById('prog-dashboard-section');
+  const title   = document.getElementById('prog-dashboard-title');
+  const grid    = document.getElementById('prog-dashboard-grid');
+
+  const hasGuardianes = prog.guardianes.guardianes || prog.guardianes.residuos;
+  const hasArranca    = prog.arranca.gimnasios || prog.arranca.sesiones;
+  const hasInfra      = prog.infraestructura.arboles || prog.infraestructura.intervenciones;
+  const hasActivacion = prog.activacion_social.voluntarios || prog.activacion_social.eventos;
+  const hasAny = hasGuardianes || hasArranca || hasInfra || hasActivacion;
+
+  if (!hasAny) { section.style.display='none'; return; }
+  section.style.display='block';
+
+  let cards = '';
+
+  if (hasGuardianes || !activeProg || activeProg==='guardianes') {
+    const g = prog.guardianes;
+    if (g.guardianes || g.residuos || g.estaciones) cards += `
+      <div class="stat-card" style="--accent:#34D399"><div class="stat-icon">🌍</div><div class="stat-label" style="color:#34D399">Guardianes formados</div><div class="stat-num">${g.guardianes.toLocaleString('es-MX')}</div><div class="stat-sub">Líderes comunitarios</div></div>
+      <div class="stat-card" style="--accent:#34D399"><div class="stat-icon">♻</div><div class="stat-label" style="color:#34D399">Residuos recuperados</div><div class="stat-num">${g.residuos.toLocaleString('es-MX')}<span style="font-size:18px"> kg</span></div><div class="stat-sub">Por escuelas aliadas</div></div>
+      <div class="stat-card" style="--accent:#34D399"><div class="stat-icon">🏫</div><div class="stat-label" style="color:#34D399">Estaciones reciclaje</div><div class="stat-num">${g.estaciones}</div><div class="stat-sub">Funcionales</div></div>`;
+  }
+
+  if (hasArranca || !activeProg || activeProg==='arranca') {
+    const a = prog.arranca;
+    if (a.gimnasios || a.sesiones) cards += `
+      <div class="stat-card" style="--accent:#A78BFA"><div class="stat-icon">🔬</div><div class="stat-label" style="color:#A78BFA">Gimnasios activos</div><div class="stat-num">${a.gimnasios}</div><div class="stat-sub">Arranca el Futuro</div></div>
+      <div class="stat-card" style="--accent:#A78BFA"><div class="stat-icon">📚</div><div class="stat-label" style="color:#A78BFA">Sesiones realizadas</div><div class="stat-num">${a.sesiones}</div><div class="stat-sub">En el periodo</div></div>
+      <div class="stat-card" style="--accent:#A78BFA"><div class="stat-icon">🎯</div><div class="stat-label" style="color:#A78BFA">% perfiles detectados</div><div class="stat-num">${a.perfiles ? Math.round(a.perfiles)+'%' : '—'}</div><div class="stat-sub">Talento identificado</div></div>`;
+  }
+
+  if (hasInfra || !activeProg || activeProg==='infraestructura') {
+    const i = prog.infraestructura;
+    if (i.arboles || i.intervenciones) cards += `
+      <div class="stat-card" style="--accent:#22D3EE"><div class="stat-icon">🌳</div><div class="stat-label" style="color:#22D3EE">Árboles reforestados</div><div class="stat-num">${i.arboles.toLocaleString('es-MX')}</div><div class="stat-sub">Infraestructura resiliente</div></div>
+      <div class="stat-card" style="--accent:#22D3EE"><div class="stat-icon">⬡</div><div class="stat-label" style="color:#22D3EE">Espacios intervenidos</div><div class="stat-num">${i.intervenciones}</div><div class="stat-sub">Sostenibles</div></div>
+      <div class="stat-card" style="--accent:#22D3EE"><div class="stat-icon">💻</div><div class="stat-label" style="color:#22D3EE">Espacios digitales</div><div class="stat-num">${i.digitales}</div><div class="stat-sub">Con acceso digital</div></div>`;
+  }
+
+  if (hasActivacion || !activeProg || activeProg==='activacion_social') {
+    const s = prog.activacion_social;
+    if (s.voluntarios || s.eventos) cards += `
+      <div class="stat-card" style="--accent:#FCD34D"><div class="stat-icon">🙋</div><div class="stat-label" style="color:#FCD34D">Voluntarios Clarios</div><div class="stat-num">${s.voluntarios.toLocaleString('es-MX')}</div><div class="stat-sub">Activamente movilizados</div></div>
+      <div class="stat-card" style="--accent:#FCD34D"><div class="stat-icon">📅</div><div class="stat-label" style="color:#FCD34D">Eventos realizados</div><div class="stat-num">${s.eventos}</div><div class="stat-sub">Activación Social</div></div>
+      <div class="stat-card" style="--accent:#FCD34D"><div class="stat-icon">⏱</div><div class="stat-label" style="color:#FCD34D">Horas voluntariado</div><div class="stat-num">${s.horas_vol.toLocaleString('es-MX')}</div><div class="stat-sub">Aportadas por el equipo</div></div>`;
+  }
+
+  grid.innerHTML = cards || '<div style="color:var(--gray-3);font-size:13px;padding:12px">Sin datos de programa en este periodo.</div>';
+}
+
+function renderCharts(data, byType, prog) {
+  const tickStyle = { color:'#9B8EC4', font:{ family:'Barlow', size:11 } };
+  const gridStyle = { color:'rgba(124,58,237,0.1)' };
+
+  // DONUT — tipo
+  if (chartDonut) chartDonut.destroy();
+  chartDonut = new Chart(document.getElementById('chart-donut').getContext('2d'), {
     type: 'doughnut',
     data: {
       labels: ['Proyectos','Eventos','Activaciones'],
-      datasets: [{ data:[p||0,e||0,a||0], backgroundColor:['#6B3FC5','#A87DEA','#3D1E7C'], borderWidth:2, borderColor:'#1A1435', hoverOffset:8 }]
+      datasets: [{ data:[byType.proyecto,byType.evento,byType.activacion], backgroundColor:['rgba(124,58,237,0.8)','rgba(8,145,178,0.8)','rgba(245,158,11,0.8)'], borderColor:['#7C3AED','#0891B2','#F59E0B'], borderWidth:2, hoverOffset:8 }]
     },
-    options: {
-      responsive:true, maintainAspectRatio:false, cutout:'62%',
-      plugins:{ legend:{ position:'bottom', labels:{ color:lc, padding:14, font:{size:12} } } }
-    }
+    options: { responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{ position:'bottom', labels:{ color:'#9B8EC4', font:{family:'Barlow',size:11}, padding:16 } } } }
   });
 
-  // Bar
-  const dims  = ['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'];
-  const dlbls = ['Propósito','Liderazgo','Reputación','Sostenibilidad','Cocreación','Gestión','Valor'];
-  const avgs = dims.map(d => {
-    const vals = records.map(r=>parseFloat(r[d])||0).filter(v=>v>0);
-    return vals.length ? +(vals.reduce((s,v)=>s+v,0)/vals.length).toFixed(2) : 0;
+  // BAR — beneficiarios por programa
+  const progLabels = ['Guardianes','Arranca el Futuro','Infraestructura','Act. Social','Sin programa'];
+  const progBen = [0,0,0,0,0];
+  data.forEach(r => {
+    const i = ['guardianes','arranca','infraestructura','activacion_social'].indexOf(r.programa);
+    const ben = parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0;
+    if (i >= 0) progBen[i] += ben; else progBen[4] += ben;
   });
 
-  const bc = document.getElementById('chart-bar').getContext('2d');
-  if (cBar) cBar.destroy();
-  cBar = new Chart(bc, {
-    type:'bar',
-    data:{
-      labels:dlbls,
-      datasets:[{ label:'Score promedio', data:avgs, backgroundColor:'rgba(107,63,197,.78)',
-        borderColor:'#A87DEA', borderWidth:1, borderRadius:6, borderSkipped:false }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      scales:{
-        y:{ min:0, max:5, ticks:{ color:tc, stepSize:1 }, grid:{ color:gc } },
-        x:{ ticks:{ color:tc }, grid:{ display:false } }
-      },
-      plugins:{ legend:{ labels:{ color:lc } } }
-    }
+  if (chartBar) chartBar.destroy();
+  chartBar = new Chart(document.getElementById('chart-bar').getContext('2d'), {
+    type: 'bar',
+    data: { labels:progLabels, datasets:[{ label:'Beneficiarios', data:progBen, backgroundColor:['rgba(52,211,153,0.6)','rgba(167,139,250,0.6)','rgba(34,211,238,0.6)','rgba(252,211,77,0.6)','rgba(124,58,237,0.4)'], borderColor:['#34D399','#A78BFA','#22D3EE','#FCD34D','#7C3AED'], borderWidth:1.5, borderRadius:6 }] },
+    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{ grid:gridStyle, ticks:tickStyle }, y:{ grid:gridStyle, ticks:tickStyle } }, plugins:{ legend:{ display:false } } }
+  });
+
+  // LINE — actividades por mes
+  const monthMap = {};
+  data.forEach(r => { const key=(r.fecha||r.timestamp.slice(0,10)).slice(0,7); monthMap[key]=(monthMap[key]||0)+1; });
+  const months = Object.keys(monthMap).sort();
+  const mLabels = months.map(m => { const [y,mo]=m.split('-'); return new Date(+y,+mo-1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}); });
+
+  if (chartLine) chartLine.destroy();
+  chartLine = new Chart(document.getElementById('chart-line').getContext('2d'), {
+    type: 'line',
+    data: { labels: mLabels.length?mLabels:['—'], datasets:[{ label:'Actividades', data:months.map(m=>monthMap[m]), borderColor:'#7C3AED', backgroundColor:'rgba(124,58,237,0.1)', fill:true, tension:0.4, pointBackgroundColor:'#7C3AED', pointRadius:4 }] },
+    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle,stepSize:1} }, plugins:{legend:{display:false}} }
+  });
+
+  // HORAS por mes
+  const horasMap = {};
+  data.forEach(r => { const key=(r.fecha||r.timestamp.slice(0,10)).slice(0,7); horasMap[key]=(horasMap[key]||0)+(parseInt(r.g_horas_formacion)||0); });
+  const horaMonths = Object.keys(horasMap).sort();
+  const horaLabels = horaMonths.map(m => { const [y,mo]=m.split('-'); return new Date(+y,+mo-1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}); });
+
+  if (window.chartHoras) window.chartHoras.destroy();
+  window.chartHoras = new Chart(document.getElementById('chart-horas').getContext('2d'), {
+    type: 'bar',
+    data: { labels: horaLabels.length?horaLabels:['—'], datasets:[{ label:'Horas', data:horaMonths.map(m=>horasMap[m]), backgroundColor:'rgba(52,211,153,0.6)', borderColor:'#34D399', borderWidth:1.5, borderRadius:6 }] },
+    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle} }, plugins:{legend:{display:false}} }
+  });
+
+  // % MUJERES por actividad (scatter points as bar)
+  const mujLabels = data.filter(r=>r.g_pct_mujeres).map(r=>r.nombre?.slice(0,18)||'—');
+  const mujData   = data.filter(r=>r.g_pct_mujeres).map(r=>parseFloat(r.g_pct_mujeres)||0);
+
+  if (window.chartMujeres) window.chartMujeres.destroy();
+  window.chartMujeres = new Chart(document.getElementById('chart-mujeres').getContext('2d'), {
+    type: 'bar',
+    data: { labels: mujLabels.length?mujLabels:['Sin datos'], datasets:[{ label:'% Mujeres', data:mujData.length?mujData:[0], backgroundColor:'rgba(244,114,182,0.6)', borderColor:'#F472B6', borderWidth:1.5, borderRadius:6 }] },
+    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:{...tickStyle,maxRotation:35}}, y:{grid:gridStyle,ticks:tickStyle,min:0,max:100} }, plugins:{legend:{display:false}} }
   });
 }
 
-// ─── TABLE ───────────────────────────────────────────────
-function renderTable() {
-  const ft = document.getElementById('f-type')?.value||'';
-  const fp = document.getElementById('f-prog')?.value||'';
-  let rows = records;
-  if (ft) rows = rows.filter(r=>r.type===ft);
-  if (fp) rows = rows.filter(r=>r.programa===fp);
-  document.getElementById('tbl-count').textContent = rows.length + ' registro' + (rows.length!==1?'s':'');
-  const tl = {proyecto:'Proyecto',evento:'Evento',activacion:'Activación'};
-  const tbody = document.getElementById('tbl-body');
-  if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--t3);padding:2.5rem">Sin registros</td></tr>';
+function renderRecentTable(data) {
+  const el = document.getElementById('table-recent');
+  const recent = (data || records).slice(0, 10);
+  if (!recent.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin registros en este periodo. <a style="color:var(--purple-lt);cursor:pointer" onclick="navigate('nuevo')">Agrega una actividad →</a></p></div>`;
     return;
   }
-  tbody.innerHTML = rows.map(r => {
-    const sc = score(r);
-    const cls = sc>=4?'sc-ok':sc>=3?'sc-warn':sc>0?'sc-err':'sc-nil';
-    const scTxt = sc>0?sc.toFixed(1):'—';
-    const folioEsc = (r.folio||'').replace(/'/g,"\\'");
-    return `<tr>
-      <td><code>${r.folio||'—'}</code></td>
-      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.nombre||''}">${r.nombre||'—'}</td>
-      <td><span class="badge b-${r.type}">${tl[r.type]||r.type}</span></td>
-      <td>${r.area||'—'}</td>
-      <td>${r.programa||'—'}</td>
-      <td>${r.fecha||'—'}</td>
-      <td><span class="sc-badge ${cls}">${scTxt}</span></td>
-      <td>${(parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
-      <td><button class="btn-sm" onclick="showDetail('${folioEsc}')">Ver</button></td>
-    </tr>`;
-  }).join('');
+  el.innerHTML = `<table>
+    <thead><tr>
+      <th>Tipo</th><th>Nombre</th><th>Programa</th><th>Responsable</th><th>Ben. Directos</th><th>Horas Form.</th><th>% Mujeres</th><th>Fecha</th><th></th>
+    </tr></thead>
+    <tbody>${recent.map(r => `
+      <tr>
+        <td><span class="badge badge-${r.type}">${LABELS[r.type]}</span></td>
+        <td class="fw700">${r.nombre}</td>
+        <td style="font-size:11px;color:var(--gray-2)">${({arranca:'Arranca el Futuro',guardianes:'Guardianes',infraestructura:'Infraestructura',activacion_social:'Act. Social',general:'General'})[r.programa]||'—'}</td>
+        <td>${r.responsable}</td>
+        <td style="font-family:var(--mono)">${(parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
+        <td style="font-family:var(--mono)">${parseInt(r.g_horas_formacion)||0}</td>
+        <td style="font-family:var(--mono)">${r.g_pct_mujeres ? r.g_pct_mujeres+'%' : '—'}</td>
+        <td style="font-family:var(--mono);font-size:11px">${formatDate(r.fecha)}</td>
+        <td><button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button></td>
+      </tr>`).join('')}
+    </tbody></table>`;
 }
 
-function score(r) {
-  const dims = ['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'];
-  const vals = dims.map(d=>parseFloat(r[d])||0).filter(v=>v>0);
-  return vals.length ? vals.reduce((s,v)=>s+v,0)/vals.length : 0;
+// ═══════════════════════════════════════════════════
+// LIST VIEWS
+// ═══════════════════════════════════════════════════
+function renderList(type, wrapperId) {
+  const list = records.filter(r => r.type === type);
+  const el = document.getElementById(wrapperId);
+
+  const colsMap = {
+    proyecto:    ['nombre','responsable','ubicacion','beneficiarios','duracion','alineacion','fecha'],
+    evento:      ['nombre','responsable','ubicacion','beneficiarios','tipo_evento','modalidad','fecha'],
+    activacion:  ['nombre','responsable','ubicacion','beneficiarios','tipo_activacion','canal','fecha'],
+  };
+
+  const hdrs = {
+    nombre:'Nombre', responsable:'Responsable', ubicacion:'Ubicación',
+    beneficiarios:'Beneficiarios', duracion:'Duración', alineacion:'Alineación',
+    tipo_evento:'Tipo', modalidad:'Modalidad', tipo_activacion:'Tipo',
+    canal:'Canal', fecha:'Fecha'
+  };
+
+  const cols = colsMap[type];
+
+  if (!list.length) {
+    el.innerHTML = `<div class="table-header"><div class="table-title">${LABELS[type]}s registrados (0)</div></div><div class="empty-state"><div class="empty-icon">◌</div><p>Sin registros de este tipo.</p></div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="table-header">
+      <div class="table-title">${LABELS[type]}s registrados (${list.length})</div>
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV('${type}')">↓ Exportar</button>
+    </div>
+    <table>
+      <thead><tr>${cols.map(c => `<th>${hdrs[c]||c}</th>`).join('')}<th></th></tr></thead>
+      <tbody>${list.map(r => `
+        <tr>
+          ${cols.map(c => `<td style="${c==='beneficiarios'?'font-family:var(--mono)':c==='fecha'?'font-family:var(--mono);font-size:11px':''}">${
+            c==='beneficiarios' ? (r[c]||0).toLocaleString('es-MX') :
+            c==='fecha' ? formatDate(r[c]) : (r[c]||'—')
+          }</td>`).join('')}
+          <td>
+            <div class="gap-8">
+              <button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button>
+              <button class="btn btn-sm" style="background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.2)" onclick="deleteRecord('${r.id}')">×</button>
+            </div>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
 }
 
-// ─── MODAL ───────────────────────────────────────────────
-function showDetail(folio) {
-  const r = records.find(x=>x.folio===folio);
+// ═══════════════════════════════════════════════════
+// DETAIL MODAL
+// ═══════════════════════════════════════════════════
+function openDetail(id) {
+  const r = records.find(rec => rec.id === id);
   if (!r) return;
-  const sc = score(r);
-  const cls = sc>=4?'sc-ok':sc>=3?'sc-warn':sc>0?'sc-err':'sc-nil';
-  const tl = {proyecto:'Proyecto',evento:'Evento',activacion:'Activación'};
-  const dims = [['Propósito','proposito'],['Liderazgo','liderazgo'],['Reputación','reputacion'],
-                ['Sostenibilidad','sostenibilidad'],['Cocreación','cocreacion'],['Gestión','gestion'],['Valor','valor']];
 
-  document.getElementById('modal-title').textContent = r.nombre||'Sin nombre';
-  document.getElementById('modal-bd').innerHTML = `
-    <div class="det-grid">
-      <div class="det-sec">
-        <h4>Información General</h4>
-        <dl>
-          <dt>Tipo</dt><dd><span class="badge b-${r.type}">${tl[r.type]||r.type}</span></dd>
-          <dt>Folio</dt><dd><code>${r.folio||'—'}</code></dd>
-          <dt>Fecha</dt><dd>${r.fecha||'—'}</dd>
-          <dt>Responsable</dt><dd>${r.responsable||'—'}</dd>
-          <dt>Ubicación</dt><dd>${r.ubicacion||'—'}</dd>
-          <dt>Área</dt><dd>${r.area||'—'}</dd>
-          <dt>Programa</dt><dd>${r.programa||'—'}</dd>
-          <dt>Beneficiarios</dt><dd>${(parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</dd>
-          <dt>Tipo benef.</dt><dd>${r.tipo_beneficiario||'—'}</dd>
-        </dl>
-      </div>
-      <div class="det-sec">
-        <h4>Score IS &nbsp;<span class="sc-badge ${cls}">${sc>0?sc.toFixed(2):'—'}</span></h4>
-        <div class="sc-grid">
-          ${dims.map(([lbl,k])=>{
-            const v=parseFloat(r[k])||0;
-            return `<div class="sc-row">
-              <span>${lbl}</span>
-              <div class="sc-bar"><div class="sc-fill" style="width:${(v/5*100).toFixed(0)}%;background:var(--prim)"></div></div>
-              <span>${v||'—'}</span>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>
-      <div class="det-sec full">
-        <h4>Objetivo</h4>
-        <p style="font-size:.85rem;color:var(--t2);line-height:1.55">${r.objetivo||'—'}</p>
-      </div>
-      ${r.notas?`<div class="det-sec full"><h4>Notas</h4><p style="font-size:.85rem;color:var(--t2)">${r.notas}</p></div>`:''}
-      ${(r.g_ben_directos||r.g_horas_formacion||r.g_pct_mujeres)?`
-      <div class="det-sec full">
-        <h4>Métricas Globales</h4>
-        <dl>
-          ${r.g_ben_directos?`<dt>Ben. directos</dt><dd>${parseInt(r.g_ben_directos).toLocaleString('es-MX')}</dd>`:''}
-          ${r.g_horas_formacion?`<dt>Horas formación</dt><dd>${r.g_horas_formacion}</dd>`:''}
-          ${r.g_pct_mujeres?`<dt>% Mujeres</dt><dd>${r.g_pct_mujeres}%</dd>`:''}
-        </dl>
-      </div>`:''}
-    </div>`;
+  document.getElementById('modal-badge').innerHTML = `<span class="badge badge-${r.type}">${LABELS[r.type]}</span>`;
+  document.getElementById('modal-title').textContent = r.nombre;
+
+  const ignore = ['id','timestamp','type','nombre'];
+  const labels = {
+    fecha:'Fecha', responsable:'Responsable', ubicacion:'Ubicación',
+    area:'Área', beneficiarios:'Beneficiarios', tipo_beneficiario:'Tipo beneficiario',
+    objetivo:'Objetivo', duracion:'Duración', presupuesto:'Presupuesto (USD)',
+    aliados:'Aliados', indicador:'Indicador', meta:'Meta', alineacion:'Alineación',
+    tipo_evento:'Tipo de evento', asistentes:'Asistentes', modalidad:'Modalidad',
+    media:'Cobertura mediática', logistica:'Logística',
+    tipo_activacion:'Tipo activación', canal:'Canal', alcance:'Alcance estimado',
+    inversion:'Inversión (USD)', mensaje:'Mensaje central', notas:'Notas'
+  };
+
+  const grid = document.getElementById('modal-grid');
+  const entries = Object.entries(r).filter(([k,v]) => !ignore.includes(k) && v !== '' && v !== 0 && v !== undefined);
+  
+  grid.innerHTML = entries.map(([k,v]) => `
+    <div class="detail-item">
+      <div class="detail-key">${labels[k]||k}</div>
+      <div class="detail-val">${k==='fecha'?formatDate(v):k==='presupuesto'||k==='inversion'?'$'+Number(v).toLocaleString('es-MX'):k==='beneficiarios'||k==='alcance'||k==='asistentes'?Number(v).toLocaleString('es-MX'):v}</div>
+    </div>`).join('');
+
+  if (entries.length % 2 !== 0) grid.innerHTML += '<div></div>';
+
   document.getElementById('modal').classList.add('open');
 }
 
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
-
-// ─── FORM ────────────────────────────────────────────────
-function sv(name, val) { document.getElementById('sv-'+name).textContent = val; }
-
-function selectType(type) {
-  fType = type;
-  document.querySelectorAll('.type-card').forEach(c => c.classList.toggle('selected', c.dataset.type===type));
-  document.getElementById('btn-s1').disabled = false;
-}
-
-function nextStep() {
-  if (!validateStep()) return;
-  fStep = Math.min(fStep+1, 5);
-  applyStep();
-}
-
-function prevStep() {
-  fStep = Math.max(fStep-1, 1);
-  applyStep();
-}
-
-function applyStep() {
-  document.querySelectorAll('.form-step').forEach((s,i) => s.classList.toggle('active', i+1===fStep));
-  if (fStep===3) {
-    document.querySelectorAll('.specific-fields').forEach(f=>f.style.display='none');
-    const fld = document.getElementById('fld-'+fType);
-    if (fld) fld.style.display='block';
-  }
-  for(let i=1;i<=5;i++){
-    const el=document.getElementById('si'+i);
-    if(!el) continue;
-    el.classList.toggle('active', i===fStep);
-    el.classList.toggle('done', i<fStep);
+function closeModal(e) {
+  if (!e || e.target.id === 'modal') {
+    document.getElementById('modal').classList.remove('open');
   }
 }
 
-function validateStep() {
-  if (fStep===1 && !fType) { toast('Selecciona un tipo de registro','error'); return false; }
-  const step = document.getElementById('fstep-'+fStep);
-  if (!step) return true;
-  let ok = true;
-  step.querySelectorAll('[required]').forEach(inp => {
-    const empty = !inp.value.trim();
-    inp.classList.toggle('err-f', empty);
-    if (empty) ok = false;
-  });
-  if (!ok) toast('Completa los campos requeridos','error');
-  return ok;
-}
-
-async function submitForm() {
-  if (!validateStep()) return;
-  const fd = new FormData(document.getElementById('reg-form'));
-  const payload = { type: fType };
-  fd.forEach((v,k)=>{ payload[k]=v; });
-
-  const btn = document.getElementById('btn-submit');
-  btn.disabled = true; btn.textContent = 'Guardando…';
-
-  try {
-    const res = await fetch(API_URL, {
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body: JSON.stringify(payload)
-    });
-    const json = await res.json();
-    if (json.status==='ok') {
-      toast('✓ Guardado correctamente. Folio: '+json.folio,'success');
-      resetForm();
-      setTimeout(loadData, 800);
-    } else throw new Error(json.message||'Error del servidor');
-  } catch(e) {
-    toast('Error: '+e.message,'error');
-  } finally {
-    btn.disabled = false; btn.textContent = '💾 Guardar Registro';
+// ═══════════════════════════════════════════════════
+// DELETE
+// ═══════════════════════════════════════════════════
+function deleteRecord(id) {
+  if (!confirm('¿Eliminar este registro permanentemente?')) return;
+  records = records.filter(r => r.id !== id);
+  localStorage.setItem('clarios_is', JSON.stringify(records));
+  updateBadges();
+  showToast('Registro eliminado');
+  // Re-render current view
+  const type = currentView.replace('s',''); // rough
+  if (['proyectos','eventos','activaciones'].includes(currentView)) {
+    const typeMap = { proyectos:'proyecto', eventos:'evento', activaciones:'activacion' };
+    renderList(typeMap[currentView], 'table-'+currentView+'-wrap');
   }
 }
 
-function resetForm() {
-  document.getElementById('reg-form').reset();
-  fStep=1; fType='';
-  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('btn-s1').disabled=true;
-  ['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'].forEach(d=>{
-    const el=document.getElementById('sv-'+d); if(el) el.textContent='3';
-  });
-  applyStep();
+// ═══════════════════════════════════════════════════
+// EXPORT CSV
+// ═══════════════════════════════════════════════════
+function exportCSV(filterType) {
+  const data = filterType ? records.filter(r => r.type === filterType) : records;
+  if (!data.length) { showToast('Sin datos para exportar'); return; }
+
+  const allKeys = [...new Set(data.flatMap(r => Object.keys(r)))];
+  const header = allKeys.join(',');
+  const rows = data.map(r => allKeys.map(k => {
+    const v = r[k] ?? '';
+    return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
+  }).join(','));
+
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `clarios-is-${filterType||'all'}-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV exportado exitosamente');
 }
 
-// ─── TRACKING ────────────────────────────────────────────
-let cBenProg=null, cAreaDonut=null, cScoreTipo=null, cRepBar=null;
-
-function showTab(name) {
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.stab').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
-  document.getElementById('tab-'+name).classList.add('active');
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function formatDate(dateStr) {
+  if (!dateStr) return '—';
+  const [y, m, d] = (dateStr + '').slice(0,10).split('-');
+  const months = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return `${parseInt(d)} ${months[parseInt(m)]} ${y}`;
 }
 
-function renderTracking() {
-  renderGenerales();
-  renderImpacto();
-  renderResultados();
-  renderReputacion();
+function updateBadges() {
+  const byType = { proyecto: 0, evento: 0, activacion: 0 };
+  records.forEach(r => byType[r.type] = (byType[r.type]||0) + 1);
+  document.getElementById('badge-proyectos').textContent = byType.proyecto;
+  document.getElementById('badge-eventos').textContent = byType.evento;
+  document.getElementById('badge-activaciones').textContent = byType.activacion;
 }
 
-function renderGenerales() {
-  const benDir=records.reduce((s,r)=>s+(parseInt(r.g_ben_directos)||0),0);
-  const horas=records.reduce((s,r)=>s+(parseInt(r.g_horas_formacion)||0),0);
-  const mujVals=records.map(r=>parseFloat(r.g_pct_mujeres)||0).filter(v=>v>0);
-  const mujProm=mujVals.length?(mujVals.reduce((s,v)=>s+v,0)/mujVals.length).toFixed(1)+'%':'—';
-  const inv=records.reduce((s,r)=>s+(parseInt(r.presupuesto)||0)+(parseInt(r.inversion)||0),0);
-  document.getElementById('tg-ben-dir').textContent=benDir.toLocaleString('es-MX');
-  document.getElementById('tg-horas').textContent=horas.toLocaleString('es-MX');
-  document.getElementById('tg-mujeres').textContent=mujProm;
-  document.getElementById('tg-inversion').textContent=inv>0?'$'+inv.toLocaleString('es-MX'):'—';
-  const progs=['Arranca el Futuro','Guardianes del Planeta','Infraestructura','Activación Social','General'];
-  const progLbls=['Arranca Futuro','Guardianes','Infraestruc.','Act. Social','General'];
-  const benByProg=progs.map(p=>records.filter(r=>r.programa===p).reduce((s,r)=>s+(parseInt(r.beneficiarios)||0),0));
-  const c1=document.getElementById('c-ben-prog').getContext('2d');
-  if(cBenProg)cBenProg.destroy();
-  cBenProg=new Chart(c1,{type:'bar',data:{labels:progLbls,datasets:[{label:'Beneficiarios',data:benByProg,backgroundColor:'rgba(107,63,197,.78)',borderColor:'#A87DEA',borderWidth:1,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{ticks:{color:'#8A7AAA'},grid:{color:'rgba(44,30,82,.55)'}},x:{ticks:{color:'#8A7AAA'},grid:{display:false}}},plugins:{legend:{labels:{color:'#C0AEDD'}}}}});
-  const areas=['Impacto Social','Comunicación','Relaciones Institucionales','Sustentabilidad'];
-  const byArea=areas.map(a=>records.filter(r=>r.area===a).length);
-  const c2=document.getElementById('c-area-donut').getContext('2d');
-  if(cAreaDonut)cAreaDonut.destroy();
-  cAreaDonut=new Chart(c2,{type:'doughnut',data:{labels:areas,datasets:[{data:byArea,backgroundColor:['#6B3FC5','#A87DEA','#4E2E96','#8A5DD4'],borderWidth:2,borderColor:'#1A1435',hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{color:'#C0AEDD',padding:10,font:{size:11}}}}}});
-}
-
-function renderImpacto() {
-  const allSc=records.map(r=>score(r)).filter(v=>v>0);
-  const gSc=allSc.length?(allSc.reduce((s,v)=>s+v,0)/allSc.length).toFixed(2):'—';
-  const el=document.getElementById('ti-score-global');
-  if(el){el.textContent=gSc;const f=parseFloat(gSc);el.style.color=f>=4?'#27AE60':f>=3?'#E67E22':'#E74C3C';}
-  const dims=['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'];
-  const dlbls=['Propósito','Liderazgo','Reputación','Sostenibilidad','Cocreación','Gestión','Valor'];
-  const tipos=['proyecto','evento','activacion'];
-  const tipoL=['Proyectos','Eventos','Activaciones'];
-  const colors=['rgba(107,63,197,.8)','rgba(168,125,234,.8)','rgba(78,46,150,.8)'];
-  const borders=['#A87DEA','#C9A8F0','#9B78D4'];
-  const datasets=tipos.map((t,i)=>{
-    const recs=records.filter(r=>r.type===t);
-    const avgs=dims.map(d=>{const v=recs.map(r=>parseFloat(r[d])||0).filter(v=>v>0);return v.length?+(v.reduce((s,x)=>s+x,0)/v.length).toFixed(2):0;});
-    return{label:tipoL[i],data:avgs,backgroundColor:colors[i],borderColor:borders[i],borderWidth:1,borderRadius:4};
-  });
-  const c3=document.getElementById('c-score-tipo').getContext('2d');
-  if(cScoreTipo)cScoreTipo.destroy();
-  cScoreTipo=new Chart(c3,{type:'bar',data:{labels:dlbls,datasets},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:5,ticks:{color:'#8A7AAA',stepSize:1},grid:{color:'rgba(44,30,82,.55)'}},x:{ticks:{color:'#8A7AAA'},grid:{display:false}}},plugins:{legend:{labels:{color:'#C0AEDD'}}}}});
-  const progs=['Arranca el Futuro','Guardianes del Planeta','Infraestructura','Activación Social','General'];
-  const progEl=document.getElementById('ti-prog-table');
-  if(progEl)progEl.innerHTML=progs.map(p=>{
-    const recs=records.filter(r=>r.programa===p);
-    const sc=recs.map(r=>score(r)).filter(v=>v>0);
-    if(!recs.length)return'';
-    const avg=sc.length?(sc.reduce((s,v)=>s+v,0)/sc.length).toFixed(2):null;
-    const cls=parseFloat(avg)>=4?'sc-ok':parseFloat(avg)>=3?'sc-warn':'sc-err';
-    const pct=avg?(parseFloat(avg)/5*100).toFixed(0):0;
-    return`<div style="display:grid;grid-template-columns:180px 1fr 70px 55px;align-items:center;gap:.75rem;padding:.55rem 0;border-bottom:1px solid var(--brd)"><span style="font-size:.82rem">${p}</span><div style="height:7px;background:var(--brd);border-radius:4px;overflow:hidden"><div style="width:${pct}%;height:100%;background:var(--prim);border-radius:4px"></div></div><span style="font-size:.75rem;color:var(--t3)">${recs.length} reg.</span><span class="sc-badge ${cls}">${avg||'—'}</span></div>`;
-  }).join('');
-}
-
-function renderResultados() {
-  const progs=['Arranca el Futuro','Guardianes del Planeta','Infraestructura','Activación Social','General'];
-  const tl={proyecto:'Proyecto',evento:'Evento',activacion:'Activación'};
-  const resEl=document.getElementById('tr-resumen');
-  if(resEl)resEl.innerHTML=`<table style="width:100%;border-collapse:collapse"><thead><tr>${['Programa','Regs.','Beneficiarios','Score IS'].map((h,i)=>`<th style="text-align:${i===0?'left':'right'};font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);padding:.45rem .6rem;border-bottom:1px solid var(--brd)">${h}</th>`).join('')}</tr></thead><tbody>${progs.map(p=>{const recs=records.filter(r=>r.programa===p);if(!recs.length)return'';const ben=recs.reduce((s,r)=>s+(parseInt(r.beneficiarios)||0),0);const sc=recs.map(r=>score(r)).filter(v=>v>0);const avg=sc.length?(sc.reduce((s,v)=>s+v,0)/sc.length).toFixed(1):null;const cls=parseFloat(avg)>=4?'sc-ok':parseFloat(avg)>=3?'sc-warn':'sc-err';return`<tr><td style="padding:.45rem .6rem;font-size:.8rem;border-bottom:1px solid var(--brd)">${p}</td><td style="text-align:right;padding:.45rem .6rem;font-size:.8rem;border-bottom:1px solid var(--brd)">${recs.length}</td><td style="text-align:right;padding:.45rem .6rem;font-size:.8rem;border-bottom:1px solid var(--brd)">${ben.toLocaleString('es-MX')}</td><td style="text-align:right;padding:.45rem .6rem;border-bottom:1px solid var(--brd)"><span class="sc-badge ${cls}">${avg||'—'}</span></td></tr>`;}).join('')}</tbody></table>`;
-  const sorted=[...records].filter(r=>score(r)>0).sort((a,b)=>score(b)-score(a)).slice(0,5);
-  const t5=document.getElementById('tr-top5');
-  if(t5)t5.innerHTML=sorted.length?sorted.map((r,i)=>{const sc=score(r);const cls=sc>=4?'sc-ok':sc>=3?'sc-warn':'sc-err';return`<div style="display:flex;align-items:center;gap:.6rem;padding:.5rem 0;border-bottom:1px solid var(--brd)"><span style="width:20px;height:20px;border-radius:50%;background:var(--surf3);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--t3);flex-shrink:0">${i+1}</span><div style="flex:1;min-width:0"><div style="font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.nombre||'—'}</div><div style="font-size:.72rem;color:var(--t3)">${tl[r.type]||r.type} · ${r.programa||'—'}</div></div><span class="sc-badge ${cls}">${sc.toFixed(1)}</span></div>`;}).join(''):'<p style="color:var(--t3);font-size:.82rem">Sin datos</p>';
-  const recent=[...records].sort((a,b)=>(b.fecha_registro||b.fecha||'')>(a.fecha_registro||a.fecha||'')?1:-1).slice(0,8);
-  const recEl=document.getElementById('tr-recientes');
-  if(recEl)recEl.innerHTML=recent.length?`<div style="display:flex;flex-direction:column;gap:.4rem">${recent.map(r=>`<div style="display:flex;align-items:center;gap:.6rem;padding:.45rem .6rem;background:var(--surf3);border-radius:var(--rads)"><span class="badge b-${r.type}">${tl[r.type]||r.type}</span><span style="flex:1;font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.nombre||'—'}</span><span style="font-size:.75rem;color:var(--t3);white-space:nowrap">${r.fecha||'—'}</span><span style="font-size:.75rem;color:var(--t3);white-space:nowrap">${r.responsable||'—'}</span></div>`).join('')}</div>`:'<p style="color:var(--t3);font-size:.82rem">Sin registros</p>';
-}
-
-function renderReputacion() {
-  const repSc=records.map(r=>parseFloat(r.reputacion)||0).filter(v=>v>0);
-  const lidSc=records.map(r=>parseFloat(r.liderazgo)||0).filter(v=>v>0);
-  const repP=repSc.length?(repSc.reduce((s,v)=>s+v,0)/repSc.length).toFixed(2):'—';
-  const lidP=lidSc.length?(lidSc.reduce((s,v)=>s+v,0)/lidSc.length).toFixed(2):'—';
-  document.getElementById('trep-score').textContent=repP;
-  document.getElementById('trep-lid').textContent=lidP;
-  document.getElementById('trep-medios').textContent=records.filter(r=>r.media==='Sí').length;
-  document.getElementById('trep-foros').textContent=records.filter(r=>r.tipo_evento==='Foro/Conferencia').length;
-  document.getElementById('trep-aliados').textContent=records.filter(r=>r.aliados&&r.aliados.trim()).length;
-  const tipos=['proyecto','evento','activacion'];
-  const tipoL=['Proyectos','Eventos','Activaciones'];
-  const rAvg=tipos.map(t=>{const v=records.filter(r=>r.type===t).map(r=>parseFloat(r.reputacion)||0).filter(v=>v>0);return v.length?(v.reduce((s,x)=>s+x,0)/v.length).toFixed(2):0;});
-  const lAvg=tipos.map(t=>{const v=records.filter(r=>r.type===t).map(r=>parseFloat(r.liderazgo)||0).filter(v=>v>0);return v.length?(v.reduce((s,x)=>s+x,0)/v.length).toFixed(2):0;});
-  const c4=document.getElementById('c-rep-bar').getContext('2d');
-  if(cRepBar)cRepBar.destroy();
-  cRepBar=new Chart(c4,{type:'bar',data:{labels:tipoL,datasets:[{label:'Reputación',data:rAvg,backgroundColor:'rgba(107,63,197,.8)',borderColor:'#A87DEA',borderWidth:1,borderRadius:6},{label:'Liderazgo',data:lAvg,backgroundColor:'rgba(168,125,234,.6)',borderColor:'#C9A8F0',borderWidth:1,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:5,ticks:{color:'#8A7AAA',stepSize:1},grid:{color:'rgba(44,30,82,.55)'}},x:{ticks:{color:'#8A7AAA'},grid:{display:false}}},plugins:{legend:{labels:{color:'#C0AEDD'}}}}});
-}
-
-// ─── TOAST ───────────────────────────────────────────────
-function toast(msg, type='success') {
+function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show '+type;
-  clearTimeout(t._t);
-  t._t = setTimeout(()=>t.classList.remove('show'), 4500);
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
 }
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Seed demo data if empty
+function seedDemo() {
+  if (records.length > 0) return;
+  const demo = [
+    { id:'demo1', timestamp:new Date().toISOString(), type:'proyecto', nombre:'Arranca el Futuro — Torreón 2025', fecha:'2025-03-15', responsable:'Ana García', ubicacion:'Torreón, Coahuila', area:'Impacto Social', beneficiarios:320, tipo_beneficiario:'Jóvenes (18–29)', objetivo:'Formación técnica en manufactura avanzada y robótica para jóvenes locales.', duracion:'6–12 meses', presupuesto:42000, aliados:'ITESM Laguna · Municipio de Torreón', indicador:'% participantes con empleo formal', meta:'55% en 8 meses', alineacion:'Arranca el Futuro', notas:'' },
+    { id:'demo2', timestamp:new Date().toISOString(), type:'evento', nombre:'Foro ESG Clarios Líderes 2025', fecha:'2025-04-22', responsable:'Carlos López', ubicacion:'Monterrey, NL', area:'Comunicación', beneficiarios:448, tipo_beneficiario:'Comunidad general', objetivo:'Posicionamiento ESG de Clarios ante medios y líderes de opinión.', tipo_evento:'Foro / Conferencia', asistentes:448, modalidad:'Presencial', media:'Sí — medios nacionales', logistica:'Centro de Convenciones Cintermex', notas:'13 medios de comunicación presentes.' },
+    { id:'demo3', timestamp:new Date().toISOString(), type:'activacion', nombre:'Guardianes del Planeta — Recolección Feb', fecha:'2025-02-10', responsable:'María Torres', ubicacion:'Gómez Palacio, Durango', area:'Impacto Social', beneficiarios:1400, tipo_beneficiario:'Niños y adolescentes', objetivo:'Recolección de baterías y residuos en escuelas aliadas.', tipo_activacion:'Movilización ciudadana', canal:'Presencial / territorial', alcance:1400, inversion:3200, mensaje:'Recicla hoy, protege el futuro', notas:'8 toneladas de residuos recolectados.' },
+  ];
+  records = demo;
+  localStorage.setItem('clarios_is', JSON.stringify(records));
+}
+
+// ═══════════════════════════════════════════════════
+// FOLIOS ACTIVOS
+// ═══════════════════════════════════════════════════
+function renderFolios() {
+  const statusFilter = (document.getElementById('folio-filter-status')||{}).value || '';
+  const typeFilter   = (document.getElementById('folio-filter-type')||{}).value || '';
+
+  let data = [...records];
+  if (typeFilter) data = data.filter(r => r.type === typeFilter);
+
+  // Assign status: simulate "en-revision" for newer, "aprobado" for older
+  data = data.map((r, i) => ({...r, _status: i < 3 ? 'en-revision' : i < 6 ? 'aprobado' : 'pendiente'}));
+  if (statusFilter) data = data.filter(r => r._status === statusFilter);
+
+  const el = document.getElementById('table-folios-wrap');
+  const statusLabel = { 'en-revision':'🟡 En revisión', 'aprobado':'🟢 Aprobado', 'pendiente':'🔴 Pendiente info' };
+
+  if (!data.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin folios en este estado.</p></div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="table-header">
+      <div class="table-title">Folios activos (${data.length})</div>
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Exportar</button>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Folio</th><th>Nombre</th><th>Tipo</th><th>Programa</th><th>Responsable</th>
+        <th>Beneficiarios</th><th>Score IS</th><th>Estado</th><th>Fecha</th><th></th>
+      </tr></thead>
+      <tbody>${data.map(r => {
+        const scoreIS = getRecordScore(r);
+        const scoreColor = scoreIS >= 4 ? 'var(--green)' : scoreIS >= 3 ? 'var(--amber)' : 'var(--red)';
+        const progMap = {arranca:'Arranca el Futuro',guardianes:'Guardianes del Planeta',infraestructura:'Infraestructura',activacion_social:'Act. Social',general:'General'};
+        return `<tr>
+          <td style="font-family:var(--mono);font-size:11px;color:var(--purple-lt)">${r.id}</td>
+          <td class="fw700">${r.nombre||'—'}</td>
+          <td><span class="badge badge-${r.type}">${LABELS[r.type]}</span></td>
+          <td style="font-size:11px;color:var(--gray-2)">${progMap[r.programa]||'—'}</td>
+          <td>${r.responsable||'—'}</td>
+          <td style="font-family:var(--mono)">${(parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
+          <td style="font-family:var(--mono);font-weight:700;color:${scoreColor}">${scoreIS.toFixed(1)}</td>
+          <td style="font-size:11px">${statusLabel[r._status]||'—'}</td>
+          <td style="font-family:var(--mono);font-size:11px">${formatDate(r.fecha)}</td>
+          <td><button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+}
+
+function getRecordScore(r) {
+  const dims = ['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'];
+  const vals = dims.map(d => parseFloat(r['score_'+d]||r[d]||3));
+  return vals.reduce((a,b)=>a+b,0)/vals.length;
+}
+
+// ═══════════════════════════════════════════════════
+// TRACKING CENTRALIZADO
+// ═══════════════════════════════════════════════════
+function renderTracking() {
+  const el = document.getElementById('table-tracking-wrap');
+  const data = [...records];
+
+  // Stats
+  const approved = data.filter(r => getRecordScore(r) >= 4).length;
+  const mid      = data.filter(r => { const s=getRecordScore(r); return s>=3&&s<4; }).length;
+  const low      = data.filter(r => getRecordScore(r) < 3).length;
+  document.getElementById('tk-total').textContent = data.length;
+  document.getElementById('tk-approved').textContent = approved;
+  document.getElementById('tk-mid').textContent = mid;
+  document.getElementById('tk-low').textContent = low;
+
+  if (!data.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin registros aún.</p></div>`;
+    return;
+  }
+
+  const dims = [
+    {key:'proposito',   label:'Propósito'},
+    {key:'liderazgo',  label:'Liderazgo'},
+    {key:'reputacion', label:'Reputación'},
+    {key:'sostenibilidad',label:'Sostenib.'},
+    {key:'cocreacion', label:'Cocreación'},
+    {key:'gestion',    label:'Gestión'},
+    {key:'valor',      label:'Val. Comp.'},
+  ];
+
+  const progMap = {arranca:'Arranca',guardianes:'Guardianes',infraestructura:'Infraest.',activacion_social:'Act. Social',general:'General'};
+  const scoreColor = s => s >= 4 ? 'var(--green)' : s >= 3 ? 'var(--amber)' : 'var(--red)';
+
+  el.innerHTML = `
+    <div class="table-header">
+      <div class="table-title">Tracking centralizado (${data.length} registros)</div>
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Exportar</button>
+    </div>
+    <div style="overflow-x:auto">
+    <table>
+      <thead><tr>
+        <th>Folio</th><th>Nombre</th><th>Tipo</th><th>Programa</th>
+        <th>Score total</th>
+        ${dims.map(d=>`<th>${d.label}</th>`).join('')}
+        <th>Ben. directos</th><th>Horas form.</th><th>% Mujeres</th><th>Municipio</th><th>Fecha</th><th></th>
+      </tr></thead>
+      <tbody>${data.map(r => {
+        const total = getRecordScore(r);
+        const dimVals = dims.map(d => parseFloat(r['score_'+d.key]||r[d.key]||3));
+        return `<tr>
+          <td style="font-family:var(--mono);font-size:10px;color:var(--purple-lt)">${r.id}</td>
+          <td class="fw700" style="white-space:nowrap">${r.nombre||'—'}</td>
+          <td><span class="badge badge-${r.type}">${LABELS[r.type]}</span></td>
+          <td style="font-size:11px;color:var(--gray-2)">${progMap[r.programa]||'—'}</td>
+          <td style="font-family:var(--mono);font-weight:800;color:${scoreColor(total)};text-align:center">${total.toFixed(1)}</td>
+          ${dimVals.map(v=>`<td style="font-family:var(--mono);font-size:11px;color:${scoreColor(v)};text-align:center">${v.toFixed(1)}</td>`).join('')}
+          <td style="font-family:var(--mono)">${(parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
+          <td style="font-family:var(--mono)">${parseInt(r.g_horas_formacion)||0}</td>
+          <td style="font-family:var(--mono)">${r.g_pct_mujeres?r.g_pct_mujeres+'%':'—'}</td>
+          <td style="font-size:11px">${r.ubicacion||'—'}</td>
+          <td style="font-family:var(--mono);font-size:11px">${formatDate(r.fecha)}</td>
+          <td><button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+seedDemo();
+filteredRecords = [...records];
+updateBadges();
+renderDashboard(filteredRecords);
+syncFromAPI();
+setInterval(syncFromAPI, 60000);
 </script>
 </body>
 </html>
