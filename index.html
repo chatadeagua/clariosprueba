@@ -1001,9 +1001,10 @@ tbody tr:last-child td { border-bottom: none; }
       <span class="nav-icon">✦</span> Clarios Impact Kit
     </div>
 
-    <div class="nav-section">Datos</div>
-    <div class="nav-item" onclick="exportCSV()">
-      <span class="nav-icon">↓</span> Exportar CSV
+    <div class="nav-section">Registros</div>
+    <div class="nav-item" onclick="navigate('registros')">
+      <span class="nav-icon">☰</span> Todos los registros
+      <span class="nav-badge" id="badge-registros" style="background:var(--gray-3)">0</span>
     </div>
   </div>
 
@@ -1018,7 +1019,6 @@ tbody tr:last-child td { border-bottom: none; }
   <div class="topbar">
     <div class="topbar-title" id="topbar-title">Dashboard</div>
     <div class="topbar-right">
-      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Exportar</button>
       <button class="btn btn-primary btn-sm" onclick="navigate('nuevo')">＋ Nueva actividad</button>
     </div>
   </div>
@@ -1256,7 +1256,7 @@ tbody tr:last-child td { border-bottom: none; }
     <div class="table-card">
       <div class="table-header">
         <div class="table-title">Actividades del periodo</div>
-        <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Exportar vista →</button>
+        <button class="btn btn-ghost btn-sm" onclick="navigate('registros')">Ver todos →</button>
       </div>
       <div id="table-recent"></div>
     </div>
@@ -1961,6 +1961,50 @@ tbody tr:last-child td { border-bottom: none; }
     </div>
   </div>
 
+  <!-- ═══════════════════════════
+       VIEW: TODOS LOS REGISTROS
+  ════════════════════════════ -->
+  <div class="view" id="view-registros">
+    <div class="page-header">
+      <div class="page-eyebrow">Registros</div>
+      <div class="page-title">Todos los <span>registros</span></div>
+      <div class="page-desc">Historial completo de actividades capturadas en el sistema.</div>
+    </div>
+    <div class="filter-bar" style="margin-bottom:20px">
+      <div class="filter-group">
+        <div class="filter-label">Tipo</div>
+        <select class="filter-select" id="reg-filter-type" onchange="renderRegistros()">
+          <option value="">Todos</option>
+          <option value="proyecto">Proyecto</option>
+          <option value="evento">Evento</option>
+          <option value="activacion">Activación</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Programa</div>
+        <select class="filter-select" id="reg-filter-prog" onchange="renderRegistros()">
+          <option value="">Todos los programas</option>
+          <option value="arranca">Arranca el Futuro</option>
+          <option value="guardianes">Guardianes del Planeta</option>
+          <option value="infraestructura">Infraestructura Resiliente</option>
+          <option value="activacion_social">Activación Social</option>
+          <option value="general">General</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Año</div>
+        <select class="filter-select" id="reg-filter-year" onchange="renderRegistros()">
+          <option value="">Todos</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+      <button class="filter-clear" onclick="clearRegistrosFilters()">✕ Limpiar</button>
+    </div>
+    <div class="table-card" id="table-registros-wrap"></div>
+  </div>
+
 </div>
 
 <script>
@@ -2078,7 +2122,8 @@ function navigate(view) {
     form2: 'Registro · Paso 2',
     folios: 'Folios Activos',
     tracking: 'Tracking Centralizado',
-    'impact-kit': 'Clarios Impact Kit'
+    'impact-kit': 'Clarios Impact Kit',
+    registros: 'Todos los registros'
   };
   document.getElementById('topbar-title').textContent = titles[view] || 'Clarios IS';
 
@@ -2091,6 +2136,7 @@ function navigate(view) {
   if (view === 'activaciones') renderList('activacion', 'table-activaciones-wrap');
   if (view === 'folios') renderFolios();
   if (view === 'tracking') renderTracking();
+  if (view === 'registros') renderRegistros();
 
   // Close sidebar on mobile
   document.getElementById('sidebar').classList.remove('open');
@@ -2738,11 +2784,11 @@ function deleteRecord(id) {
   updateBadges();
   showToast('Registro eliminado');
   // Re-render current view
-  const type = currentView.replace('s',''); // rough
   if (['proyectos','eventos','activaciones'].includes(currentView)) {
     const typeMap = { proyectos:'proyecto', eventos:'evento', activaciones:'activacion' };
     renderList(typeMap[currentView], 'table-'+currentView+'-wrap');
   }
+  if (currentView === 'registros') renderRegistros();
 }
 
 // ═══════════════════════════════════════════════════
@@ -2786,6 +2832,80 @@ function updateBadges() {
   document.getElementById('badge-proyectos').textContent = byType.proyecto;
   document.getElementById('badge-eventos').textContent = byType.evento;
   document.getElementById('badge-activaciones').textContent = byType.activacion;
+  const br = document.getElementById('badge-registros');
+  if (br) br.textContent = records.length;
+}
+
+// ═══════════════════════════════════════════════════
+// TODOS LOS REGISTROS
+// ═══════════════════════════════════════════════════
+function renderRegistros() {
+  const typeFilter = (document.getElementById('reg-filter-type')||{}).value || '';
+  const progFilter = (document.getElementById('reg-filter-prog')||{}).value || '';
+  const yearFilter = (document.getElementById('reg-filter-year')||{}).value || '';
+
+  const progMap = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura', activacion_social:'Act. Social', general:'General' };
+
+  let data = [...records];
+  if (typeFilter) data = data.filter(r => r.type === typeFilter);
+  if (progFilter) data = data.filter(r => r.programa === progFilter);
+  if (yearFilter) data = data.filter(r => {
+    const d = r.fecha || (r.timestamp||'').slice(0,10);
+    return d.startsWith(yearFilter);
+  });
+
+  const el = document.getElementById('table-registros-wrap');
+
+  if (!data.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin registros con los filtros seleccionados. <a style="color:var(--purple-lt);cursor:pointer" onclick="navigate('nuevo')">Agrega una actividad →</a></p></div>`;
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="table-header">
+      <div class="table-title">${data.length} registro${data.length!==1?'s':''}</div>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Tipo</th>
+        <th>Nombre</th>
+        <th>Programa</th>
+        <th>Responsable</th>
+        <th>Ubicación</th>
+        <th>Ben. directos</th>
+        <th>Horas form.</th>
+        <th>% Mujeres</th>
+        <th>Fecha</th>
+        <th></th>
+      </tr></thead>
+      <tbody>${data.map(r => `
+        <tr>
+          <td><span class="badge badge-${r.type}">${LABELS[r.type]}</span></td>
+          <td class="fw700">${r.nombre||'—'}</td>
+          <td style="font-size:11px;color:var(--gray-2)">${progMap[r.programa]||'—'}</td>
+          <td>${r.responsable||'—'}</td>
+          <td style="font-size:11px">${r.ubicacion||'—'}</td>
+          <td style="font-family:var(--mono)">${(parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
+          <td style="font-family:var(--mono)">${parseInt(r.g_horas_formacion)||0}</td>
+          <td style="font-family:var(--mono)">${r.g_pct_mujeres ? r.g_pct_mujeres+'%' : '—'}</td>
+          <td style="font-family:var(--mono);font-size:11px">${formatDate(r.fecha)}</td>
+          <td>
+            <div class="gap-8">
+              <button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button>
+              <button class="btn btn-sm" style="background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.2)" onclick="deleteRecord('${r.id}')">×</button>
+            </div>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function clearRegistrosFilters() {
+  ['reg-filter-type','reg-filter-prog','reg-filter-year'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  renderRegistros();
 }
 
 function showToast(msg) {
@@ -2825,7 +2945,6 @@ function renderFolios() {
   el.innerHTML = `
     <div class="table-header">
       <div class="table-title">Folios activos (${data.length})</div>
-      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Exportar</button>
     </div>
     <table>
       <thead><tr>
@@ -2895,7 +3014,6 @@ function renderTracking() {
   el.innerHTML = `
     <div class="table-header">
       <div class="table-title">Tracking centralizado (${data.length} registros)</div>
-      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ Exportar</button>
     </div>
     <div style="overflow-x:auto">
     <table>
