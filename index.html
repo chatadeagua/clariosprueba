@@ -2002,7 +2002,7 @@ async function syncFromAPI() {
       ...r
     }));
     records = [...normalized, ...localOnly];
-    localStorage.setItem('clarios_is', JSON.stringify(records));
+    localStorage.setItem('clarios_is_v2', JSON.stringify(records));
     filteredRecords = [...records];
     updateBadges();
     if (currentView === 'dashboard') renderDashboard(filteredRecords);
@@ -2015,7 +2015,7 @@ async function syncFromAPI() {
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
-let records = JSON.parse(localStorage.getItem('clarios_is') || '[]');
+let records = JSON.parse(localStorage.getItem('clarios_is_v2') || '[]');
 let currentType = '';
 let formData1 = {};
 let chartDonut, chartBar, chartLine;
@@ -2314,7 +2314,7 @@ function saveRecord() {
   };
 
   records.unshift(record);
-  localStorage.setItem('clarios_is', JSON.stringify(records));
+  localStorage.setItem('clarios_is_v2', JSON.stringify(records));
   updateBadges();
   postToAPI(record);
 
@@ -2734,7 +2734,7 @@ function closeModal(e) {
 function deleteRecord(id) {
   if (!confirm('¿Eliminar este registro permanentemente?')) return;
   records = records.filter(r => r.id !== id);
-  localStorage.setItem('clarios_is', JSON.stringify(records));
+  localStorage.setItem('clarios_is_v2', JSON.stringify(records));
   updateBadges();
   showToast('Registro eliminado');
   // Re-render current view
@@ -2799,17 +2799,6 @@ function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
 }
 
-// Seed demo data if empty
-function seedDemo() {
-  if (records.length > 0) return;
-  const demo = [
-    { id:'demo1', timestamp:new Date().toISOString(), type:'proyecto', nombre:'Arranca el Futuro — Torreón 2025', fecha:'2025-03-15', responsable:'Ana García', ubicacion:'Torreón, Coahuila', area:'Impacto Social', beneficiarios:320, tipo_beneficiario:'Jóvenes (18–29)', objetivo:'Formación técnica en manufactura avanzada y robótica para jóvenes locales.', duracion:'6–12 meses', presupuesto:42000, aliados:'ITESM Laguna · Municipio de Torreón', indicador:'% participantes con empleo formal', meta:'55% en 8 meses', alineacion:'Arranca el Futuro', notas:'' },
-    { id:'demo2', timestamp:new Date().toISOString(), type:'evento', nombre:'Foro ESG Clarios Líderes 2025', fecha:'2025-04-22', responsable:'Carlos López', ubicacion:'Monterrey, NL', area:'Comunicación', beneficiarios:448, tipo_beneficiario:'Comunidad general', objetivo:'Posicionamiento ESG de Clarios ante medios y líderes de opinión.', tipo_evento:'Foro / Conferencia', asistentes:448, modalidad:'Presencial', media:'Sí — medios nacionales', logistica:'Centro de Convenciones Cintermex', notas:'13 medios de comunicación presentes.' },
-    { id:'demo3', timestamp:new Date().toISOString(), type:'activacion', nombre:'Guardianes del Planeta — Recolección Feb', fecha:'2025-02-10', responsable:'María Torres', ubicacion:'Gómez Palacio, Durango', area:'Impacto Social', beneficiarios:1400, tipo_beneficiario:'Niños y adolescentes', objetivo:'Recolección de baterías y residuos en escuelas aliadas.', tipo_activacion:'Movilización ciudadana', canal:'Presencial / territorial', alcance:1400, inversion:3200, mensaje:'Recicla hoy, protege el futuro', notas:'8 toneladas de residuos recolectados.' },
-  ];
-  records = demo;
-  localStorage.setItem('clarios_is', JSON.stringify(records));
-}
 
 // ═══════════════════════════════════════════════════
 // FOLIOS ACTIVOS
@@ -2940,7 +2929,6 @@ function renderTracking() {
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
-seedDemo();
 filteredRecords = [...records];
 updateBadges();
 renderDashboard(filteredRecords);
