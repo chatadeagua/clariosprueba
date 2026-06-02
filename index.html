@@ -1194,7 +1194,7 @@ tbody tr:last-child td { border-bottom: none; }
 
     <!-- SECTION: REPUTACIÓN -->
     <div class="dash-section-title" style="margin-top:8px">Reputación y proceso</div>
-    <div class="stat-grid stat-grid-4">
+    <div class="stat-grid stat-grid-6">
       <div class="stat-card" style="--accent:#A78BFA">
         <div class="stat-icon">⭐</div>
         <div class="stat-label">Reconocimiento CLARIOS</div>
@@ -1218,6 +1218,18 @@ tbody tr:last-child td { border-bottom: none; }
         <div class="stat-label">Rondas de mentoría</div>
         <div class="stat-num" id="stat-mentoria">0</div>
         <div class="stat-sub">Seguimiento a egresados</div>
+      </div>
+      <div class="stat-card" style="--accent:#60A5FA">
+        <div class="stat-icon">📊</div>
+        <div class="stat-label">NPS</div>
+        <div class="stat-num" id="stat-nps">—</div>
+        <div class="stat-sub">Net Promoter Score</div>
+      </div>
+      <div class="stat-card" style="--accent:#A78BFA">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-label">Índice de confianza</div>
+        <div class="stat-num" id="stat-confianza">—</div>
+        <div class="stat-sub">Promedio (1–10)</div>
       </div>
     </div>
 
@@ -1249,6 +1261,30 @@ tbody tr:last-child td { border-bottom: none; }
       <div class="chart-card">
         <div class="chart-title">% Mujeres por actividad</div>
         <div class="chart-container"><canvas id="chart-mujeres"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">% Mujeres participantes</div>
+        <div class="chart-container"><canvas id="chart-pie-mujeres"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">% Mujeres con autonomía digital</div>
+        <div class="chart-container"><canvas id="chart-pie-autonomia"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">% Becarios en sostenibilidad</div>
+        <div class="chart-container"><canvas id="chart-pie-becarios"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Voluntarios Activación Social por mes</div>
+        <div class="chart-container"><canvas id="chart-voluntarios"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Reconocimiento de CLARIOS</div>
+        <div class="chart-container"><canvas id="chart-reconocimiento"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Canal de seguimiento a beneficiados</div>
+        <div class="chart-container"><canvas id="chart-canal"></canvas></div>
       </div>
     </div>
 
@@ -1433,6 +1469,24 @@ tbody tr:last-child td { border-bottom: none; }
             <div class="helper">Notas de prensa, publicaciones, menciones</div>
           </div>
         </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Total de alumnos con perspectiva de género aplicada</label>
+            <input type="number" id="g_alumnos_genero" placeholder="0" min="0">
+            <div class="helper">Alumnos que recibieron contenidos o talleres con enfoque de género</div>
+          </div>
+          <div class="field">
+            <label>Grado de participación comunitaria (1–5)</label>
+            <select id="g_grado_participacion">
+              <option value="">Selecciona...</option>
+              <option>1 — Sin participación</option>
+              <option>2 — Baja</option>
+              <option>3 — Moderada</option>
+              <option>4 — Alta</option>
+              <option>5 — Muy alta / Co-creación activa</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       <div class="form-section">
@@ -1509,6 +1563,27 @@ tbody tr:last-child td { border-bottom: none; }
               <option>Mixto</option>
               <option>No aplica</option>
             </select>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>NPS — Net Promoter Score</label>
+            <input type="number" id="g_nps" placeholder="0" min="-100" max="100">
+            <div class="helper">Escala de -100 a 100</div>
+          </div>
+          <div class="field">
+            <label>Índice de confianza en CLARIOS (1–10)</label>
+            <input type="number" id="g_indice_confianza" placeholder="0" min="0" max="10" step="0.1">
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Quejas recibidas</label>
+            <input type="number" id="g_quejas_recibidas" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Quejas atendidas</label>
+            <input type="number" id="g_quejas_atendidas" placeholder="0" min="0">
           </div>
         </div>
       </div>
@@ -1718,6 +1793,17 @@ tbody tr:last-child td { border-bottom: none; }
           <div class="field">
             <label>Observaciones del programa</label>
             <textarea id="af_obs" placeholder="Avances, retos, próximos pasos de Arranca el Futuro..." rows="2"></textarea>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Talento detectado y canalizado en Clarios</label>
+            <input type="number" id="af_talento_canalizado" placeholder="0" min="0">
+            <div class="helper">Número de alumnos con perfil identificado y referidos a Clarios</div>
+          </div>
+          <div class="field">
+            <label>% beneficiados que reportan a CLARIOS como empresa de interés laboral</label>
+            <input type="number" id="af_pct_beneficiados_clarios" placeholder="0" min="0" max="100">
           </div>
         </div>
       </div>
@@ -2180,9 +2266,9 @@ function startForm(type) {
   document.getElementById('f_beneficiarios').value = '';
 
   // Reset general indicator fields
-  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
+  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_indice_confianza','g_quejas_recibidas','g_quejas_atendidas','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
   numFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  const selFields = ['g_percepcion_clarios','g_reconocimiento','g_satisfaccion','g_canal_seguimiento','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
+  const selFields = ['g_percepcion_clarios','g_reconocimiento','g_satisfaccion','g_canal_seguimiento','g_grado_participacion','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
   selFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   // Hide all program sections
   ['arranca','guardianes','infraestructura','activacion_social'].forEach(p => {
@@ -2331,6 +2417,12 @@ function saveRecord() {
     g_satisfaccion:          document.getElementById('g_satisfaccion').value,
     g_rondas_mentoria:       parseInt(document.getElementById('g_rondas_mentoria').value) || 0,
     g_canal_seguimiento:     document.getElementById('g_canal_seguimiento').value,
+    g_alumnos_genero:        parseInt(document.getElementById('g_alumnos_genero').value) || 0,
+    g_grado_participacion:   document.getElementById('g_grado_participacion').value,
+    g_nps:                   parseFloat(document.getElementById('g_nps').value) || null,
+    g_indice_confianza:      parseFloat(document.getElementById('g_indice_confianza').value) || null,
+    g_quejas_recibidas:      parseInt(document.getElementById('g_quejas_recibidas').value) || 0,
+    g_quejas_atendidas:      parseInt(document.getElementById('g_quejas_atendidas').value) || 0,
   };
 
   // Program-specific indicators
@@ -2339,11 +2431,13 @@ function saveRecord() {
 
   if (programa === 'arranca') {
     progData = { ...progData,
-      af_pct_perfiles:    parseFloat(document.getElementById('af_pct_perfiles').value) || 0,
-      af_pct_intervenidos:parseFloat(document.getElementById('af_pct_intervenidos').value) || 0,
-      af_gimnasios:       parseInt(document.getElementById('af_gimnasios').value) || 0,
-      af_sesiones:        parseInt(document.getElementById('af_sesiones').value) || 0,
-      af_obs:             document.getElementById('af_obs').value.trim(),
+      af_pct_perfiles:            parseFloat(document.getElementById('af_pct_perfiles').value) || 0,
+      af_pct_intervenidos:        parseFloat(document.getElementById('af_pct_intervenidos').value) || 0,
+      af_gimnasios:               parseInt(document.getElementById('af_gimnasios').value) || 0,
+      af_sesiones:                parseInt(document.getElementById('af_sesiones').value) || 0,
+      af_obs:                     document.getElementById('af_obs').value.trim(),
+      af_talento_canalizado:      parseInt(document.getElementById('af_talento_canalizado').value) || 0,
+      af_pct_beneficiados_clarios:parseFloat(document.getElementById('af_pct_beneficiados_clarios').value) || 0,
     };
   } else if (programa === 'guardianes') {
     progData = { ...progData,
@@ -2471,6 +2565,8 @@ function renderDashboard(data) {
   let sumBecarios = 0, cntBecarios = 0;
   let sumReconocimiento = 0, cntReconocimiento = 0;
   let sumSatisfaccion = 0, cntSatisfaccion = 0;
+  let sumNps = 0, cntNps = 0;
+  let sumConfianza = 0, cntConfianza = 0;
 
   // Program-specific aggregates
   const prog = { guardianes:{ guardianes:0, residuos:0, estaciones:0 }, arranca:{ perfiles:0, intervenidos:0, gimnasios:0, sesiones:0 }, infraestructura:{ arboles:0, intervenciones:0, digitales:0 }, activacion_social:{ voluntarios:0, eventos:0, horas_vol:0 } };
@@ -2495,6 +2591,9 @@ function renderDashboard(data) {
     const satNum   = parseInt((r.g_satisfaccion||'').charAt(0));
     if (reconNum) { sumReconocimiento += reconNum; cntReconocimiento++; }
     if (satNum)   { sumSatisfaccion   += satNum;   cntSatisfaccion++; }
+
+    if (r.g_nps != null && r.g_nps !== '' && r.g_nps !== 0) { sumNps += parseFloat(r.g_nps); cntNps++; }
+    if (r.g_indice_confianza != null && r.g_indice_confianza !== '') { sumConfianza += parseFloat(r.g_indice_confianza); cntConfianza++; }
 
     if (r.programa === 'guardianes')      { prog.guardianes.guardianes += parseInt(r.gp_guardianes)||0; prog.guardianes.residuos += parseFloat(r.gp_residuos_kg)||0; prog.guardianes.estaciones += parseInt(r.gp_estaciones)||0; }
     if (r.programa === 'arranca')         { prog.arranca.perfiles += parseFloat(r.af_pct_perfiles)||0; prog.arranca.intervenidos += parseFloat(r.af_pct_intervenidos)||0; prog.arranca.gimnasios += parseInt(r.af_gimnasios)||0; prog.arranca.sesiones += parseInt(r.af_sesiones)||0; }
@@ -2535,6 +2634,8 @@ function renderDashboard(data) {
   setText('stat-satisfaccion', cntSatisfaccion ? avg(sumSatisfaccion, cntSatisfaccion) : '—');
   setText('stat-narrativas', totalNarrativas);
   setText('stat-mentoria', totalMentoria);
+  setText('stat-nps', cntNps ? avg(sumNps, cntNps) : '—');
+  setText('stat-confianza', cntConfianza ? avg(sumConfianza, cntConfianza) : '—');
 
   // Program-specific section
   renderProgSection(prog, document.getElementById('fil-programa').value);
@@ -2670,6 +2771,77 @@ function renderCharts(data, byType, prog) {
     type: 'bar',
     data: { labels: mujLabels.length?mujLabels:['Sin datos'], datasets:[{ label:'% Mujeres', data:mujData.length?mujData:[0], backgroundColor:'rgba(244,114,182,0.6)', borderColor:'#F472B6', borderWidth:1.5, borderRadius:6 }] },
     options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:{...tickStyle,maxRotation:35}}, y:{grid:gridStyle,ticks:tickStyle,min:0,max:100} }, plugins:{legend:{display:false}} }
+  });
+
+  // PIE — % mujeres participantes
+  let _sumMuj = 0, _cntMuj = 0;
+  data.forEach(r => { if (r.g_pct_mujeres) { _sumMuj += parseFloat(r.g_pct_mujeres); _cntMuj++; } });
+  const pctMuj = _cntMuj ? Math.round(_sumMuj / _cntMuj) : 0;
+  if (window.chartPieMujeres) window.chartPieMujeres.destroy();
+  window.chartPieMujeres = new Chart(document.getElementById('chart-pie-mujeres').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels:['Mujeres','Otros'], datasets:[{ data:[pctMuj,100-pctMuj], backgroundColor:['rgba(244,114,182,0.8)','rgba(74,65,117,0.4)'], borderColor:['#F472B6','#4A4175'], borderWidth:2 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:'#9B8EC4', font:{family:'Barlow',size:11} } } } }
+  });
+
+  // PIE — % mujeres con autonomía digital
+  let _sumAut = 0, _cntAut = 0;
+  data.forEach(r => { if (r.g_pct_autonomia_mujeres) { _sumAut += parseFloat(r.g_pct_autonomia_mujeres); _cntAut++; } });
+  const pctAut = _cntAut ? Math.round(_sumAut / _cntAut) : 0;
+  if (window.chartPieAutonomia) window.chartPieAutonomia.destroy();
+  window.chartPieAutonomia = new Chart(document.getElementById('chart-pie-autonomia').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels:['Autonomía digital','Resto'], datasets:[{ data:[pctAut,100-pctAut], backgroundColor:['rgba(34,211,238,0.8)','rgba(74,65,117,0.4)'], borderColor:['#22D3EE','#4A4175'], borderWidth:2 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:'#9B8EC4', font:{family:'Barlow',size:11} } } } }
+  });
+
+  // PIE — % becarios en sostenibilidad
+  let _sumBec = 0, _cntBec = 0;
+  data.forEach(r => { if (r.g_pct_becarios_sost) { _sumBec += parseFloat(r.g_pct_becarios_sost); _cntBec++; } });
+  const pctBec = _cntBec ? Math.round(_sumBec / _cntBec) : 0;
+  if (window.chartPieBecarios) window.chartPieBecarios.destroy();
+  window.chartPieBecarios = new Chart(document.getElementById('chart-pie-becarios').getContext('2d'), {
+    type: 'doughnut',
+    data: { labels:['Becarios sost.','Resto'], datasets:[{ data:[pctBec,100-pctBec], backgroundColor:['rgba(52,211,153,0.8)','rgba(74,65,117,0.4)'], borderColor:['#34D399','#4A4175'], borderWidth:2 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:'#9B8EC4', font:{family:'Barlow',size:11} } } } }
+  });
+
+  // LINE — voluntarios Activación Social por mes
+  const volMap = {};
+  data.filter(r=>r.programa==='activacion_social').forEach(r => {
+    const key=(r.fecha||r.timestamp.slice(0,10)).slice(0,7);
+    volMap[key]=(volMap[key]||0)+(parseInt(r.as_voluntarios)||0);
+  });
+  const volMonths = Object.keys(volMap).sort();
+  const volLabels = volMonths.map(m=>{ const [y,mo]=m.split('-'); return new Date(+y,+mo-1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}); });
+  if (window.chartVoluntarios) window.chartVoluntarios.destroy();
+  window.chartVoluntarios = new Chart(document.getElementById('chart-voluntarios').getContext('2d'), {
+    type: 'line',
+    data: { labels: volLabels.length?volLabels:['Sin datos'], datasets:[{ label:'Voluntarios', data:volMonths.map(m=>volMap[m]), borderColor:'#FCD34D', backgroundColor:'rgba(252,211,77,0.1)', fill:true, tension:0.4, pointBackgroundColor:'#FCD34D', pointRadius:4 }] },
+    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle,stepSize:1} }, plugins:{legend:{display:false}} }
+  });
+
+  // HORIZONTAL BAR — reconocimiento de CLARIOS
+  const reconMap = {'1':0,'2':0,'3':0,'4':0,'5':0};
+  data.forEach(r => { const n=(r.g_reconocimiento||'').charAt(0); if(reconMap[n]!==undefined) reconMap[n]++; });
+  if (window.chartReconocimiento) window.chartReconocimiento.destroy();
+  window.chartReconocimiento = new Chart(document.getElementById('chart-reconocimiento').getContext('2d'), {
+    type: 'bar',
+    data: { labels:['No conocido','Poco conocido','Comunidad','Referente local','Ref. nacional'],
+      datasets:[{ label:'Registros', data:[reconMap['1'],reconMap['2'],reconMap['3'],reconMap['4'],reconMap['5']], backgroundColor:'rgba(167,139,250,0.6)', borderColor:'#A78BFA', borderWidth:1.5, borderRadius:6, indexAxis:'y' }] },
+    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle} }, plugins:{legend:{display:false}} }
+  });
+
+  // HORIZONTAL BAR — canal de seguimiento
+  const canalMap = {};
+  data.forEach(r => { const c=r.g_canal_seguimiento; if(c) canalMap[c]=(canalMap[c]||0)+1; });
+  const canalKeys = Object.keys(canalMap);
+  if (window.chartCanal) window.chartCanal.destroy();
+  window.chartCanal = new Chart(document.getElementById('chart-canal').getContext('2d'), {
+    type: 'bar',
+    data: { labels: canalKeys.length?canalKeys:['Sin datos'],
+      datasets:[{ label:'Registros', data:canalKeys.map(k=>canalMap[k]), backgroundColor:'rgba(34,211,238,0.6)', borderColor:'#22D3EE', borderWidth:1.5, borderRadius:6 }] },
+    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle} }, plugins:{legend:{display:false}} }
   });
 }
 

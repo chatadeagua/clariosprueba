@@ -22,8 +22,12 @@ const INDICADORES_HEADERS = [
   // Reputación y proceso
   'g_percepcion_clarios', 'g_reconocimiento', 'g_satisfaccion',
   'g_rondas_mentoria', 'g_canal_seguimiento',
+  // Nuevos — Resultado y Reputación
+  'g_alumnos_genero', 'g_grado_participacion', 'g_nps', 'g_indice_confianza',
+  'g_quejas_recibidas', 'g_quejas_atendidas',
   // Programa: Arranca el Futuro
   'af_pct_perfiles', 'af_pct_intervenidos', 'af_gimnasios', 'af_sesiones', 'af_obs',
+  'af_talento_canalizado', 'af_pct_beneficiados_clarios',
   // Programa: Guardianes del Planeta
   'gp_guardianes', 'gp_residuos_kg', 'gp_estaciones', 'gp_tipo_residuos', 'gp_obs',
   // Programa: Infraestructura Resiliente
