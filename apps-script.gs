@@ -16,7 +16,7 @@ const BASE_HEADERS = [
 const INDICADORES_HEADERS = [
   // Resultado
   'g_escuelas', 'g_horas_formacion', 'g_ben_directos', 'g_ben_indirectos',
-  'g_pct_mujeres', 'g_alianzas', 'g_prototipos', 'g_narrativas',
+  'g_pct_mujeres', 'g_alianzas', 'g_prototipos', 'g_narrativas', 'g_inversion',
   // Impacto
   'g_pct_habilidades', 'g_pct_autonomia_mujeres', 'g_pct_becarios_sost',
   // Reputación y proceso
