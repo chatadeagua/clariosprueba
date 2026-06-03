@@ -1082,6 +1082,208 @@ tbody tr:last-child td { border-bottom: none; }
 @media (max-width: 600px) {
   .tablero-cards { grid-template-columns: repeat(2,1fr); }
 }
+/* ── REPORT PICKER MODAL ──────────────────────────────── */
+.rp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7,5,15,0.88);
+  backdrop-filter: blur(12px);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.rp-overlay.open { display: flex; }
+.rp-box {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  width: 100%;
+  max-width: 500px;
+  padding: 36px 40px;
+  animation: fadeUp 0.25s ease;
+}
+.rp-eyebrow {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--purple-lt);
+  margin-bottom: 8px;
+}
+.rp-title {
+  font-family: var(--cond);
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.rp-sub {
+  font-size: 12px;
+  color: var(--gray-2);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.rp-select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--purple-b);
+  color: var(--gray-1);
+  padding: 12px 40px 12px 14px;
+  border-radius: var(--r-sm);
+  font-family: var(--sans);
+  font-size: 13px;
+  margin-bottom: 20px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237C3AED' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.rp-select:focus { outline: none; border-color: var(--purple); }
+.rp-select option { color: var(--gray-1); background: var(--bg3); padding: 8px; }
+.rp-actions { display: flex; gap: 10px; }
+
+/* ── REPORT VIEW ──────────────────────────────────────── */
+.report-doc {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.report-doc-header {
+  background: linear-gradient(135deg, #3B0764 0%, #1E3A5F 100%);
+  padding: 32px 36px 28px;
+}
+.report-folio {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.report-name {
+  font-family: var(--cond);
+  font-size: 34px;
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.report-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+.report-meta-item { display: flex; flex-direction: column; gap: 3px; }
+.report-meta-key {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+.report-meta-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+}
+.report-prog-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+}
+.report-section {
+  padding: 22px 36px;
+  border-bottom: 1px solid var(--purple-b);
+}
+.report-section:last-child { border-bottom: none; }
+.report-section-title {
+  font-family: var(--cond);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--purple-lt);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.report-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--purple-b);
+}
+.report-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 16px;
+}
+.report-field { display: flex; flex-direction: column; gap: 4px; }
+.report-field-key {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray-3);
+}
+.report-field-val {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-1);
+  line-height: 1.4;
+}
+.report-field-val.num {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+}
+.report-field-val.empty {
+  color: var(--gray-4);
+  font-style: italic;
+  font-size: 11px;
+}
+.report-obj-block {
+  font-size: 13px;
+  color: var(--gray-1);
+  line-height: 1.65;
+  background: var(--bg3);
+  border-left: 3px solid var(--purple);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+}
+.report-no-data {
+  font-size: 12px;
+  color: var(--gray-3);
+  font-style: italic;
+}
+@media print {
+  .sidebar, .topbar, .page-header, .btn, .filter-bar, .view > .page-header { display: none !important; }
+  .main { margin-left: 0 !important; }
+  body, body::before { background: #fff !important; }
+  .report-doc { border: 1px solid #ccc; }
+  .report-doc-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
 </style>
 </head>
 <body>
@@ -1093,6 +1295,22 @@ tbody tr:last-child td { border-bottom: none; }
 <div class="toast" id="toast">✓ <span id="toast-msg">Registro guardado</span></div>
 
 <!-- DETAIL MODAL -->
+<!-- REPORT PICKER OVERLAY -->
+<div class="rp-overlay" id="rp-overlay" onclick="closeReportPicker(event)">
+  <div class="rp-box" onclick="event.stopPropagation()">
+    <div class="rp-eyebrow">Clarios IS · Reportes</div>
+    <div class="rp-title">Generar reporte</div>
+    <div class="rp-sub">Selecciona el registro del que quieres generar el reporte completo de indicadores.</div>
+    <select class="rp-select" id="rp-select">
+      <option value="">— Elige un registro —</option>
+    </select>
+    <div class="rp-actions">
+      <button class="btn btn-primary" onclick="generateReport()">Generar reporte</button>
+      <button class="btn btn-ghost" onclick="closeReportPicker()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal">
     <div class="modal-head">
@@ -1157,6 +1375,9 @@ tbody tr:last-child td { border-bottom: none; }
       <span class="nav-icon">☰</span> Todos los registros
       <span class="nav-badge" id="badge-registros" style="background:var(--gray-3)">0</span>
     </div>
+    <div class="nav-item" onclick="openReportPicker()">
+      <span class="nav-icon">⎙</span> Generar reporte
+    </div>
   </div>
 
   <div class="sidebar-footer">
@@ -1170,6 +1391,7 @@ tbody tr:last-child td { border-bottom: none; }
   <div class="topbar">
     <div class="topbar-title" id="topbar-title">Dashboard</div>
     <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="openReportPicker()">⎙ Generar reporte</button>
       <button class="btn btn-primary btn-sm" onclick="navigate('nuevo')">＋ Nueva actividad</button>
     </div>
   </div>
@@ -2252,6 +2474,23 @@ tbody tr:last-child td { border-bottom: none; }
     <div class="table-card" id="table-registros-wrap"></div>
   </div>
 
+  <!-- ═══════════════════════════
+       VIEW: REPORTE
+  ════════════════════════════ -->
+  <div class="view" id="view-reporte">
+    <div class="page-header">
+      <div class="page-eyebrow">Reportes</div>
+      <div class="page-title">Reporte de <span>indicadores</span></div>
+      <div class="page-desc">Resumen completo de todos los indicadores registrados para la actividad seleccionada.</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:20px">
+      <button class="btn btn-primary btn-sm" onclick="openReportPicker()">Cambiar registro</button>
+      <button class="btn btn-ghost btn-sm" onclick="window.print()">⎙ Imprimir / PDF</button>
+      <button class="btn btn-ghost btn-sm" onclick="navigate('registros')">← Volver a registros</button>
+    </div>
+    <div id="report-content"></div>
+  </div>
+
 </div>
 
 <script>
@@ -2388,7 +2627,8 @@ function navigate(view) {
     folios: 'Folios Activos',
     tracking: 'Tracking Centralizado',
     'impact-kit': 'Clarios Impact Kit',
-    registros: 'Todos los registros'
+    registros: 'Todos los registros',
+    reporte: 'Reporte de indicadores'
   };
   document.getElementById('topbar-title').textContent = titles[view] || 'Clarios IS';
 
@@ -3464,6 +3704,231 @@ function renderTracking() {
         </tr>`;
       }).join('')}</tbody>
     </table></div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// REPORT PICKER + REPORT GENERATOR
+// ═══════════════════════════════════════════════════
+
+function openReportPicker() {
+  const sel = document.getElementById('rp-select');
+  const typeIcon = { proyecto: '◉', evento: '◈', activacion: '◆' };
+  const typeLabel = { proyecto: 'Proyecto', evento: 'Evento', activacion: 'Activación' };
+  const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
+
+  // Group records by type
+  const groups = { proyecto: [], evento: [], activacion: [] };
+  records.forEach(r => { if (groups[r.type]) groups[r.type].push(r); });
+
+  let html = '<option value="">— Elige un registro —</option>';
+  Object.entries(groups).forEach(([type, recs]) => {
+    if (!recs.length) return;
+    html += `<optgroup label="${typeIcon[type]} ${typeLabel[type]}s (${recs.length})">`;
+    recs.forEach(r => {
+      const prog = progLabel[r.programa] ? ` · ${progLabel[r.programa]}` : '';
+      const fecha = r.fecha ? ` (${r.fecha.slice(0,10)})` : '';
+      html += `<option value="${r.id}">${r.nombre || r.folio || r.id}${prog}${fecha}</option>`;
+    });
+    html += '</optgroup>';
+  });
+  sel.innerHTML = html;
+  document.getElementById('rp-overlay').classList.add('open');
+}
+
+function closeReportPicker(e) {
+  if (e && e.target !== document.getElementById('rp-overlay')) return;
+  document.getElementById('rp-overlay').classList.remove('open');
+}
+
+function generateReport() {
+  const id = document.getElementById('rp-select').value;
+  if (!id) { showToast('Selecciona un registro primero'); return; }
+  const r = records.find(rec => rec.id === id);
+  if (!r) { showToast('Registro no encontrado'); return; }
+  document.getElementById('rp-overlay').classList.remove('open');
+  renderReportDoc(r);
+  navigate('reporte');
+}
+
+function rField(key, label, val, opts = {}) {
+  const isEmpty = val === undefined || val === null || val === '' || val === '0' || val === 0;
+  if (isEmpty && opts.hideEmpty) return '';
+  const cls = opts.num ? 'report-field-val num' : isEmpty ? 'report-field-val empty' : 'report-field-val';
+  const display = isEmpty ? 'Sin dato' : opts.pct ? val + '%' : opts.currency ? '$' + Number(val).toLocaleString('es-MX') : opts.num ? Number(val).toLocaleString('es-MX') : val;
+  return `<div class="report-field"><div class="report-field-key">${label}</div><div class="${cls}">${display}</div></div>`;
+}
+
+function renderReportDoc(r) {
+  const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
+  const typeColors = { proyecto:'#7C3AED', evento:'#0891B2', activacion:'#D97706' };
+  const typeLabel = { proyecto:'Proyecto', evento:'Evento', activacion:'Activación' };
+  const col = typeColors[r.type] || '#7C3AED';
+
+  // ── HEADER ──
+  let html = `<div class="report-doc">
+    <div class="report-doc-header">
+      <div class="report-folio">
+        <span class="badge badge-${r.type}">${typeLabel[r.type]||r.type}</span>
+        ${r.folio ? `<span>${r.folio}</span>` : ''}
+        <span>${r.fecha_registro ? r.fecha_registro.slice(0,10) : r.timestamp ? r.timestamp.slice(0,10) : ''}</span>
+      </div>
+      <div class="report-name">${r.nombre || 'Sin nombre'}</div>
+      <div class="report-meta-row">
+        <div class="report-meta-item"><div class="report-meta-key">Responsable</div><div class="report-meta-val">${r.responsable||'—'}</div></div>
+        <div class="report-meta-item"><div class="report-meta-key">Ubicación</div><div class="report-meta-val">${r.ubicacion||'—'}</div></div>
+        <div class="report-meta-item"><div class="report-meta-key">Área</div><div class="report-meta-val">${r.area||'—'}</div></div>
+        <div class="report-meta-item"><div class="report-meta-key">Fecha</div><div class="report-meta-val">${formatDate(r.fecha)}</div></div>
+        ${r.programa ? `<div class="report-meta-item"><div class="report-meta-key">Programa</div><div class="report-meta-val"><span class="report-prog-chip">${progLabel[r.programa]||r.programa}</span></div></div>` : ''}
+      </div>
+    </div>`;
+
+  // ── OBJETIVO Y NOTAS ──
+  if (r.objetivo || r.notas) {
+    html += `<div class="report-section">
+      <div class="report-section-title">Descripción</div>`;
+    if (r.objetivo) html += `<div style="margin-bottom:12px"><div class="report-field-key" style="margin-bottom:6px">Objetivo</div><div class="report-obj-block">${r.objetivo}</div></div>`;
+    if (r.notas) html += `<div><div class="report-field-key" style="margin-bottom:6px">Notas</div><div class="report-obj-block">${r.notas}</div></div>`;
+    html += `</div>`;
+  }
+
+  // ── DATOS ESPECÍFICOS POR TIPO ──
+  if (r.type === 'proyecto') {
+    html += `<div class="report-section">
+      <div class="report-section-title">Datos del proyecto</div>
+      <div class="report-fields">
+        ${rField('beneficiarios','Beneficiarios directos',r.beneficiarios,{num:true})}
+        ${rField('tipo_beneficiario','Tipo de beneficiario',r.tipo_beneficiario)}
+        ${rField('duracion','Duración',r.duracion)}
+        ${rField('presupuesto','Presupuesto',r.presupuesto,{currency:true})}
+        ${rField('aliados','Aliados estratégicos',r.aliados)}
+        ${rField('indicador','Indicador clave',r.indicador)}
+        ${rField('meta','Meta',r.meta)}
+      </div></div>`;
+  } else if (r.type === 'evento') {
+    html += `<div class="report-section">
+      <div class="report-section-title">Datos del evento</div>
+      <div class="report-fields">
+        ${rField('beneficiarios','Participantes',r.beneficiarios,{num:true})}
+        ${rField('tipo_beneficiario','Tipo de beneficiario',r.tipo_beneficiario)}
+        ${rField('tipo_evento','Tipo de evento',r.tipo_evento)}
+        ${rField('asistentes','Asistentes confirmados',r.asistentes,{num:true})}
+        ${rField('modalidad','Modalidad',r.modalidad)}
+        ${rField('media','Cobertura mediática',r.media)}
+        ${rField('logistica','Logística',r.logistica)}
+      </div></div>`;
+  } else if (r.type === 'activacion') {
+    html += `<div class="report-section">
+      <div class="report-section-title">Datos de la activación</div>
+      <div class="report-fields">
+        ${rField('beneficiarios','Alcance de personas',r.beneficiarios,{num:true})}
+        ${rField('tipo_beneficiario','Tipo de beneficiario',r.tipo_beneficiario)}
+        ${rField('tipo_activacion','Tipo de activación',r.tipo_activacion)}
+        ${rField('canal','Canal principal',r.canal)}
+        ${rField('alcance','Alcance estimado',r.alcance,{num:true})}
+        ${rField('inversion','Inversión',r.inversion,{currency:true})}
+        ${rField('mensaje','Mensaje central',r.mensaje)}
+      </div></div>`;
+  }
+
+  // ── INDICADORES GENERALES · RESULTADO ──
+  html += `<div class="report-section">
+    <div class="report-section-title">Indicadores generales — Resultado</div>
+    <div class="report-fields">
+      ${rField('g_escuelas','Escuelas / instituciones',r.g_escuelas,{num:true})}
+      ${rField('g_horas_formacion','Horas de formación',r.g_horas_formacion,{num:true})}
+      ${rField('g_ben_directos','Beneficiarios directos',r.g_ben_directos,{num:true})}
+      ${rField('g_ben_indirectos','Beneficiarios indirectos',r.g_ben_indirectos,{num:true})}
+      ${rField('g_pct_mujeres','% mujeres participantes',r.g_pct_mujeres,{pct:true})}
+      ${rField('g_alianzas','Alianzas generadas',r.g_alianzas,{num:true})}
+      ${rField('g_prototipos','Proyectos / prototipos',r.g_prototipos,{num:true})}
+      ${rField('g_narrativas','Narrativas de impacto',r.g_narrativas,{num:true})}
+      ${rField('g_alumnos_genero','Alumnos con perspectiva de género',r.g_alumnos_genero,{num:true})}
+    </div></div>`;
+
+  // ── INDICADORES GENERALES · IMPACTO ──
+  html += `<div class="report-section">
+    <div class="report-section-title">Indicadores generales — Impacto</div>
+    <div class="report-fields">
+      ${rField('g_pct_habilidades','% con habilidades mejoradas',r.g_pct_habilidades,{pct:true})}
+      ${rField('g_pct_autonomia_mujeres','% autonomía de mujeres',r.g_pct_autonomia_mujeres,{pct:true})}
+      ${rField('g_pct_becarios_sost','% becarios en sostenibilidad',r.g_pct_becarios_sost,{pct:true})}
+      ${rField('g_grado_participacion','Grado de participación (1–5)',r.g_grado_participacion)}
+      ${rField('g_talento_canalizado','Talento canalizado',r.g_talento_canalizado || r.af_talento_canalizado,{num:true})}
+    </div></div>`;
+
+  // ── INDICADORES GENERALES · REPUTACIÓN ──
+  html += `<div class="report-section">
+    <div class="report-section-title">Indicadores generales — Reputación</div>
+    <div class="report-fields">
+      ${rField('g_percepcion_clarios','Percepción de Clarios',r.g_percepcion_clarios)}
+      ${rField('g_reconocimiento','Reconocimiento (1–5)',r.g_reconocimiento)}
+      ${rField('g_satisfaccion','Satisfacción (1–5)',r.g_satisfaccion)}
+      ${rField('g_nps','NPS',r.g_nps)}
+      ${rField('g_indice_confianza','Índice de confianza (1–10)',r.g_indice_confianza)}
+      ${rField('g_pct_empleador_deseado','% empleador deseado',r.g_pct_empleador_deseado || r.af_pct_beneficiados_clarios,{pct:true})}
+    </div></div>`;
+
+  // ── INDICADORES GENERALES · PROCESO SOCIAL ──
+  html += `<div class="report-section">
+    <div class="report-section-title">Indicadores generales — Proceso social</div>
+    <div class="report-fields">
+      ${rField('g_rondas_mentoria','Rondas de mentoría',r.g_rondas_mentoria,{num:true})}
+      ${rField('g_canal_seguimiento','Canal de seguimiento',r.g_canal_seguimiento)}
+      ${rField('g_quejas_recibidas','Quejas recibidas',r.g_quejas_recibidas,{num:true})}
+      ${rField('g_quejas_atendidas','Quejas atendidas',r.g_quejas_atendidas,{num:true})}
+    </div></div>`;
+
+  // ── INDICADORES POR PROGRAMA ──
+  if (r.programa === 'arranca') {
+    html += `<div class="report-section">
+      <div class="report-section-title">Arranca el Futuro — Indicadores específicos</div>
+      <div class="report-fields">
+        ${rField('af_pct_perfiles','% perfiles identificados',r.af_pct_perfiles,{pct:true})}
+        ${rField('af_pct_intervenidos','% intervenidos',r.af_pct_intervenidos,{pct:true})}
+        ${rField('af_gimnasios','Gimnasios de innovación',r.af_gimnasios,{num:true})}
+        ${rField('af_sesiones','Sesiones realizadas',r.af_sesiones,{num:true})}
+        ${rField('af_talento_canalizado','Talento canalizado',r.af_talento_canalizado,{num:true})}
+        ${rField('af_pct_beneficiados_clarios','% beneficiados que ven a Clarios como empleador',r.af_pct_beneficiados_clarios,{pct:true})}
+        ${rField('af_obs','Observaciones',r.af_obs)}
+      </div></div>`;
+  }
+  if (r.programa === 'guardianes') {
+    html += `<div class="report-section">
+      <div class="report-section-title">Guardianes del Planeta — Indicadores específicos</div>
+      <div class="report-fields">
+        ${rField('gp_guardianes','Guardianes activos',r.gp_guardianes,{num:true})}
+        ${rField('gp_residuos_kg','Residuos recolectados (kg)',r.gp_residuos_kg,{num:true})}
+        ${rField('gp_estaciones','Estaciones de acopio',r.gp_estaciones,{num:true})}
+        ${rField('gp_tipo_residuos','Tipo de residuos',r.gp_tipo_residuos)}
+        ${rField('gp_obs','Observaciones',r.gp_obs)}
+      </div></div>`;
+  }
+  if (r.programa === 'infraestructura') {
+    html += `<div class="report-section">
+      <div class="report-section-title">Infraestructura Resiliente — Indicadores específicos</div>
+      <div class="report-fields">
+        ${rField('inf_arboles','Árboles plantados',r.inf_arboles,{num:true})}
+        ${rField('inf_intervenciones','Intervenciones realizadas',r.inf_intervenciones,{num:true})}
+        ${rField('inf_espacios_digitales','Espacios digitales habilitados',r.inf_espacios_digitales,{num:true})}
+        ${rField('inf_tipo','Tipo de infraestructura',r.inf_tipo)}
+        ${rField('inf_obs','Observaciones',r.inf_obs)}
+      </div></div>`;
+  }
+  if (r.programa === 'activacion_social') {
+    html += `<div class="report-section">
+      <div class="report-section-title">Activación Social — Indicadores específicos</div>
+      <div class="report-fields">
+        ${rField('as_voluntarios','Voluntarios participantes',r.as_voluntarios,{num:true})}
+        ${rField('as_num_eventos','Número de eventos',r.as_num_eventos,{num:true})}
+        ${rField('as_tipo','Tipo de activación',r.as_tipo)}
+        ${rField('as_horas_voluntariado','Horas de voluntariado',r.as_horas_voluntariado,{num:true})}
+        ${rField('as_obs','Observaciones',r.as_obs)}
+      </div></div>`;
+  }
+
+  html += `</div>`;
+
+  document.getElementById('report-content').innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════
