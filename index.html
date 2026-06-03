@@ -1516,250 +1516,260 @@ tbody tr:last-child td { border-bottom: none; }
 
     <!-- DASH TAB TOGGLES -->
     <div class="dash-tabs">
-      <button class="dash-tab active" id="tab-comp" onclick="setDashTab('comp')">
-        <span class="tab-icon">⊞</span> Comparativa general
-      </button>
-      <button class="dash-tab" id="tab-pr" onclick="setDashTab('pr')">
+      <button class="dash-tab active" id="tab-pr" onclick="setDashTab('pr')">
         <span class="tab-icon">◉</span> Por registro
       </button>
+      <button class="dash-tab" id="tab-comp" onclick="setDashTab('comp')">
+        <span class="tab-icon">📊</span> Comparativa
+      </button>
     </div>
 
-    <!-- PANEL: POR REGISTRO -->
-    <div class="dash-panel" id="dash-pr">
-      <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:var(--r-lg);padding:20px 24px;margin-bottom:16px">
-        <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray-3);margin-bottom:10px">Selecciona el registro a visualizar</div>
-        <select id="pr-record-select" onchange="renderRecordTablero()" style="width:100%;max-width:600px;background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:11px 14px;border-radius:var(--r-sm);font-family:var(--sans);font-size:13px;appearance:none;cursor:pointer">
-          <option value="">— Elige un registro —</option>
+    <!-- ── PANEL: POR REGISTRO ── -->
+    <div class="dash-panel active" id="dash-pr">
+
+      <!-- Record selector -->
+      <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:var(--r-lg);padding:18px 24px;margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:16px">
+        <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray-3);white-space:nowrap">Vista de indicadores</div>
+        <select id="pr-record-select" onchange="renderRecordTablero()" style="flex:1;min-width:260px;max-width:600px;background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:10px 14px;border-radius:var(--r-sm);font-family:var(--sans);font-size:13px;appearance:none;cursor:pointer">
+          <option value="">☰ Todos los registros — acumulado</option>
         </select>
       </div>
-      <div id="pr-tablero-wrap">
-        <div class="empty-state"><div class="empty-icon">◉</div><p>Selecciona un registro para ver sus indicadores.</p></div>
-      </div>
-    </div>
 
-    <!-- PANEL: COMPARATIVA (contiene el tablero agregado + gráficas) -->
-    <div class="dash-panel active" id="dash-comp">
+      <!-- Sub-view A: Aggregate (shown when "Todos" selected) -->
+      <div id="pr-aggregate">
 
-    <!-- ACTIVITY STRIP -->
-    <div class="act-strip">
-      <div class="act-strip-item">
-        <div class="act-strip-num" id="stat-total">0</div>
-        <div class="act-strip-label">Total actividades</div>
-      </div>
-      <div class="act-strip-item">
-        <div class="act-strip-num" style="color:var(--purple-lt)" id="stat-proyectos">0</div>
-        <div class="act-strip-label">Proyectos</div>
-      </div>
-      <div class="act-strip-item">
-        <div class="act-strip-num" style="color:var(--teal-lt)" id="stat-eventos">0</div>
-        <div class="act-strip-label">Eventos</div>
-      </div>
-      <div class="act-strip-item">
-        <div class="act-strip-num" style="color:var(--amber-lt)" id="stat-activaciones">0</div>
-        <div class="act-strip-label">Activaciones</div>
-      </div>
-    </div>
-
-    <!-- TABLERO DE IMPACTO — 4 filas -->
-    <div class="tablero">
-
-      <!-- IMPACTO -->
-      <div class="tablero-row">
-        <div class="tablero-label" style="--row-color:#5B21B6">
-          <div class="tablero-label-name">Impacto</div>
-          <div class="tablero-label-count">6 indicadores</div>
-        </div>
-        <div class="tablero-cards">
-          <div class="metric-card">
-            <div class="metric-card-label">% Aumento en habilidades técnicas / digitales / liderazgo</div>
-            <div id="mc-habilidades"></div>
+        <!-- ACTIVITY STRIP -->
+        <div class="act-strip">
+          <div class="act-strip-item">
+            <div class="act-strip-num" id="stat-total">0</div>
+            <div class="act-strip-label">Total actividades</div>
           </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Prototipos con enfoque circular</div>
-            <div id="mc-prototipos"></div>
+          <div class="act-strip-item">
+            <div class="act-strip-num" style="color:var(--purple-lt)" id="stat-proyectos">0</div>
+            <div class="act-strip-label">Proyectos</div>
           </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Grado de satisfacción</div>
-            <div id="mc-satisfaccion"></div>
+          <div class="act-strip-item">
+            <div class="act-strip-num" style="color:var(--teal-lt)" id="stat-eventos">0</div>
+            <div class="act-strip-label">Eventos</div>
           </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Grado de participación</div>
-            <div id="mc-participacion"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Talento canalizado a Clarios</div>
-            <div id="mc-talento"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Alumnos con perspectiva de género</div>
-            <div id="mc-genero"></div>
+          <div class="act-strip-item">
+            <div class="act-strip-num" style="color:var(--amber-lt)" id="stat-activaciones">0</div>
+            <div class="act-strip-label">Activaciones</div>
           </div>
         </div>
-      </div>
 
-      <!-- REPUTACIÓN -->
-      <div class="tablero-row">
-        <div class="tablero-label" style="--row-color:#1D4ED8">
-          <div class="tablero-label-name">Reputación</div>
-          <div class="tablero-label-count">6 indicadores</div>
+        <!-- TABLERO DE IMPACTO — 4 filas -->
+        <div class="tablero">
+
+          <!-- IMPACTO -->
+          <div class="tablero-row">
+            <div class="tablero-label" style="--row-color:#5B21B6">
+              <div class="tablero-label-name">Impacto</div>
+              <div class="tablero-label-count">6 indicadores</div>
+            </div>
+            <div class="tablero-cards">
+              <div class="metric-card">
+                <div class="metric-card-label">% Aumento en habilidades técnicas / digitales / liderazgo</div>
+                <div id="mc-habilidades"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Prototipos con enfoque circular</div>
+                <div id="mc-prototipos"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Grado de satisfacción</div>
+                <div id="mc-satisfaccion"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Grado de participación</div>
+                <div id="mc-participacion"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Talento canalizado a Clarios</div>
+                <div id="mc-talento"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Alumnos con perspectiva de género</div>
+                <div id="mc-genero"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- REPUTACIÓN -->
+          <div class="tablero-row">
+            <div class="tablero-label" style="--row-color:#1D4ED8">
+              <div class="tablero-label-name">Reputación</div>
+              <div class="tablero-label-count">6 indicadores</div>
+            </div>
+            <div class="tablero-cards">
+              <div class="metric-card">
+                <div class="metric-card-label">Reconocimiento de CLARIOS</div>
+                <div id="mc-reconocimiento"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">% Empleador deseado</div>
+                <div id="mc-empleador"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Narrativas positivas en medios</div>
+                <div id="mc-narrativas"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Beneficiarios directos</div>
+                <div id="mc-ben-dir-rep"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Índice de confianza</div>
+                <div id="mc-confianza"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">NPS</div>
+                <div id="mc-nps"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RESULTADO -->
+          <div class="tablero-row">
+            <div class="tablero-label" style="--row-color:#0E7490">
+              <div class="tablero-label-name">Resultado</div>
+              <div class="tablero-label-count">6 indicadores</div>
+            </div>
+            <div class="tablero-cards">
+              <div class="metric-card">
+                <div class="metric-card-label">Beneficiados directos</div>
+                <div id="mc-ben-directos"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Horas de formación impartidas</div>
+                <div id="mc-horas"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Beneficiarios indirectos</div>
+                <div id="mc-ben-indirectos"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">% Mujeres participantes</div>
+                <div id="mc-mujeres"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Escuelas beneficiadas</div>
+                <div id="mc-escuelas"></div>
+              </div>
+              <div class="metric-card" style="border-left:2px solid rgba(52,211,153,0.4)">
+                <div class="metric-card-label">sROI · costo / beneficiario</div>
+                <div id="mc-sroi"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROCESO SOCIAL -->
+          <div class="tablero-row">
+            <div class="tablero-label" style="--row-color:#0369A1">
+              <div class="tablero-label-name">Proceso social</div>
+              <div class="tablero-label-count">5 indicadores</div>
+            </div>
+            <div class="tablero-cards">
+              <div class="metric-card">
+                <div class="metric-card-label">Alianzas activas</div>
+                <div id="mc-alianzas"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Rondas de seguimiento</div>
+                <div id="mc-rondas"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Quejas recibidas / atendidas</div>
+                <div id="mc-quejas"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Voluntarios movilizados</div>
+                <div id="mc-voluntarios"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">% Becarios en sostenibilidad</div>
+                <div id="mc-becarios"></div>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <div class="tablero-cards">
-          <div class="metric-card">
-            <div class="metric-card-label">Reconocimiento de CLARIOS</div>
-            <div id="mc-reconocimiento"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">% Empleador deseado</div>
-            <div id="mc-empleador"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Narrativas positivas en medios</div>
-            <div id="mc-narrativas"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Beneficiarios directos</div>
-            <div id="mc-ben-dir-rep"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Índice de confianza</div>
-            <div id="mc-confianza"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">NPS</div>
-            <div id="mc-nps"></div>
-          </div>
+
+        <!-- SECTION: PROGRAMA ESPECÍFICO (condicional) -->
+        <div id="prog-dashboard-section" style="display:none">
+          <div class="dash-section-title" id="prog-dashboard-title" style="margin-top:8px">Indicadores de programa</div>
+          <div class="stat-grid stat-grid-4" id="prog-dashboard-grid"></div>
+        </div>
+
+      </div><!-- /pr-aggregate -->
+
+      <!-- Sub-view B: Individual record (shown when a record is selected) -->
+      <div id="pr-individual" style="display:none">
+        <div id="pr-tablero-wrap"></div>
+      </div>
+
+    </div><!-- /dash-pr -->
+
+    <!-- ── PANEL: COMPARATIVA (solo gráficas) ── -->
+    <div class="dash-panel" id="dash-comp">
+
+      <!-- CHARTS -->
+      <div class="dash-section-title" style="margin-top:0">Visualizaciones comparativas</div>
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">Distribución por tipo</div>
+          <div class="chart-container"><canvas id="chart-donut"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Beneficiarios por programa</div>
+          <div class="chart-container"><canvas id="chart-bar"></canvas></div>
+        </div>
+        <div class="chart-card wide">
+          <div class="chart-title">Actividades por mes</div>
+          <div class="chart-container" style="height:180px"><canvas id="chart-line"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Horas de formación por mes</div>
+          <div class="chart-container"><canvas id="chart-horas"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">% Mujeres por actividad</div>
+          <div class="chart-container"><canvas id="chart-mujeres"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">% Mujeres participantes</div>
+          <div class="chart-container"><canvas id="chart-pie-mujeres"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">% Mujeres con autonomía digital</div>
+          <div class="chart-container"><canvas id="chart-pie-autonomia"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">% Becarios en sostenibilidad</div>
+          <div class="chart-container"><canvas id="chart-pie-becarios"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Voluntarios Activación Social por mes</div>
+          <div class="chart-container"><canvas id="chart-voluntarios"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Reconocimiento de CLARIOS</div>
+          <div class="chart-container"><canvas id="chart-reconocimiento"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Canal de seguimiento a beneficiados</div>
+          <div class="chart-container"><canvas id="chart-canal"></canvas></div>
         </div>
       </div>
 
-      <!-- RESULTADO -->
-      <div class="tablero-row">
-        <div class="tablero-label" style="--row-color:#0E7490">
-          <div class="tablero-label-name">Resultado</div>
-          <div class="tablero-label-count">6 indicadores</div>
+      <!-- RECENT TABLE -->
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">Actividades del periodo</div>
+          <button class="btn btn-ghost btn-sm" onclick="navigate('registros')">Ver todos →</button>
         </div>
-        <div class="tablero-cards">
-          <div class="metric-card">
-            <div class="metric-card-label">Beneficiados directos</div>
-            <div id="mc-ben-directos"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Horas de formación impartidas</div>
-            <div id="mc-horas"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Beneficiarios indirectos</div>
-            <div id="mc-ben-indirectos"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">% Mujeres participantes</div>
-            <div id="mc-mujeres"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Escuelas beneficiadas</div>
-            <div id="mc-escuelas"></div>
-          </div>
-          <div class="metric-card" style="border-left:2px solid rgba(52,211,153,0.4)">
-            <div class="metric-card-label">sROI · costo / beneficiario</div>
-            <div id="mc-sroi"></div>
-          </div>
-        </div>
+        <div id="table-recent"></div>
       </div>
-
-      <!-- PROCESO SOCIAL -->
-      <div class="tablero-row">
-        <div class="tablero-label" style="--row-color:#0369A1">
-          <div class="tablero-label-name">Proceso social</div>
-          <div class="tablero-label-count">5 indicadores</div>
-        </div>
-        <div class="tablero-cards">
-          <div class="metric-card">
-            <div class="metric-card-label">Alianzas activas</div>
-            <div id="mc-alianzas"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Rondas de seguimiento</div>
-            <div id="mc-rondas"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Quejas recibidas / atendidas</div>
-            <div id="mc-quejas"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">Voluntarios movilizados</div>
-            <div id="mc-voluntarios"></div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-card-label">% Becarios en sostenibilidad</div>
-            <div id="mc-becarios"></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- SECTION: PROGRAMA ESPECÍFICO (condicional) -->
-    <div id="prog-dashboard-section" style="display:none">
-      <div class="dash-section-title" id="prog-dashboard-title" style="margin-top:8px">Indicadores de programa</div>
-      <div class="stat-grid stat-grid-4" id="prog-dashboard-grid"></div>
-    </div>
-
-    <!-- CHARTS -->
-    <div class="dash-section-title" style="margin-top:8px">Visualizaciones</div>
-    <div class="chart-grid">
-      <div class="chart-card">
-        <div class="chart-title">Distribución por tipo</div>
-        <div class="chart-container"><canvas id="chart-donut"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Beneficiarios por programa</div>
-        <div class="chart-container"><canvas id="chart-bar"></canvas></div>
-      </div>
-      <div class="chart-card wide">
-        <div class="chart-title">Actividades por mes</div>
-        <div class="chart-container" style="height:180px"><canvas id="chart-line"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Horas de formación por mes</div>
-        <div class="chart-container"><canvas id="chart-horas"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">% Mujeres por actividad</div>
-        <div class="chart-container"><canvas id="chart-mujeres"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">% Mujeres participantes</div>
-        <div class="chart-container"><canvas id="chart-pie-mujeres"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">% Mujeres con autonomía digital</div>
-        <div class="chart-container"><canvas id="chart-pie-autonomia"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">% Becarios en sostenibilidad</div>
-        <div class="chart-container"><canvas id="chart-pie-becarios"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Voluntarios Activación Social por mes</div>
-        <div class="chart-container"><canvas id="chart-voluntarios"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Reconocimiento de CLARIOS</div>
-        <div class="chart-container"><canvas id="chart-reconocimiento"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Canal de seguimiento a beneficiados</div>
-        <div class="chart-container"><canvas id="chart-canal"></canvas></div>
-      </div>
-    </div>
-
-    <!-- RECENT TABLE -->
-    <div class="table-card">
-      <div class="table-header">
-        <div class="table-title">Actividades del periodo</div>
-        <button class="btn btn-ghost btn-sm" onclick="navigate('registros')">Ver todos →</button>
-      </div>
-      <div id="table-recent"></div>
-    </div>
 
     </div><!-- /dash-comp -->
   </div>
@@ -2646,7 +2656,7 @@ async function syncFromAPI() {
 }
 
 function refreshCurrentView() {
-  if (currentView === 'dashboard') renderDashboard(filteredRecords.length ? filteredRecords : records);
+  if (currentView === 'dashboard') { renderDashboard(filteredRecords.length ? filteredRecords : records); populatePrSelect(); }
   if (currentView === 'proyectos') renderList('proyecto', 'table-proyectos-wrap');
   if (currentView === 'eventos') renderList('evento', 'table-eventos-wrap');
   if (currentView === 'activaciones') renderList('activacion', 'table-activaciones-wrap');
@@ -2730,7 +2740,7 @@ function navigate(view) {
   currentView = view;
 
   // Refresh relevant view
-  if (view === 'dashboard') renderDashboard(filteredRecords.length ? filteredRecords : records);
+  if (view === 'dashboard') { renderDashboard(filteredRecords.length ? filteredRecords : records); populatePrSelect(); }
   if (view === 'proyectos') renderList('proyecto', 'table-proyectos-wrap');
   if (view === 'eventos') renderList('evento', 'table-eventos-wrap');
   if (view === 'activaciones') renderList('activacion', 'table-activaciones-wrap');
@@ -3824,7 +3834,7 @@ function populatePrSelect() {
   const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
   const groups = { proyecto:[], evento:[], activacion:[] };
   records.forEach(r => { if (groups[r.type]) groups[r.type].push(r); });
-  let html = '<option value="">— Elige un registro —</option>';
+  let html = '<option value="">☰ Todos los registros — acumulado</option>';
   Object.entries(groups).forEach(([type, recs]) => {
     if (!recs.length) return;
     html += `<optgroup label="${typeLabel[type]}s (${recs.length})">`;
@@ -3836,18 +3846,29 @@ function populatePrSelect() {
     html += '</optgroup>';
   });
   sel.innerHTML = html;
-  if (current && records.find(r => r.id === current)) renderRecordTablero();
+  renderRecordTablero();
 }
 
 function renderRecordTablero() {
-  const id  = document.getElementById('pr-record-select').value;
-  const wrap = document.getElementById('pr-tablero-wrap');
+  const id        = document.getElementById('pr-record-select').value;
+  const aggregate = document.getElementById('pr-aggregate');
+  const individual = document.getElementById('pr-individual');
+  const wrap      = document.getElementById('pr-tablero-wrap');
+
+  // No record selected → show aggregate tablero
   if (!id) {
-    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">◉</div><p>Selecciona un registro para ver sus indicadores.</p></div>`;
+    aggregate.style.display = '';
+    individual.style.display = 'none';
+    renderDashboard(filteredRecords.length ? filteredRecords : records);
     return;
   }
+
   const r = records.find(rec => rec.id === id);
   if (!r) return;
+
+  // Record selected → show individual tablero
+  aggregate.style.display = 'none';
+  individual.style.display = '';
 
   const typeLabel = { proyecto:'Proyecto', evento:'Evento', activacion:'Activación' };
   const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
