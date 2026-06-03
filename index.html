@@ -1335,6 +1335,105 @@ tbody tr:last-child td { border-bottom: none; }
   color: var(--white);
 }
 .pr-record-meta { font-size: 11px; color: var(--gray-2); }
+
+/* ── CONFIANZA POPOVER ────────────────────────────────── */
+.ic-pop {
+  position: fixed;
+  z-index: 500;
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  padding: 22px 26px 20px;
+  width: 380px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.65);
+  animation: fadeUp 0.2s ease;
+}
+.ic-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.ic-pop-title {
+  font-family: var(--cond);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--purple-lt);
+}
+.ic-pop-close {
+  background: none;
+  border: none;
+  color: var(--gray-2);
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 4px;
+}
+.ic-pop-close:hover { color: var(--white); }
+.ic-q-list { display: flex; flex-direction: column; gap: 12px; }
+.ic-q-item { display: flex; flex-direction: column; gap: 5px; }
+.ic-q-label {
+  font-size: 10px;
+  color: var(--gray-2);
+  line-height: 1.45;
+}
+.ic-q-bar-row { display: flex; align-items: center; gap: 10px; }
+.ic-q-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.ic-q-bar-fill { height: 100%; border-radius: 3px; }
+.ic-q-val {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--white);
+  min-width: 28px;
+  text-align: right;
+}
+.ic-pop-footer {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--purple-b);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ic-pop-footer-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray-3);
+}
+.ic-pop-footer-val {
+  font-family: var(--cond);
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+}
+/* Likert form */
+.likert-group {
+  background: var(--bg3);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-md);
+  padding: 14px 16px 6px;
+  margin-bottom: 6px;
+}
+.likert-group-title {
+  font-family: var(--cond);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--purple-lt);
+  margin-bottom: 12px;
+}
 </style>
 </head>
 <body>
@@ -1618,8 +1717,8 @@ tbody tr:last-child td { border-bottom: none; }
                 <div class="metric-card-label">Beneficiarios directos</div>
                 <div id="mc-ben-dir-rep"></div>
               </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Índice de confianza</div>
+              <div class="metric-card" ondblclick="showConfianzaPop(event,'aggregate')" style="cursor:pointer" title="Doble clic para ver desglose por pregunta">
+                <div class="metric-card-label">Índice de confianza <span style="font-size:8px;opacity:0.5">⊞ dbl-clic</span></div>
                 <div id="mc-confianza"></div>
               </div>
               <div class="metric-card">
@@ -2059,11 +2158,66 @@ tbody tr:last-child td { border-bottom: none; }
             <input type="number" id="g_nps" placeholder="0" min="-100" max="100">
             <div class="helper">Escala de -100 a 100</div>
           </div>
-          <div class="field">
-            <label>Índice de confianza en CLARIOS (1–10)</label>
-            <input type="number" id="g_indice_confianza" placeholder="0" min="0" max="10" step="0.1">
+          <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:6px">
+            <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple-lt)">Índice de confianza (calculado)</div>
+            <div id="ic-preview" style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white)">—</div>
+            <div class="helper">Promedio de las 4 dimensiones Likert · escala 1–5</div>
           </div>
         </div>
+
+        <!-- ÍNDICE DE CONFIANZA — 4 preguntas Likert -->
+        <div class="likert-group">
+          <div class="likert-group-title">Índice de Confianza — 4 dimensiones (escala 1 al 5)</div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label>CLARIOS es una empresa innovadora en su sector</label>
+              <select id="g_ic_q1" onchange="updateIcPreview()">
+                <option value="">Selecciona...</option>
+                <option value="1">1 — Totalmente en desacuerdo</option>
+                <option value="2">2 — En desacuerdo</option>
+                <option value="3">3 — Neutral</option>
+                <option value="4">4 — De acuerdo</option>
+                <option value="5">5 — Totalmente de acuerdo</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>CLARIOS es una empresa líder en Economía Circular</label>
+              <select id="g_ic_q2" onchange="updateIcPreview()">
+                <option value="">Selecciona...</option>
+                <option value="1">1 — Totalmente en desacuerdo</option>
+                <option value="2">2 — En desacuerdo</option>
+                <option value="3">3 — Neutral</option>
+                <option value="4">4 — De acuerdo</option>
+                <option value="5">5 — Totalmente de acuerdo</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-row cols-2">
+            <div class="field">
+              <label>CLARIOS está comprometida con la sostenibilidad ambiental</label>
+              <select id="g_ic_q3" onchange="updateIcPreview()">
+                <option value="">Selecciona...</option>
+                <option value="1">1 — Totalmente en desacuerdo</option>
+                <option value="2">2 — En desacuerdo</option>
+                <option value="3">3 — Neutral</option>
+                <option value="4">4 — De acuerdo</option>
+                <option value="5">5 — Totalmente de acuerdo</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>¿CLARIOS ha generado impacto positivo en tu escuela/comunidad?</label>
+              <select id="g_ic_q4" onchange="updateIcPreview()">
+                <option value="">Selecciona...</option>
+                <option value="1">1 — Totalmente en desacuerdo</option>
+                <option value="2">2 — En desacuerdo</option>
+                <option value="3">3 — Neutral</option>
+                <option value="4">4 — De acuerdo</option>
+                <option value="5">5 — Totalmente de acuerdo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div class="field-row cols-2">
           <div class="field">
             <label>Quejas recibidas</label>
@@ -2772,9 +2926,10 @@ function startForm(type) {
   document.getElementById('f_beneficiarios').value = '';
 
   // Reset general indicator fields
-  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_indice_confianza','g_quejas_recibidas','g_quejas_atendidas','g_inversion','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
+  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
   numFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  const selFields = ['g_percepcion_clarios','g_reconocimiento','g_satisfaccion','g_canal_seguimiento','g_grado_participacion','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
+  document.getElementById('ic-preview').textContent = '—';
+  const selFields = ['g_percepcion_clarios','g_reconocimiento','g_satisfaccion','g_canal_seguimiento','g_grado_participacion','g_ic_q1','g_ic_q2','g_ic_q3','g_ic_q4','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
   selFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   // Hide all program sections
   ['arranca','guardianes','infraestructura','activacion_social'].forEach(p => {
@@ -2927,7 +3082,14 @@ function saveRecord() {
     g_grado_participacion:   document.getElementById('g_grado_participacion').value,
     g_inversion:             parseFloat(document.getElementById('g_inversion').value) || 0,
     g_nps:                   parseFloat(document.getElementById('g_nps').value) || null,
-    g_indice_confianza:      parseFloat(document.getElementById('g_indice_confianza').value) || null,
+    g_ic_q1: parseFloat(document.getElementById('g_ic_q1').value) || null,
+    g_ic_q2: parseFloat(document.getElementById('g_ic_q2').value) || null,
+    g_ic_q3: parseFloat(document.getElementById('g_ic_q3').value) || null,
+    g_ic_q4: parseFloat(document.getElementById('g_ic_q4').value) || null,
+    get g_indice_confianza() {
+      const vals = [this.g_ic_q1, this.g_ic_q2, this.g_ic_q3, this.g_ic_q4].filter(v => v != null);
+      return vals.length ? parseFloat((vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(2)) : null;
+    },
     g_quejas_recibidas:      parseInt(document.getElementById('g_quejas_recibidas').value) || 0,
     g_quejas_atendidas:      parseInt(document.getElementById('g_quejas_atendidas').value) || 0,
   };
@@ -3091,6 +3253,10 @@ function mGauge(id, rawVal, type = 'scale5') {
     const n = parseFloat(rawVal);
     pct = isNaN(n) ? 0 : (n / 10) * 100;
     label = isNaN(n) ? rawVal : n.toFixed(1);
+  } else if (type === 'scale5f') {
+    const n = parseFloat(rawVal);
+    pct = isNaN(n) ? 0 : ((n - 1) / 4) * 100;
+    label = isNaN(n) ? rawVal : n.toFixed(2);
   } else if (type === 'nps') {
     const n = parseFloat(rawVal);
     pct = isNaN(n) ? 50 : ((n + 100) / 200) * 100;
@@ -3127,6 +3293,8 @@ function renderDashboard(data) {
   let sumReconNum = 0, cntRecon = 0;
   let sumSatNum = 0, cntSat = 0;
   let sumConfianza = 0, cntConfianza = 0;
+  let sumIcQ1 = 0, cntIcQ1 = 0, sumIcQ2 = 0, cntIcQ2 = 0;
+  let sumIcQ3 = 0, cntIcQ3 = 0, sumIcQ4 = 0, cntIcQ4 = 0;
   let sumNps = 0, cntNps = 0;
   let sumParticipacion = 0, cntParticipacion = 0;
   let totalVoluntarios = 0;
@@ -3166,6 +3334,11 @@ function renderDashboard(data) {
     const nps  = parseFloat(r.g_nps);
     if (!isNaN(conf) && conf > 0) { sumConfianza += conf; cntConfianza++; }
     if (!isNaN(nps)  && r.g_nps != null && r.g_nps !== '') { sumNps += nps; cntNps++; }
+    const ic1 = parseFloat(r.g_ic_q1), ic2 = parseFloat(r.g_ic_q2), ic3 = parseFloat(r.g_ic_q3), ic4 = parseFloat(r.g_ic_q4);
+    if (!isNaN(ic1) && ic1 > 0) { sumIcQ1 += ic1; cntIcQ1++; }
+    if (!isNaN(ic2) && ic2 > 0) { sumIcQ2 += ic2; cntIcQ2++; }
+    if (!isNaN(ic3) && ic3 > 0) { sumIcQ3 += ic3; cntIcQ3++; }
+    if (!isNaN(ic4) && ic4 > 0) { sumIcQ4 += ic4; cntIcQ4++; }
 
     if (r.programa === 'guardianes')       { prog.guardianes.guardianes += parseInt(r.gp_guardianes)||0; prog.guardianes.residuos += parseFloat(r.gp_residuos_kg)||0; prog.guardianes.estaciones += parseInt(r.gp_estaciones)||0; }
     if (r.programa === 'arranca')          { prog.arranca.perfiles += parseFloat(r.af_pct_perfiles)||0; prog.arranca.intervenidos += parseFloat(r.af_pct_intervenidos)||0; prog.arranca.gimnasios += parseInt(r.af_gimnasios)||0; prog.arranca.sesiones += parseInt(r.af_sesiones)||0; }
@@ -3197,7 +3370,16 @@ function renderDashboard(data) {
   mNum('mc-empleador',  cntEmpleador ? Math.round(sumEmpleador/cntEmpleador)+'%' : null, { color:'#60A5FA', pending: !cntEmpleador });
   mNum('mc-narrativas', totalNarrativas || null, { color:'#F59E0B', pending: !totalNarrativas });
   mNum('mc-ben-dir-rep', totalBenDir ? totalBenDir.toLocaleString('es-MX') : null, { color:'#34D399', pending: !totalBenDir });
-  mGauge('mc-confianza', cntConfianza ? (sumConfianza/cntConfianza).toFixed(1) : '', 'scale10');
+  // Store per-question aggregates for popover
+  window._icAgg = {
+    q1: cntIcQ1 ? sumIcQ1/cntIcQ1 : null,
+    q2: cntIcQ2 ? sumIcQ2/cntIcQ2 : null,
+    q3: cntIcQ3 ? sumIcQ3/cntIcQ3 : null,
+    q4: cntIcQ4 ? sumIcQ4/cntIcQ4 : null,
+    avg: cntConfianza ? sumConfianza/cntConfianza : null
+  };
+  const icAvgStr = cntConfianza ? (sumConfianza/cntConfianza).toFixed(2) : '';
+  mGauge('mc-confianza', icAvgStr, 'scale5f');
   mGauge('mc-nps', cntNps ? (sumNps/cntNps).toFixed(0) : '', 'nps');
 
   // ── RESULTADO ──
@@ -3902,7 +4084,7 @@ function renderRecordTablero() {
           <div class="metric-card"><div class="metric-card-label">% Empleador deseado</div><div id="pr-mc-empleador"></div></div>
           <div class="metric-card"><div class="metric-card-label">Narrativas positivas</div><div id="pr-mc-narrativas"></div></div>
           <div class="metric-card"><div class="metric-card-label">Beneficiarios directos</div><div id="pr-mc-ben-dir-rep"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Índice de confianza</div><div id="pr-mc-confianza"></div></div>
+          <div class="metric-card" ondblclick="showConfianzaPop(event,'individual','${r.id}')" style="cursor:pointer" title="Doble clic para ver desglose"><div class="metric-card-label">Índice de confianza <span style="font-size:8px;opacity:0.5">⊞ dbl-clic</span></div><div id="pr-mc-confianza"></div></div>
           <div class="metric-card"><div class="metric-card-label">NPS</div><div id="pr-mc-nps"></div></div>
         </div>
       </div>
@@ -3943,7 +4125,7 @@ function renderRecordTablero() {
   mNum('pr-mc-narrativas', parseInt(r.g_narrativas)||null, { color:'#F59E0B', pending: !parseInt(r.g_narrativas) });
   const prBenD = parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0;
   mNum('pr-mc-ben-dir-rep', prBenD ? prBenD.toLocaleString('es-MX') : null, { color:'#34D399', pending: !prBenD });
-  mGauge('pr-mc-confianza', (r.g_indice_confianza != null && r.g_indice_confianza !== '') ? String(r.g_indice_confianza) : '', 'scale10');
+  mGauge('pr-mc-confianza', (r.g_indice_confianza != null && r.g_indice_confianza !== '') ? String(r.g_indice_confianza) : '', 'scale5f');
   mGauge('pr-mc-nps',       (r.g_nps != null && r.g_nps !== '') ? String(r.g_nps) : '', 'nps');
 
   // ── RESULTADO ──
@@ -4133,7 +4315,11 @@ function renderReportDoc(r) {
       ${rField('g_reconocimiento','Reconocimiento (1–5)',r.g_reconocimiento)}
       ${rField('g_satisfaccion','Satisfacción (1–5)',r.g_satisfaccion)}
       ${rField('g_nps','NPS',r.g_nps)}
-      ${rField('g_indice_confianza','Índice de confianza (1–10)',r.g_indice_confianza)}
+      ${rField('g_indice_confianza','Índice de confianza (promedio)',r.g_indice_confianza)}
+      ${rField('g_ic_q1','Q1 · Empresa innovadora',r.g_ic_q1,{hideEmpty:true})}
+      ${rField('g_ic_q2','Q2 · Líder Economía Circular',r.g_ic_q2,{hideEmpty:true})}
+      ${rField('g_ic_q3','Q3 · Compromiso sostenibilidad',r.g_ic_q3,{hideEmpty:true})}
+      ${rField('g_ic_q4','Q4 · Impacto en comunidad',r.g_ic_q4,{hideEmpty:true})}
       ${rField('g_pct_empleador_deseado','% empleador deseado',r.g_pct_empleador_deseado || r.af_pct_beneficiados_clarios,{pct:true})}
     </div></div>`;
 
@@ -4203,6 +4389,98 @@ function renderReportDoc(r) {
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
+// ── Índice de Confianza live preview ──
+const IC_QUESTIONS = [
+  'CLARIOS es una empresa innovadora en su sector',
+  'CLARIOS es líder en Economía Circular',
+  'CLARIOS está comprometida con la sostenibilidad ambiental',
+  '¿CLARIOS ha generado impacto positivo en tu escuela/comunidad?'
+];
+
+function updateIcPreview() {
+  const vals = ['g_ic_q1','g_ic_q2','g_ic_q3','g_ic_q4']
+    .map(id => parseFloat(document.getElementById(id)?.value))
+    .filter(v => !isNaN(v) && v > 0);
+  const el = document.getElementById('ic-preview');
+  if (!el) return;
+  if (vals.length > 0) {
+    const avg = vals.reduce((a,b) => a+b, 0) / vals.length;
+    el.textContent = avg.toFixed(2) + ' / 5';
+    el.style.color = avg >= 4 ? 'var(--green-lt)' : avg >= 3 ? 'var(--amber)' : 'var(--red)';
+  } else {
+    el.textContent = '—';
+    el.style.color = 'var(--gray-3)';
+  }
+}
+
+// ── Confianza popover (dblclick on metric card) ──
+function showConfianzaPop(event, mode, recordId) {
+  event.stopPropagation();
+  const existing = document.getElementById('ic-pop');
+  if (existing) { existing.remove(); return; }
+
+  let qs, overall;
+  if (mode === 'individual' && recordId) {
+    const r = records.find(rec => rec.id === recordId);
+    if (!r) return;
+    qs = [parseFloat(r.g_ic_q1)||null, parseFloat(r.g_ic_q2)||null, parseFloat(r.g_ic_q3)||null, parseFloat(r.g_ic_q4)||null];
+    overall = parseFloat(r.g_indice_confianza) || null;
+    if (!overall && qs.some(v => v !== null)) {
+      const valid = qs.filter(v => v !== null);
+      overall = valid.reduce((a,b) => a+b, 0) / valid.length;
+    }
+  } else {
+    const agg = window._icAgg || {};
+    qs = [agg.q1||null, agg.q2||null, agg.q3||null, agg.q4||null];
+    overall = agg.avg || null;
+  }
+
+  const barCol = v => v === null ? 'var(--gray-4)' : v >= 4 ? '#10B981' : v >= 3 ? '#F59E0B' : '#EF4444';
+
+  const pop = document.createElement('div');
+  pop.id = 'ic-pop';
+  pop.className = 'ic-pop';
+  pop.onclick = e => e.stopPropagation();
+  pop.innerHTML = `
+    <div class="ic-pop-head">
+      <div class="ic-pop-title">Índice de Confianza · Desglose</div>
+      <button class="ic-pop-close" onclick="document.getElementById('ic-pop').remove()">×</button>
+    </div>
+    <div class="ic-q-list">
+      ${IC_QUESTIONS.map((q, i) => {
+        const v = qs[i];
+        const pct = v !== null ? ((v-1)/4)*100 : 0;
+        const col = barCol(v);
+        return `<div class="ic-q-item">
+          <div class="ic-q-label">${q}</div>
+          <div class="ic-q-bar-row">
+            <div class="ic-q-bar"><div class="ic-q-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+            <div class="ic-q-val" style="color:${col}">${v !== null ? v.toFixed(1) : '—'}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="ic-pop-footer">
+      <div class="ic-pop-footer-label">${mode==='individual' ? 'Índice este registro' : 'Promedio general'}</div>
+      <div class="ic-pop-footer-val" style="color:${barCol(overall)}">${overall !== null ? overall.toFixed(2) : '—'}<span style="font-family:var(--sans);font-size:12px;opacity:0.5"> / 5</span></div>
+    </div>`;
+
+  document.body.appendChild(pop);
+  const rect = event.currentTarget.getBoundingClientRect();
+  let top  = rect.bottom + 8 + window.scrollY;
+  let left = rect.left   + window.scrollX;
+  if (left + 390 > window.innerWidth)  left = window.innerWidth  - 398;
+  if (top  + 340 > window.innerHeight + window.scrollY) top = rect.top + window.scrollY - 348;
+  pop.style.top  = top  + 'px';
+  pop.style.left = left + 'px';
+
+  setTimeout(() => {
+    document.addEventListener('click', function icClose(e) {
+      if (!pop.contains(e.target)) { pop.remove(); document.removeEventListener('click', icClose); }
+    });
+  }, 80);
+}
+
 // ── sROI live preview in form ──
 function updateSroiPreview() {
   const inv = parseFloat(document.getElementById('g_inversion')?.value) || 0;
