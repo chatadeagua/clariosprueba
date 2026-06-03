@@ -24,6 +24,10 @@ const INDICADORES_HEADERS = [
   'g_rondas_mentoria', 'g_canal_seguimiento',
   // Nuevos — Resultado y Reputación
   'g_alumnos_genero', 'g_grado_participacion', 'g_nps',
+  'g_ic_q1_l1', 'g_ic_q1_l2', 'g_ic_q1_l3', 'g_ic_q1_l4', 'g_ic_q1_l5',
+  'g_ic_q2_l1', 'g_ic_q2_l2', 'g_ic_q2_l3', 'g_ic_q2_l4', 'g_ic_q2_l5',
+  'g_ic_q3_l1', 'g_ic_q3_l2', 'g_ic_q3_l3', 'g_ic_q3_l4', 'g_ic_q3_l5',
+  'g_ic_q4_l1', 'g_ic_q4_l2', 'g_ic_q4_l3', 'g_ic_q4_l4', 'g_ic_q4_l5',
   'g_ic_q1', 'g_ic_q2', 'g_ic_q3', 'g_ic_q4', 'g_indice_confianza',
   'g_quejas_recibidas', 'g_quejas_atendidas',
   // Programa: Arranca el Futuro

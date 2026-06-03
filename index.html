@@ -1344,7 +1344,7 @@ tbody tr:last-child td { border-bottom: none; }
   border: 1px solid var(--purple-b);
   border-radius: var(--r-lg);
   padding: 22px 26px 20px;
-  width: 380px;
+  width: 420px;
   box-shadow: 0 24px 64px rgba(0,0,0,0.65);
   animation: fadeUp 0.2s ease;
 }
@@ -1372,6 +1372,11 @@ tbody tr:last-child td { border-bottom: none; }
   padding: 2px 4px;
 }
 .ic-pop-close:hover { color: var(--white); }
+.ic-dist-row { display: flex; gap: 5px; align-items: flex-end; height: 52px; }
+.ic-dist-col { display: flex; flex-direction: column; align-items: center; gap: 2px; width: 30px; }
+.ic-dist-cnt { font-family: var(--mono); font-size: 9px; font-weight: 700; color: var(--gray-2); height: 13px; display: flex; align-items: flex-end; justify-content: center; }
+.ic-dist-bar { width: 22px; border-radius: 3px 3px 0 0; }
+.ic-dist-lbl { font-size: 8px; color: var(--gray-3); }
 .ic-q-list { display: flex; flex-direction: column; gap: 12px; }
 .ic-q-item { display: flex; flex-direction: column; gap: 5px; }
 .ic-q-label {
@@ -1422,7 +1427,7 @@ tbody tr:last-child td { border-bottom: none; }
   background: var(--bg3);
   border: 1px solid var(--purple-b);
   border-radius: var(--r-md);
-  padding: 14px 16px 6px;
+  padding: 14px 16px 14px;
   margin-bottom: 6px;
 }
 .likert-group-title {
@@ -1432,8 +1437,79 @@ tbody tr:last-child td { border-bottom: none; }
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--purple-lt);
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
+.likert-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.likert-table th {
+  background: var(--bg);
+  color: var(--gray-2);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 6px;
+  text-align: center;
+  border: 1px solid var(--gray-4);
+  white-space: nowrap;
+}
+.likert-table th.lt-q-col { text-align: left; width: 34%; }
+.likert-table td {
+  padding: 8px 6px;
+  border: 1px solid var(--gray-4);
+  text-align: center;
+  vertical-align: middle;
+  font-size: 11px;
+}
+.likert-table td.lt-q-cell {
+  text-align: left;
+  color: var(--gray-1);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.likert-table input[type="number"] {
+  width: 52px;
+  background: var(--bg2);
+  border: 1px solid var(--gray-4);
+  border-radius: 4px;
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 4px;
+  text-align: center;
+  transition: border-color 0.15s;
+}
+.likert-table input[type="number"]:focus { outline: none; border-color: var(--purple); }
+.likert-table .lt-avg {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gray-3);
+}
+.likert-table tfoot td {
+  background: var(--bg2);
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--gray-3);
+}
+.lt-level-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.lt-level-num {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--white);
+  font-family: var(--cond);
+}
+.lt-level-lbl { font-size: 7px; opacity: 0.7; letter-spacing: 0; }
 </style>
 </head>
 <body>
@@ -2165,57 +2241,70 @@ tbody tr:last-child td { border-bottom: none; }
           </div>
         </div>
 
-        <!-- ÍNDICE DE CONFIANZA — 4 preguntas Likert -->
+        <!-- ÍNDICE DE CONFIANZA — distribución Likert por pregunta -->
         <div class="likert-group">
           <div class="likert-group-title">Índice de Confianza — 4 dimensiones (escala 1 al 5)</div>
-          <div class="field-row cols-2">
-            <div class="field">
-              <label>CLARIOS es una empresa innovadora en su sector</label>
-              <select id="g_ic_q1" onchange="updateIcPreview()">
-                <option value="">Selecciona...</option>
-                <option value="1">1 — Totalmente en desacuerdo</option>
-                <option value="2">2 — En desacuerdo</option>
-                <option value="3">3 — Neutral</option>
-                <option value="4">4 — De acuerdo</option>
-                <option value="5">5 — Totalmente de acuerdo</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>CLARIOS es una empresa líder en Economía Circular</label>
-              <select id="g_ic_q2" onchange="updateIcPreview()">
-                <option value="">Selecciona...</option>
-                <option value="1">1 — Totalmente en desacuerdo</option>
-                <option value="2">2 — En desacuerdo</option>
-                <option value="3">3 — Neutral</option>
-                <option value="4">4 — De acuerdo</option>
-                <option value="5">5 — Totalmente de acuerdo</option>
-              </select>
-            </div>
-          </div>
-          <div class="field-row cols-2">
-            <div class="field">
-              <label>CLARIOS está comprometida con la sostenibilidad ambiental</label>
-              <select id="g_ic_q3" onchange="updateIcPreview()">
-                <option value="">Selecciona...</option>
-                <option value="1">1 — Totalmente en desacuerdo</option>
-                <option value="2">2 — En desacuerdo</option>
-                <option value="3">3 — Neutral</option>
-                <option value="4">4 — De acuerdo</option>
-                <option value="5">5 — Totalmente de acuerdo</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>¿CLARIOS ha generado impacto positivo en tu escuela/comunidad?</label>
-              <select id="g_ic_q4" onchange="updateIcPreview()">
-                <option value="">Selecciona...</option>
-                <option value="1">1 — Totalmente en desacuerdo</option>
-                <option value="2">2 — En desacuerdo</option>
-                <option value="3">3 — Neutral</option>
-                <option value="4">4 — De acuerdo</option>
-                <option value="5">5 — Totalmente de acuerdo</option>
-              </select>
-            </div>
-          </div>
+          <div style="font-size:11px;color:var(--gray-3);margin-bottom:10px">Ingresa cuántos alumnos respondieron en cada nivel por pregunta (TD = totalmente en desacuerdo · TA = totalmente de acuerdo)</div>
+          <table class="likert-table">
+            <thead>
+              <tr>
+                <th class="lt-q-col" rowspan="2">Pregunta</th>
+                <th colspan="5" style="text-align:center;font-size:9px;letter-spacing:2px">N.° ALUMNOS POR NIVEL</th>
+                <th rowspan="2" style="text-align:center">Prom.</th>
+              </tr>
+              <tr>
+                <th><div class="lt-level-header"><div class="lt-level-num">1</div><div class="lt-level-lbl">TD</div></div></th>
+                <th><div class="lt-level-header"><div class="lt-level-num">2</div><div class="lt-level-lbl">ED</div></div></th>
+                <th><div class="lt-level-header"><div class="lt-level-num">3</div><div class="lt-level-lbl">N</div></div></th>
+                <th><div class="lt-level-header"><div class="lt-level-num">4</div><div class="lt-level-lbl">DA</div></div></th>
+                <th><div class="lt-level-header"><div class="lt-level-num">5</div><div class="lt-level-lbl">TA</div></div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="lt-q-cell">CLARIOS es una empresa innovadora en su sector</td>
+                <td><input type="number" id="g_ic_q1_l1" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q1_l2" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q1_l3" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q1_l4" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q1_l5" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td style="text-align:center"><span class="lt-avg" id="ic-q1-avg">—</span></td>
+              </tr>
+              <tr>
+                <td class="lt-q-cell">CLARIOS es una empresa líder en Economía Circular</td>
+                <td><input type="number" id="g_ic_q2_l1" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q2_l2" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q2_l3" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q2_l4" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q2_l5" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td style="text-align:center"><span class="lt-avg" id="ic-q2-avg">—</span></td>
+              </tr>
+              <tr>
+                <td class="lt-q-cell">CLARIOS está comprometida con la sostenibilidad ambiental</td>
+                <td><input type="number" id="g_ic_q3_l1" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q3_l2" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q3_l3" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q3_l4" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q3_l5" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td style="text-align:center"><span class="lt-avg" id="ic-q3-avg">—</span></td>
+              </tr>
+              <tr>
+                <td class="lt-q-cell">¿CLARIOS ha generado impacto positivo en tu escuela/comunidad?</td>
+                <td><input type="number" id="g_ic_q4_l1" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q4_l2" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q4_l3" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q4_l4" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td><input type="number" id="g_ic_q4_l5" min="0" placeholder="0" oninput="updateIcPreview()"></td>
+                <td style="text-align:center"><span class="lt-avg" id="ic-q4-avg">—</span></td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="6" style="text-align:right;padding:10px 8px">Índice de Confianza (promedio de las 4 preguntas)</td>
+                <td style="text-align:center"><span id="ic-preview" style="font-family:var(--cond);font-size:20px;font-weight:900;color:var(--white)">—</span></td>
+              </tr>
+            </tfoot>
+          </table>
         </div>
 
         <div class="field-row cols-2">
@@ -2926,10 +3015,11 @@ function startForm(type) {
   document.getElementById('f_beneficiarios').value = '';
 
   // Reset general indicator fields
-  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
+  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_ic_q1_l1','g_ic_q1_l2','g_ic_q1_l3','g_ic_q1_l4','g_ic_q1_l5','g_ic_q2_l1','g_ic_q2_l2','g_ic_q2_l3','g_ic_q2_l4','g_ic_q2_l5','g_ic_q3_l1','g_ic_q3_l2','g_ic_q3_l3','g_ic_q3_l4','g_ic_q3_l5','g_ic_q4_l1','g_ic_q4_l2','g_ic_q4_l3','g_ic_q4_l4','g_ic_q4_l5','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
   numFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('ic-preview').textContent = '—';
-  const selFields = ['g_percepcion_clarios','g_reconocimiento','g_satisfaccion','g_canal_seguimiento','g_grado_participacion','g_ic_q1','g_ic_q2','g_ic_q3','g_ic_q4','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
+  [1,2,3,4].forEach(q => { const el = document.getElementById(`ic-q${q}-avg`); if (el) { el.textContent = '—'; el.style.color = ''; } });
+  const selFields = ['g_percepcion_clarios','g_reconocimiento','g_satisfaccion','g_canal_seguimiento','g_grado_participacion','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
   selFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   // Hide all program sections
   ['arranca','guardianes','infraestructura','activacion_social'].forEach(p => {
@@ -3082,13 +3172,33 @@ function saveRecord() {
     g_grado_participacion:   document.getElementById('g_grado_participacion').value,
     g_inversion:             parseFloat(document.getElementById('g_inversion').value) || 0,
     g_nps:                   parseFloat(document.getElementById('g_nps').value) || null,
-    g_ic_q1: parseFloat(document.getElementById('g_ic_q1').value) || null,
-    g_ic_q2: parseFloat(document.getElementById('g_ic_q2').value) || null,
-    g_ic_q3: parseFloat(document.getElementById('g_ic_q3').value) || null,
-    g_ic_q4: parseFloat(document.getElementById('g_ic_q4').value) || null,
+    g_ic_q1_l1: parseInt(document.getElementById('g_ic_q1_l1')?.value) || 0,
+    g_ic_q1_l2: parseInt(document.getElementById('g_ic_q1_l2')?.value) || 0,
+    g_ic_q1_l3: parseInt(document.getElementById('g_ic_q1_l3')?.value) || 0,
+    g_ic_q1_l4: parseInt(document.getElementById('g_ic_q1_l4')?.value) || 0,
+    g_ic_q1_l5: parseInt(document.getElementById('g_ic_q1_l5')?.value) || 0,
+    g_ic_q2_l1: parseInt(document.getElementById('g_ic_q2_l1')?.value) || 0,
+    g_ic_q2_l2: parseInt(document.getElementById('g_ic_q2_l2')?.value) || 0,
+    g_ic_q2_l3: parseInt(document.getElementById('g_ic_q2_l3')?.value) || 0,
+    g_ic_q2_l4: parseInt(document.getElementById('g_ic_q2_l4')?.value) || 0,
+    g_ic_q2_l5: parseInt(document.getElementById('g_ic_q2_l5')?.value) || 0,
+    g_ic_q3_l1: parseInt(document.getElementById('g_ic_q3_l1')?.value) || 0,
+    g_ic_q3_l2: parseInt(document.getElementById('g_ic_q3_l2')?.value) || 0,
+    g_ic_q3_l3: parseInt(document.getElementById('g_ic_q3_l3')?.value) || 0,
+    g_ic_q3_l4: parseInt(document.getElementById('g_ic_q3_l4')?.value) || 0,
+    g_ic_q3_l5: parseInt(document.getElementById('g_ic_q3_l5')?.value) || 0,
+    g_ic_q4_l1: parseInt(document.getElementById('g_ic_q4_l1')?.value) || 0,
+    g_ic_q4_l2: parseInt(document.getElementById('g_ic_q4_l2')?.value) || 0,
+    g_ic_q4_l3: parseInt(document.getElementById('g_ic_q4_l3')?.value) || 0,
+    g_ic_q4_l4: parseInt(document.getElementById('g_ic_q4_l4')?.value) || 0,
+    g_ic_q4_l5: parseInt(document.getElementById('g_ic_q4_l5')?.value) || 0,
+    get g_ic_q1() { const c=[this.g_ic_q1_l1,this.g_ic_q1_l2,this.g_ic_q1_l3,this.g_ic_q1_l4,this.g_ic_q1_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
+    get g_ic_q2() { const c=[this.g_ic_q2_l1,this.g_ic_q2_l2,this.g_ic_q2_l3,this.g_ic_q2_l4,this.g_ic_q2_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
+    get g_ic_q3() { const c=[this.g_ic_q3_l1,this.g_ic_q3_l2,this.g_ic_q3_l3,this.g_ic_q3_l4,this.g_ic_q3_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
+    get g_ic_q4() { const c=[this.g_ic_q4_l1,this.g_ic_q4_l2,this.g_ic_q4_l3,this.g_ic_q4_l4,this.g_ic_q4_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
     get g_indice_confianza() {
-      const vals = [this.g_ic_q1, this.g_ic_q2, this.g_ic_q3, this.g_ic_q4].filter(v => v != null);
-      return vals.length ? parseFloat((vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(2)) : null;
+      const avgs = [this.g_ic_q1, this.g_ic_q2, this.g_ic_q3, this.g_ic_q4].filter(v => v != null);
+      return avgs.length ? parseFloat((avgs.reduce((a,b) => a+b, 0) / avgs.length).toFixed(2)) : null;
     },
     g_quejas_recibidas:      parseInt(document.getElementById('g_quejas_recibidas').value) || 0,
     g_quejas_atendidas:      parseInt(document.getElementById('g_quejas_atendidas').value) || 0,
@@ -3293,8 +3403,7 @@ function renderDashboard(data) {
   let sumReconNum = 0, cntRecon = 0;
   let sumSatNum = 0, cntSat = 0;
   let sumConfianza = 0, cntConfianza = 0;
-  let sumIcQ1 = 0, cntIcQ1 = 0, sumIcQ2 = 0, cntIcQ2 = 0;
-  let sumIcQ3 = 0, cntIcQ3 = 0, sumIcQ4 = 0, cntIcQ4 = 0;
+  const icDist = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
   let sumNps = 0, cntNps = 0;
   let sumParticipacion = 0, cntParticipacion = 0;
   let totalVoluntarios = 0;
@@ -3334,11 +3443,11 @@ function renderDashboard(data) {
     const nps  = parseFloat(r.g_nps);
     if (!isNaN(conf) && conf > 0) { sumConfianza += conf; cntConfianza++; }
     if (!isNaN(nps)  && r.g_nps != null && r.g_nps !== '') { sumNps += nps; cntNps++; }
-    const ic1 = parseFloat(r.g_ic_q1), ic2 = parseFloat(r.g_ic_q2), ic3 = parseFloat(r.g_ic_q3), ic4 = parseFloat(r.g_ic_q4);
-    if (!isNaN(ic1) && ic1 > 0) { sumIcQ1 += ic1; cntIcQ1++; }
-    if (!isNaN(ic2) && ic2 > 0) { sumIcQ2 += ic2; cntIcQ2++; }
-    if (!isNaN(ic3) && ic3 > 0) { sumIcQ3 += ic3; cntIcQ3++; }
-    if (!isNaN(ic4) && ic4 > 0) { sumIcQ4 += ic4; cntIcQ4++; }
+    for (let q = 0; q < 4; q++) {
+      for (let l = 0; l < 5; l++) {
+        icDist[q][l] += parseInt(r[`g_ic_q${q+1}_l${l+1}`]) || 0;
+      }
+    }
 
     if (r.programa === 'guardianes')       { prog.guardianes.guardianes += parseInt(r.gp_guardianes)||0; prog.guardianes.residuos += parseFloat(r.gp_residuos_kg)||0; prog.guardianes.estaciones += parseInt(r.gp_estaciones)||0; }
     if (r.programa === 'arranca')          { prog.arranca.perfiles += parseFloat(r.af_pct_perfiles)||0; prog.arranca.intervenidos += parseFloat(r.af_pct_intervenidos)||0; prog.arranca.gimnasios += parseInt(r.af_gimnasios)||0; prog.arranca.sesiones += parseInt(r.af_sesiones)||0; }
@@ -3370,12 +3479,15 @@ function renderDashboard(data) {
   mNum('mc-empleador',  cntEmpleador ? Math.round(sumEmpleador/cntEmpleador)+'%' : null, { color:'#60A5FA', pending: !cntEmpleador });
   mNum('mc-narrativas', totalNarrativas || null, { color:'#F59E0B', pending: !totalNarrativas });
   mNum('mc-ben-dir-rep', totalBenDir ? totalBenDir.toLocaleString('es-MX') : null, { color:'#34D399', pending: !totalBenDir });
-  // Store per-question aggregates for popover
+  // Store per-question aggregates (distribution-based) for popover
+  const icDistAvg = icDist.map(dist => {
+    const sw = dist.reduce((s,n,i) => s + (i+1)*n, 0);
+    const sn = dist.reduce((s,n) => s + n, 0);
+    return sn > 0 ? sw/sn : null;
+  });
   window._icAgg = {
-    q1: cntIcQ1 ? sumIcQ1/cntIcQ1 : null,
-    q2: cntIcQ2 ? sumIcQ2/cntIcQ2 : null,
-    q3: cntIcQ3 ? sumIcQ3/cntIcQ3 : null,
-    q4: cntIcQ4 ? sumIcQ4/cntIcQ4 : null,
+    q1: icDistAvg[0], q2: icDistAvg[1], q3: icDistAvg[2], q4: icDistAvg[3],
+    q1dist: icDist[0], q2dist: icDist[1], q3dist: icDist[2], q4dist: icDist[3],
     avg: cntConfianza ? sumConfianza/cntConfianza : null
   };
   const icAvgStr = cntConfianza ? (sumConfianza/cntConfianza).toFixed(2) : '';
@@ -4398,15 +4510,30 @@ const IC_QUESTIONS = [
 ];
 
 function updateIcPreview() {
-  const vals = ['g_ic_q1','g_ic_q2','g_ic_q3','g_ic_q4']
-    .map(id => parseFloat(document.getElementById(id)?.value))
-    .filter(v => !isNaN(v) && v > 0);
+  const qAvgs = [];
+  for (let q = 1; q <= 4; q++) {
+    const counts = [1,2,3,4,5].map(l => parseInt(document.getElementById(`g_ic_q${q}_l${l}`)?.value) || 0);
+    const sumN = counts.reduce((a,b) => a+b, 0);
+    const sumW = counts.reduce((s,n,i) => s + (i+1)*n, 0);
+    const avg = sumN > 0 ? sumW / sumN : null;
+    const el = document.getElementById(`ic-q${q}-avg`);
+    if (el) {
+      if (avg !== null) {
+        el.textContent = avg.toFixed(2);
+        el.style.color = avg >= 4 ? 'var(--green-lt)' : avg >= 3 ? 'var(--amber)' : 'var(--red)';
+      } else {
+        el.textContent = '—';
+        el.style.color = 'var(--gray-3)';
+      }
+    }
+    if (avg !== null) qAvgs.push(avg);
+  }
   const el = document.getElementById('ic-preview');
   if (!el) return;
-  if (vals.length > 0) {
-    const avg = vals.reduce((a,b) => a+b, 0) / vals.length;
-    el.textContent = avg.toFixed(2) + ' / 5';
-    el.style.color = avg >= 4 ? 'var(--green-lt)' : avg >= 3 ? 'var(--amber)' : 'var(--red)';
+  if (qAvgs.length > 0) {
+    const overall = qAvgs.reduce((a,b) => a+b, 0) / qAvgs.length;
+    el.textContent = overall.toFixed(2) + ' / 5';
+    el.style.color = overall >= 4 ? 'var(--green-lt)' : overall >= 3 ? 'var(--amber)' : 'var(--red)';
   } else {
     el.textContent = '—';
     el.style.color = 'var(--gray-3)';
@@ -4419,19 +4546,30 @@ function showConfianzaPop(event, mode, recordId) {
   const existing = document.getElementById('ic-pop');
   if (existing) { existing.remove(); return; }
 
-  let qs, overall;
+  const levelColors = ['#EF4444','#F59E0B','#94A3B8','#34D399','#10B981'];
+  let qDists, qAvgs, overall;
+
   if (mode === 'individual' && recordId) {
     const r = records.find(rec => rec.id === recordId);
     if (!r) return;
-    qs = [parseFloat(r.g_ic_q1)||null, parseFloat(r.g_ic_q2)||null, parseFloat(r.g_ic_q3)||null, parseFloat(r.g_ic_q4)||null];
+    qDists = [1,2,3,4].map(q =>
+      [1,2,3,4,5].map(l => parseInt(r[`g_ic_q${q}_l${l}`]) || 0)
+    );
+    qAvgs = qDists.map((dist, qi) => {
+      const sw = dist.reduce((s,n,i) => s+(i+1)*n, 0);
+      const sn = dist.reduce((s,n) => s+n, 0);
+      if (sn > 0) return sw/sn;
+      return parseFloat(r[`g_ic_q${qi+1}`]) || null;
+    });
     overall = parseFloat(r.g_indice_confianza) || null;
-    if (!overall && qs.some(v => v !== null)) {
-      const valid = qs.filter(v => v !== null);
-      overall = valid.reduce((a,b) => a+b, 0) / valid.length;
+    if (!overall) {
+      const valid = qAvgs.filter(v => v !== null);
+      if (valid.length) overall = valid.reduce((a,b)=>a+b,0)/valid.length;
     }
   } else {
     const agg = window._icAgg || {};
-    qs = [agg.q1||null, agg.q2||null, agg.q3||null, agg.q4||null];
+    qDists = [agg.q1dist||[0,0,0,0,0], agg.q2dist||[0,0,0,0,0], agg.q3dist||[0,0,0,0,0], agg.q4dist||[0,0,0,0,0]];
+    qAvgs  = [agg.q1||null, agg.q2||null, agg.q3||null, agg.q4||null];
     overall = agg.avg || null;
   }
 
@@ -4448,29 +4586,38 @@ function showConfianzaPop(event, mode, recordId) {
     </div>
     <div class="ic-q-list">
       ${IC_QUESTIONS.map((q, i) => {
-        const v = qs[i];
-        const pct = v !== null ? ((v-1)/4)*100 : 0;
-        const col = barCol(v);
+        const dist   = qDists[i];
+        const avg    = qAvgs[i];
+        const totalN = dist.reduce((s,n) => s+n, 0);
+        const maxN   = Math.max(...dist, 1);
+        const bars   = dist.map((cnt, l) => {
+          const h = Math.round((cnt/maxN)*36) + (cnt>0?2:0);
+          return `<div class="ic-dist-col">
+            <div class="ic-dist-cnt">${cnt>0?cnt:''}</div>
+            <div class="ic-dist-bar" style="height:${h}px;background:${levelColors[l]}"></div>
+            <div class="ic-dist-lbl">${l+1}</div>
+          </div>`;
+        }).join('');
         return `<div class="ic-q-item">
-          <div class="ic-q-label">${q}</div>
-          <div class="ic-q-bar-row">
-            <div class="ic-q-bar"><div class="ic-q-bar-fill" style="width:${pct}%;background:${col}"></div></div>
-            <div class="ic-q-val" style="color:${col}">${v !== null ? v.toFixed(1) : '—'}</div>
+          <div class="ic-q-label">${q}${totalN>0?` <span style="color:var(--gray-3);font-size:9px">(n=${totalN})</span>`:''}</div>
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:4px">
+            <div class="ic-dist-row">${bars}</div>
+            <div style="font-family:var(--cond);font-size:26px;font-weight:900;color:${barCol(avg)};line-height:1;white-space:nowrap">${avg!==null?avg.toFixed(2):'—'}<span style="font-family:var(--sans);font-size:10px;opacity:0.45"> /5</span></div>
           </div>
         </div>`;
       }).join('')}
     </div>
     <div class="ic-pop-footer">
-      <div class="ic-pop-footer-label">${mode==='individual' ? 'Índice este registro' : 'Promedio general'}</div>
-      <div class="ic-pop-footer-val" style="color:${barCol(overall)}">${overall !== null ? overall.toFixed(2) : '—'}<span style="font-family:var(--sans);font-size:12px;opacity:0.5"> / 5</span></div>
+      <div class="ic-pop-footer-label">${mode==='individual'?'Índice este registro':'Promedio general'}</div>
+      <div class="ic-pop-footer-val" style="color:${barCol(overall)}">${overall!==null?overall.toFixed(2):'—'}<span style="font-family:var(--sans);font-size:12px;opacity:0.5"> / 5</span></div>
     </div>`;
 
   document.body.appendChild(pop);
   const rect = event.currentTarget.getBoundingClientRect();
   let top  = rect.bottom + 8 + window.scrollY;
   let left = rect.left   + window.scrollX;
-  if (left + 390 > window.innerWidth)  left = window.innerWidth  - 398;
-  if (top  + 340 > window.innerHeight + window.scrollY) top = rect.top + window.scrollY - 348;
+  if (left + 430 > window.innerWidth)  left = window.innerWidth  - 432;
+  if (top  + 480 > window.innerHeight + window.scrollY) top = rect.top + window.scrollY - 488;
   pop.style.top  = top  + 'px';
   pop.style.left = left + 'px';
 
