@@ -1284,6 +1284,57 @@ tbody tr:last-child td { border-bottom: none; }
   .report-doc { border: 1px solid #ccc; }
   .report-doc-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ── DASHBOARD TABS ────────────────────────────────────── */
+.dash-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-md);
+  padding: 4px;
+  margin-bottom: 20px;
+  width: fit-content;
+}
+.dash-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--gray-2);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.dash-tab:hover { color: var(--gray-1); background: var(--bg3); }
+.dash-tab.active { background: var(--purple); color: var(--white); }
+.dash-tab .tab-icon { font-size: 14px; }
+.dash-panel { display: none; }
+.dash-panel.active { display: block; }
+.pr-header {
+  background: var(--bg2);
+  border: 1px solid var(--purple-b);
+  border-radius: var(--r-lg);
+  padding: 18px 24px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.pr-record-name {
+  font-family: var(--cond);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+}
+.pr-record-meta { font-size: 11px; color: var(--gray-2); }
 </style>
 </head>
 <body>
@@ -1462,6 +1513,32 @@ tbody tr:last-child td { border-bottom: none; }
     <div id="filter-active-bar" style="display:none;margin-bottom:20px">
       <div class="active-filter-pill" id="filter-pill-text"></div>
     </div>
+
+    <!-- DASH TAB TOGGLES -->
+    <div class="dash-tabs">
+      <button class="dash-tab active" id="tab-comp" onclick="setDashTab('comp')">
+        <span class="tab-icon">⊞</span> Comparativa general
+      </button>
+      <button class="dash-tab" id="tab-pr" onclick="setDashTab('pr')">
+        <span class="tab-icon">◉</span> Por registro
+      </button>
+    </div>
+
+    <!-- PANEL: POR REGISTRO -->
+    <div class="dash-panel" id="dash-pr">
+      <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:var(--r-lg);padding:20px 24px;margin-bottom:16px">
+        <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray-3);margin-bottom:10px">Selecciona el registro a visualizar</div>
+        <select id="pr-record-select" onchange="renderRecordTablero()" style="width:100%;max-width:600px;background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:11px 14px;border-radius:var(--r-sm);font-family:var(--sans);font-size:13px;appearance:none;cursor:pointer">
+          <option value="">— Elige un registro —</option>
+        </select>
+      </div>
+      <div id="pr-tablero-wrap">
+        <div class="empty-state"><div class="empty-icon">◉</div><p>Selecciona un registro para ver sus indicadores.</p></div>
+      </div>
+    </div>
+
+    <!-- PANEL: COMPARATIVA (contiene el tablero agregado + gráficas) -->
+    <div class="dash-panel active" id="dash-comp">
 
     <!-- ACTIVITY STRIP -->
     <div class="act-strip">
@@ -1683,6 +1760,8 @@ tbody tr:last-child td { border-bottom: none; }
       </div>
       <div id="table-recent"></div>
     </div>
+
+    </div><!-- /dash-comp -->
   </div>
 
   <!-- ═══════════════════════════
@@ -3724,6 +3803,145 @@ function renderTracking() {
         </tr>`;
       }).join('')}</tbody>
     </table></div>`;
+}
+
+// ═══════════════════════════════════════════════════
+// DASHBOARD TABS — POR REGISTRO / COMPARATIVA
+// ═══════════════════════════════════════════════════
+
+function setDashTab(tab) {
+  document.getElementById('dash-comp').classList.toggle('active', tab === 'comp');
+  document.getElementById('dash-pr').classList.toggle('active',   tab === 'pr');
+  document.getElementById('tab-comp').classList.toggle('active',  tab === 'comp');
+  document.getElementById('tab-pr').classList.toggle('active',    tab === 'pr');
+  if (tab === 'pr') populatePrSelect();
+}
+
+function populatePrSelect() {
+  const sel = document.getElementById('pr-record-select');
+  const current = sel.value;
+  const typeLabel = { proyecto:'Proyecto', evento:'Evento', activacion:'Activación' };
+  const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
+  const groups = { proyecto:[], evento:[], activacion:[] };
+  records.forEach(r => { if (groups[r.type]) groups[r.type].push(r); });
+  let html = '<option value="">— Elige un registro —</option>';
+  Object.entries(groups).forEach(([type, recs]) => {
+    if (!recs.length) return;
+    html += `<optgroup label="${typeLabel[type]}s (${recs.length})">`;
+    recs.forEach(r => {
+      const prog = progLabel[r.programa] ? ` · ${progLabel[r.programa]}` : '';
+      const fecha = r.fecha ? ` (${r.fecha.slice(0,10)})` : '';
+      html += `<option value="${r.id}" ${r.id === current ? 'selected' : ''}>${r.nombre||r.folio||r.id}${prog}${fecha}</option>`;
+    });
+    html += '</optgroup>';
+  });
+  sel.innerHTML = html;
+  if (current && records.find(r => r.id === current)) renderRecordTablero();
+}
+
+function renderRecordTablero() {
+  const id  = document.getElementById('pr-record-select').value;
+  const wrap = document.getElementById('pr-tablero-wrap');
+  if (!id) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">◉</div><p>Selecciona un registro para ver sus indicadores.</p></div>`;
+    return;
+  }
+  const r = records.find(rec => rec.id === id);
+  if (!r) return;
+
+  const typeLabel = { proyecto:'Proyecto', evento:'Evento', activacion:'Activación' };
+  const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
+
+  wrap.innerHTML = `
+    <div class="pr-header">
+      <span class="badge badge-${r.type}">${typeLabel[r.type]||r.type}</span>
+      <span class="pr-record-name">${r.nombre||'—'}</span>
+      ${r.folio ? `<span class="pr-record-meta" style="font-family:var(--mono);font-size:10px">${r.folio}</span>` : ''}
+      ${r.programa ? `<span style="font-size:11px;font-weight:600;color:var(--purple-lt)">${progLabel[r.programa]||r.programa}</span>` : ''}
+      <span class="pr-record-meta">${formatDate(r.fecha)}</span>
+      ${r.responsable ? `<span class="pr-record-meta">${r.responsable}</span>` : ''}
+      ${r.ubicacion ? `<span class="pr-record-meta">📍 ${r.ubicacion}</span>` : ''}
+    </div>
+    <div class="tablero">
+      <div class="tablero-row">
+        <div class="tablero-label" style="--row-color:#5B21B6"><div class="tablero-label-name">Impacto</div></div>
+        <div class="tablero-cards">
+          <div class="metric-card"><div class="metric-card-label">% Aumento en habilidades</div><div id="pr-mc-habilidades"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Prototipos circulares</div><div id="pr-mc-prototipos"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Grado de satisfacción</div><div id="pr-mc-satisfaccion"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Grado de participación</div><div id="pr-mc-participacion"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Talento canalizado</div><div id="pr-mc-talento"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Alumnos perspectiva género</div><div id="pr-mc-genero"></div></div>
+        </div>
+      </div>
+      <div class="tablero-row">
+        <div class="tablero-label" style="--row-color:#1D4ED8"><div class="tablero-label-name">Reputación</div></div>
+        <div class="tablero-cards">
+          <div class="metric-card"><div class="metric-card-label">Reconocimiento de CLARIOS</div><div id="pr-mc-reconocimiento"></div></div>
+          <div class="metric-card"><div class="metric-card-label">% Empleador deseado</div><div id="pr-mc-empleador"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Narrativas positivas</div><div id="pr-mc-narrativas"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Beneficiarios directos</div><div id="pr-mc-ben-dir-rep"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Índice de confianza</div><div id="pr-mc-confianza"></div></div>
+          <div class="metric-card"><div class="metric-card-label">NPS</div><div id="pr-mc-nps"></div></div>
+        </div>
+      </div>
+      <div class="tablero-row">
+        <div class="tablero-label" style="--row-color:#0E7490"><div class="tablero-label-name">Resultado</div></div>
+        <div class="tablero-cards">
+          <div class="metric-card"><div class="metric-card-label">Beneficiarios directos</div><div id="pr-mc-ben-directos"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Horas de formación</div><div id="pr-mc-horas"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Beneficiarios indirectos</div><div id="pr-mc-ben-indirectos"></div></div>
+          <div class="metric-card"><div class="metric-card-label">% Mujeres participantes</div><div id="pr-mc-mujeres"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Escuelas beneficiadas</div><div id="pr-mc-escuelas"></div></div>
+          <div class="metric-card" style="border-left:2px solid rgba(52,211,153,0.4)"><div class="metric-card-label">sROI · costo / beneficiario</div><div id="pr-mc-sroi"></div></div>
+        </div>
+      </div>
+      <div class="tablero-row">
+        <div class="tablero-label" style="--row-color:#0369A1"><div class="tablero-label-name">Proceso social</div></div>
+        <div class="tablero-cards">
+          <div class="metric-card"><div class="metric-card-label">Alianzas activas</div><div id="pr-mc-alianzas"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Rondas de mentoría</div><div id="pr-mc-rondas"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Quejas atend. / recib.</div><div id="pr-mc-quejas"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Voluntarios movilizados</div><div id="pr-mc-voluntarios"></div></div>
+          <div class="metric-card"><div class="metric-card-label">% Becarios sostenibilidad</div><div id="pr-mc-becarios"></div></div>
+        </div>
+      </div>
+    </div>`;
+
+  // ── IMPACTO ──
+  mNum('pr-mc-habilidades',  r.g_pct_habilidades  ? r.g_pct_habilidades+'%' : null,  { color:'#A78BFA', pending: !r.g_pct_habilidades });
+  mNum('pr-mc-prototipos',   parseInt(r.g_prototipos)||null,  { color:'#FCD34D', pending: !parseInt(r.g_prototipos) });
+  mGauge('pr-mc-satisfaccion',  r.g_satisfaccion||'',       'scale5');
+  mGauge('pr-mc-participacion', r.g_grado_participacion||'','scale5');
+  mNum('pr-mc-talento',  parseInt(r.af_talento_canalizado)||null, { color:'#34D399', pending: !parseInt(r.af_talento_canalizado) });
+  mNum('pr-mc-genero',   parseInt(r.g_alumnos_genero)||null,      { color:'#F472B6', pending: !parseInt(r.g_alumnos_genero) });
+
+  // ── REPUTACIÓN ──
+  mGauge('pr-mc-reconocimiento', r.g_reconocimiento||'', 'scale5');
+  mNum('pr-mc-empleador',  r.af_pct_beneficiados_clarios ? r.af_pct_beneficiados_clarios+'%' : null, { color:'#60A5FA', pending: !r.af_pct_beneficiados_clarios });
+  mNum('pr-mc-narrativas', parseInt(r.g_narrativas)||null, { color:'#F59E0B', pending: !parseInt(r.g_narrativas) });
+  const prBenD = parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0;
+  mNum('pr-mc-ben-dir-rep', prBenD ? prBenD.toLocaleString('es-MX') : null, { color:'#34D399', pending: !prBenD });
+  mGauge('pr-mc-confianza', (r.g_indice_confianza != null && r.g_indice_confianza !== '') ? String(r.g_indice_confianza) : '', 'scale10');
+  mGauge('pr-mc-nps',       (r.g_nps != null && r.g_nps !== '') ? String(r.g_nps) : '', 'nps');
+
+  // ── RESULTADO ──
+  mNum('pr-mc-ben-directos',  prBenD ? prBenD.toLocaleString('es-MX') : '0', { color:'#34D399', large: true });
+  mNum('pr-mc-horas',         parseInt(r.g_horas_formacion)||0, { color:'#A78BFA', large: true });
+  mNum('pr-mc-ben-indirectos', parseInt(r.g_ben_indirectos)||null, { color:'#22D3EE', pending: !parseInt(r.g_ben_indirectos) });
+  mNum('pr-mc-mujeres',  r.g_pct_mujeres ? r.g_pct_mujeres+'%' : null, { color:'#F472B6', pending: !r.g_pct_mujeres });
+  mNum('pr-mc-escuelas', parseInt(r.g_escuelas)||null, { color:'#A78BFA', pending: !parseInt(r.g_escuelas) });
+  const prInv  = parseFloat(r.g_inversion)||parseFloat(r.presupuesto)||parseFloat(r.inversion)||0;
+  const prSroi = prInv > 0 && prBenD > 0 ? (prInv / prBenD) : null;
+  mNum('pr-mc-sroi', prSroi !== null ? '$'+prSroi.toLocaleString('es-MX',{maximumFractionDigits:0}) : null, { color:'#34D399', pending: prSroi === null, sub: 'MXN por beneficiario' });
+
+  // ── PROCESO SOCIAL ──
+  mNum('pr-mc-alianzas',    parseInt(r.g_alianzas)||null,      { color:'#22D3EE', pending: !parseInt(r.g_alianzas) });
+  mNum('pr-mc-rondas',      parseInt(r.g_rondas_mentoria)||null, { color:'#34D399', pending: !parseInt(r.g_rondas_mentoria) });
+  const prQr = parseInt(r.g_quejas_recibidas)||0, prQa = parseInt(r.g_quejas_atendidas)||0;
+  mNum('pr-mc-quejas', (prQr||prQa) ? `${prQa} / ${prQr}` : null, { color:'#FCD34D', pending: !prQr && !prQa, sub: 'Atendidas / Recibidas' });
+  mNum('pr-mc-voluntarios', parseInt(r.as_voluntarios)||null, { color:'#F59E0B', pending: !parseInt(r.as_voluntarios) });
+  mNum('pr-mc-becarios',    r.g_pct_becarios_sost ? r.g_pct_becarios_sost+'%' : null, { color:'#A78BFA', pending: !r.g_pct_becarios_sost });
 }
 
 // ═══════════════════════════════════════════════════
