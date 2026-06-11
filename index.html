@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="color-scheme:dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clarios · Sistema de Indicadores IS</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 :root {
@@ -16,8 +16,8 @@
   --purple:      #7C3AED;
   --purple-mid:  #6D28D9;
   --purple-lt:   #A78BFA;
-  --purple-glow: rgba(124,58,237,0.15);
-  --purple-b:    rgba(124,58,237,0.3);
+  --purple-glow: rgba(124,58,237,0.12);
+  --purple-b:    rgba(124,58,237,0.25);
   --teal:        #0891B2;
   --teal-lt:     #22D3EE;
   --amber:       #F59E0B;
@@ -25,17 +25,20 @@
   --green:       #10B981;
   --green-lt:    #34D399;
   --red:         #EF4444;
-  --white:       #FFFFFF;
-  --gray-1:      #E2D9F3;
-  --gray-2:      #9B8EC4;
-  --gray-3:      #4C4575;
-  --gray-4:      #2A2550;
+  --white:       #F8FAFC;
+  --gray-1:      #E2E8F0;
+  --gray-2:      #94A3B8;
+  --gray-3:      #475569;
+  --gray-4:      #1E293B;
+  --border:      rgba(71,85,105,0.35);
   --mono:        'DM Mono', monospace;
-  --sans:        'Barlow', sans-serif;
+  --sans:        'Plus Jakarta Sans', sans-serif;
   --cond:        'Barlow Condensed', sans-serif;
   --r-sm:        0px;
   --r-md:        0px;
   --r-lg:        0px;
+  --card-pad:    20px;
+  --row-h:       36px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -332,7 +335,7 @@ body::before {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.5px;
-  color: var(--gray-3);
+  color: var(--gray-2);
   text-transform: uppercase;
   margin-bottom: 12px;
 }
@@ -344,11 +347,13 @@ body::before {
   color: var(--white);
   line-height: 1;
   margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
 }
 
 .stat-sub {
   font-size: 11px;
-  color: var(--gray-3);
+  color: var(--gray-2);
 }
 
 .stat-icon {
@@ -394,14 +399,14 @@ body::before {
 /* ── DATA TABLE ───────────────────────────────────────────── */
 .table-card {
   background: var(--bg2);
-  border: 1px solid var(--purple-b);
+  border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
 }
 
 .table-header {
   padding: 18px 24px;
-  border-bottom: 1px solid var(--purple-b);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -422,7 +427,7 @@ table {
 }
 
 thead tr {
-  background: var(--bg3);
+  background: rgba(19,16,42,0.7);
 }
 
 th {
@@ -431,20 +436,22 @@ th {
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: var(--gray-3);
+  color: var(--gray-2);
   text-transform: uppercase;
-  border-bottom: 1px solid var(--purple-b);
+  border-bottom: 1px solid var(--border);
 }
 
 td {
-  padding: 13px 16px;
-  font-size: 12px;
+  padding: 0 16px;
+  height: var(--row-h);
+  font-size: 12.5px;
   color: var(--gray-1);
-  border-bottom: 1px solid rgba(124,58,237,0.1);
+  border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  font-variant-numeric: tabular-nums;
 }
 
-tbody tr:hover { background: var(--purple-glow); }
+tbody tr:hover { background: rgba(124,58,237,0.06); }
 tbody tr:last-child td { border-bottom: none; }
 
 .empty-state {
@@ -591,7 +598,7 @@ tbody tr:last-child td { border-bottom: none; }
 
 .form-section {
   background: var(--bg2);
-  border: 1px solid var(--purple-b);
+  border: 1px solid var(--border);
   border-radius: var(--r-lg);
   padding: 28px;
   margin-bottom: 20px;
@@ -642,7 +649,7 @@ tbody tr:last-child td { border-bottom: none; }
 
 .field input, .field select, .field textarea {
   background: var(--bg3);
-  border: 1px solid var(--gray-4);
+  border: 1px solid var(--border);
   border-radius: var(--r-sm);
   padding: 10px 14px;
   font-family: var(--sans);
@@ -767,7 +774,7 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 .detail-item { display: flex; flex-direction: column; gap: 3px; }
-.detail-key { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--gray-3); text-transform: uppercase; }
+.detail-key { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--gray-2); text-transform: uppercase; }
 .detail-val { font-size: 13px; color: var(--gray-1); font-weight: 500; }
 
 /* ── RESPONSIVE ───────────────────────────────────────────── */
@@ -814,7 +821,7 @@ tbody tr:last-child td { border-bottom: none; }
   gap: 12px;
   align-items: flex-end;
   background: var(--bg2);
-  border: 1px solid var(--purple-b);
+  border: 1px solid var(--border);
   border-radius: var(--r-lg);
   padding: 16px 20px;
   margin-bottom: 24px;
@@ -831,15 +838,15 @@ tbody tr:last-child td { border-bottom: none; }
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.5px;
-  color: var(--gray-3);
+  color: var(--gray-2);
   text-transform: uppercase;
 }
 
 .filter-select {
   background: var(--bg3);
-  border: 1px solid var(--gray-4);
+  border: 1px solid var(--border);
   border-radius: 0;
-  border-left: 2px solid var(--gray-4);
+  border-left: 2px solid var(--gray-3);
   padding: 7px 10px;
   font-family: var(--sans);
   font-size: 12px;
@@ -892,7 +899,7 @@ tbody tr:last-child td { border-bottom: none; }
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 2.5px;
-  color: var(--gray-3);
+  color: var(--gray-2);
   text-transform: uppercase;
   margin-bottom: 12px;
   margin-top: 28px;
@@ -904,7 +911,7 @@ tbody tr:last-child td { border-bottom: none; }
   content: '';
   flex: 1;
   height: 1px;
-  background: var(--purple-b);
+  background: var(--border);
 }
 
 /* ── STAT GRID VARIANTS ───────────────────────────────────── */
@@ -918,7 +925,7 @@ tbody tr:last-child td { border-bottom: none; }
 /* ── PROGRESS BAR IN STAT ─────────────────────────────────── */
 .stat-progress-wrap {
   margin-top: 10px;
-  background: var(--gray-4);
+  background: var(--border);
   border-radius: 0;
   height: 3px;
   overflow: hidden;
@@ -934,12 +941,12 @@ tbody tr:last-child td { border-bottom: none; }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--gray-4); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--gray-3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--purple); }
 
 /* ── UTIL ─────────────────────────────────────────────────── */
-.divider { height: 1px; background: var(--purple-b); margin: 24px 0; }
-.text-muted { color: var(--gray-3); font-size: 12px; }
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
+.text-muted { color: var(--gray-2); font-size: 12px; }
 .fw700 { font-weight: 700; }
 .gap-8 { display: flex; gap: 8px; align-items: center; }
 
@@ -950,7 +957,7 @@ tbody tr:last-child td { border-bottom: none; }
   display: grid;
   grid-template-columns: 120px 1fr;
   background: var(--bg2);
-  border: 1px solid var(--purple-b);
+  border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
   min-height: 100px;
@@ -989,7 +996,7 @@ tbody tr:last-child td { border-bottom: none; }
 
 .metric-card {
   padding: 14px 16px;
-  border-left: 1px solid var(--purple-b);
+  border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -1003,7 +1010,7 @@ tbody tr:last-child td { border-bottom: none; }
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.2px;
-  color: var(--gray-3);
+  color: var(--gray-2);
   text-transform: uppercase;
   line-height: 1.4;
 }
@@ -1014,6 +1021,7 @@ tbody tr:last-child td { border-bottom: none; }
   font-weight: 900;
   color: var(--white);
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .metric-num.lg { font-size: 48px; }
@@ -1050,7 +1058,7 @@ tbody tr:last-child td { border-bottom: none; }
   display: flex;
   gap: 0;
   background: var(--bg2);
-  border: 1px solid var(--purple-b);
+  border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
   margin-bottom: 12px;
@@ -1058,7 +1066,7 @@ tbody tr:last-child td { border-bottom: none; }
 .act-strip-item {
   flex: 1;
   padding: 14px 16px;
-  border-right: 1px solid var(--purple-b);
+  border-right: 1px solid var(--border);
   text-align: center;
 }
 .act-strip-item:last-child { border-right: none; }
@@ -1068,13 +1076,14 @@ tbody tr:last-child td { border-bottom: none; }
   font-weight: 900;
   color: var(--white);
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 .act-strip-label {
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: var(--gray-3);
+  color: var(--gray-2);
   margin-top: 2px;
 }
 
