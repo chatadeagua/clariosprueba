@@ -1524,6 +1524,111 @@ tbody tr:last-child td { border-bottom: none; }
   font-family: var(--cond);
 }
 .lt-level-lbl { font-size: 7px; opacity: 0.7; letter-spacing: 0; }
+
+/* ── IMPACT KIT ──────────────────────────────────────────── */
+.ik-strip {
+  display: flex;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.ik-step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+.ik-step-item.active { opacity: 1; }
+.ik-step-num {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--purple-lt);
+  line-height: 1;
+}
+.ik-step-lbl {
+  font-family: var(--cond);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.ik-step-line {
+  flex: 1;
+  height: 1px;
+  background: var(--purple-b);
+  margin: 0 24px;
+  min-width: 40px;
+}
+.ik-layout {
+  display: flex;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 900px) { .ik-layout { flex-direction: column; } }
+.ik-dim {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-4);
+}
+.ik-dim:last-child { border-bottom: none; margin-bottom: 0; }
+.ik-dim-name {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--gray-2);
+  text-transform: uppercase;
+}
+.ik-score-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.ik-score-btn {
+  width: 40px;
+  height: 38px;
+  background: var(--bg3);
+  border: 1px solid var(--gray-4);
+  border-left: 2px solid var(--gray-4);
+  color: var(--gray-3);
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.ik-score-btn:hover { border-color: var(--purple); border-left-color: var(--purple); color: var(--white); background: var(--bg2); }
+.ik-score-btn.selected { background: var(--purple); border-color: var(--purple); border-left-color: var(--purple-lt); color: var(--white); }
+.ik-score-lbl { font-size: 10px; color: var(--purple-lt); font-weight: 600; margin-left: 4px; min-width: 80px; }
+.ik-result-hero {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 28px;
+  background: var(--bg3);
+  border-left: 4px solid var(--accent-col, var(--purple));
+  margin-bottom: 0;
+}
+.ik-score-big {
+  font-family: var(--cond);
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 1;
+}
+.ik-verdict-text {
+  font-family: var(--cond);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.ik-verdict-sub {
+  font-size: 12px;
+  color: var(--gray-2);
+  line-height: 1.6;
+  max-width: 380px;
+}
 </style>
 </head>
 <body>
@@ -2758,39 +2863,119 @@ tbody tr:last-child td { border-bottom: none; }
     <div class="table-card" id="table-tracking-wrap"></div>
   </div>
 
-  <!-- ═══ IMPACT KIT EMBED ═══ -->
+  <!-- ═══════════════════════════
+       VIEW: IMPACT KIT
+  ════════════════════════════ -->
   <div class="view" id="view-impact-kit">
     <div class="page-header">
-      <div class="page-eyebrow">Herramienta</div>
+      <div class="page-eyebrow">Herramienta · Evaluación previa</div>
       <div class="page-title">Clarios <span>Impact Kit</span></div>
-      <div class="page-desc">Regista una nueva iniciativa, evalúa su alineación con el Modelo IS y genera un folio de seguimiento.</div>
+      <div class="page-desc">Evalúa la alineación de una iniciativa con el Modelo IS antes de registrarla. Califica las 7 dimensiones del Chart de Valor Social.</div>
     </div>
-    <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:16px;padding:32px;text-align:center;margin-bottom:24px;">
-      <div style="font-size:48px;margin-bottom:16px;">✦</div>
-      <div style="font-family:var(--cond);font-size:24px;font-weight:800;color:var(--white);margin-bottom:8px;">Clarios Impact Kit</div>
-      <div style="font-size:13px;color:var(--gray-2);margin-bottom:28px;line-height:1.6;max-width:500px;margin-left:auto;margin-right:auto;">Formulario de registro en dos etapas: evaluación de viabilidad con Chart de Valor Social y captura completa del proyecto.</div>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="window.open('clarios-impact-kit.html','_blank')" style="font-size:14px;padding:14px 32px;">
-          Abrir Impact Kit →
-        </button>
-        <button class="btn btn-ghost" onclick="window.open('clarios-impact-kit.html','_blank')" style="font-size:14px;padding:14px 24px;">
-          Abrir en nueva ventana
-        </button>
+
+    <!-- Step strip -->
+    <div class="ik-strip">
+      <div class="ik-step-item active" id="ik-step-ind-1">
+        <span class="ik-step-num">01</span>
+        <span class="ik-step-lbl">Evaluación de viabilidad</span>
+      </div>
+      <div class="ik-step-line"></div>
+      <div class="ik-step-item" id="ik-step-ind-2">
+        <span class="ik-step-num">02</span>
+        <span class="ik-step-lbl">Resultado &amp; recomendación</span>
       </div>
     </div>
-    <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:12px;padding:24px;">
-      <div style="font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:1px;color:var(--gray-2);text-transform:uppercase;margin-bottom:16px;">¿Qué evalúa el Impact Kit?</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
-        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Valor Compartido</div>
-        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Liderazgo</div>
-        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Sostenibilidad</div>
-        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Propósito</div>
-        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Gestión</div>
-        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Cocreación</div>
-        <div style="background:var(--purple-glow);border:1px solid var(--purple-b);border-radius:8px;padding:12px 16px;font-size:12px;font-weight:600;color:#C4B5FD;">Reputación</div>
+
+    <!-- ── PANEL 1: SCORING ── -->
+    <div id="ik-panel-1">
+      <div class="ik-layout">
+
+        <!-- Left: dimension scoring form -->
+        <div class="form-section" style="flex:1;min-width:0">
+          <div class="form-section-title">Chart de Valor Social</div>
+          <p style="font-size:12px;color:var(--gray-2);margin-bottom:22px;line-height:1.6">
+            Califica cada dimensión del 1 (Inicial) al 5 (Referente). El promedio ponderado determina la recomendación de registro.
+          </p>
+          <div id="ik-dims-list"><!-- populated by ikInit() --></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px solid var(--purple-b);margin-top:8px;flex-wrap:wrap;gap:16px">
+            <div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gray-3);text-transform:uppercase;margin-bottom:4px">Puntaje promedio</div>
+              <div id="ik-avg-display" style="font-family:var(--cond);font-size:52px;font-weight:900;color:var(--white);line-height:1">—</div>
+              <div id="ik-verdict-inline" style="font-size:11px;font-weight:700;margin-top:5px;color:var(--gray-3)"></div>
+            </div>
+            <button class="btn btn-primary" onclick="ikShowResult()" id="ik-btn-result" disabled style="padding:12px 28px;font-size:12px">Ver resultado →</button>
+          </div>
+        </div>
+
+        <!-- Right: live radar chart -->
+        <div class="chart-card" style="width:340px;flex-shrink:0">
+          <div class="chart-title">Radar de Valor Social</div>
+          <div style="position:relative;height:300px">
+            <canvas id="ik-radar"></canvas>
+          </div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:4px" id="ik-legend">
+            <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gray-3);text-transform:uppercase;margin-bottom:4px">Escala</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px">
+              <div style="font-size:10px;color:var(--gray-2)"><span style="color:var(--gray-3);font-family:var(--mono);font-weight:700">1</span> Inicial</div>
+              <div style="font-size:10px;color:var(--gray-2)"><span style="color:var(--amber);font-family:var(--mono);font-weight:700">3</span> Establecido</div>
+              <div style="font-size:10px;color:var(--gray-2)"><span style="color:var(--gray-2);font-family:var(--mono);font-weight:700">2</span> En desarrollo</div>
+              <div style="font-size:10px;color:var(--gray-2)"><span style="color:var(--green-lt);font-family:var(--mono);font-weight:700">4–5</span> Avanzado / Referente</div>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
-  </div>
+    </div><!-- /#ik-panel-1 -->
+
+    <!-- ── PANEL 2: RESULT ── -->
+    <div id="ik-panel-2" style="display:none">
+      <div class="ik-layout" style="align-items:start">
+
+        <!-- Left: verdict + breakdown -->
+        <div style="flex:1;min-width:0">
+
+          <!-- Result hero card -->
+          <div class="table-card" style="margin-bottom:20px;overflow:visible">
+            <div id="ik-result-hero" class="ik-result-hero"><!-- populated by JS --></div>
+          </div>
+
+          <!-- Dimension breakdown -->
+          <div class="table-card" style="margin-bottom:24px">
+            <div class="table-header">
+              <span class="table-title">Desglose por dimensión</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Dimensión</th>
+                  <th>Puntaje</th>
+                  <th>Nivel</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="ik-dim-table"></tbody>
+            </table>
+          </div>
+
+          <!-- Action buttons -->
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="ikProceedToRegister()">Proceder al registro →</button>
+            <button class="btn btn-ghost" onclick="ikReset()">← Nueva evaluación</button>
+          </div>
+        </div>
+
+        <!-- Right: result radar -->
+        <div class="chart-card" style="width:340px;flex-shrink:0">
+          <div class="chart-title">Radar · Resultado final</div>
+          <div style="position:relative;height:300px">
+            <canvas id="ik-radar-result"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /#ik-panel-2 -->
+
+  </div><!-- /#view-impact-kit -->
 
   <!-- ═══════════════════════════
        VIEW: TODOS LOS REGISTROS
@@ -3004,6 +3189,7 @@ function navigate(view) {
   if (view === 'folios') renderFolios();
   if (view === 'tracking') renderTracking();
   if (view === 'registros') renderRegistros();
+  if (view === 'impact-kit') ikInit();
 
   // Close sidebar on mobile
   document.getElementById('sidebar').classList.remove('open');
@@ -4666,6 +4852,233 @@ updateBadges();
 renderDashboard(filteredRecords);
 syncFromAPI();
 setInterval(syncFromAPI, 60000);
+
+// ═══════════════════════════════════════════════════
+// IMPACT KIT
+// ═══════════════════════════════════════════════════
+const IK_DIMS = [
+  { key:'valor_compartido', label:'Valor Compartido',  desc:'La iniciativa genera valor simultáneo para Clarios y la comunidad' },
+  { key:'liderazgo',        label:'Liderazgo',         desc:'Existe compromiso directivo y responsable claro de la iniciativa' },
+  { key:'sostenibilidad',   label:'Sostenibilidad',    desc:'La iniciativa es viable a largo plazo y no depende de presupuesto eventual' },
+  { key:'proposito',        label:'Propósito',         desc:'Refleja la misión y valores de Clarios como empresa responsable' },
+  { key:'gestion',          label:'Gestión',           desc:'Cuenta con procesos, métricas y responsables definidos' },
+  { key:'cocreacion',       label:'Cocreación',        desc:'Involucra activamente a los beneficiarios en el diseño o ejecución' },
+  { key:'reputacion',       label:'Reputación',        desc:'Tiene potencial de fortalecer la imagen de Clarios en comunidades y medios' },
+];
+const IK_LEVELS = ['', 'Inicial', 'En desarrollo', 'Establecido', 'Avanzado', 'Referente'];
+let ikScores = {};
+let ikRadarChart = null;
+let ikResultChart = null;
+let ikInitialized = false;
+
+function ikInit() {
+  if (ikInitialized) return;
+  ikInitialized = true;
+
+  const container = document.getElementById('ik-dims-list');
+  if (!container) return;
+  container.innerHTML = IK_DIMS.map(d => `
+    <div class="ik-dim">
+      <div class="ik-dim-name">${d.label}</div>
+      <div style="font-size:10px;color:var(--gray-3);margin-bottom:6px;line-height:1.4">${d.desc}</div>
+      <div class="ik-score-row">
+        ${[1,2,3,4,5].map(n => `<button class="ik-score-btn" data-dim="${d.key}" data-val="${n}" onclick="ikScore('${d.key}',${n})">${n}</button>`).join('')}
+        <span class="ik-score-lbl" id="ik-lbl-${d.key}">selecciona</span>
+      </div>
+    </div>`).join('');
+
+  // Initialize radar
+  const ctx = document.getElementById('ik-radar')?.getContext('2d');
+  if (!ctx) return;
+  if (ikRadarChart) ikRadarChart.destroy();
+  ikRadarChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: IK_DIMS.map(d => d.label),
+      datasets: [{
+        label: 'Puntaje',
+        data: IK_DIMS.map(() => 0),
+        backgroundColor: 'rgba(124,58,237,0.12)',
+        borderColor: 'rgba(124,58,237,0.6)',
+        borderWidth: 2,
+        pointBackgroundColor: '#A78BFA',
+        pointBorderColor: '#A78BFA',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          min: 0, max: 5,
+          ticks: { stepSize: 1, display: false, backdropColor: 'transparent' },
+          grid: { color: 'rgba(124,58,237,0.12)' },
+          angleLines: { color: 'rgba(124,58,237,0.18)' },
+          pointLabels: {
+            color: '#9B8EC4',
+            font: { size: 9, family: "'Barlow Condensed', sans-serif", weight: '700' }
+          }
+        }
+      },
+      plugins: { legend: { display: false } },
+      animation: { duration: 300 }
+    }
+  });
+}
+
+function ikScore(dim, val) {
+  ikScores[dim] = val;
+
+  // Button states
+  document.querySelectorAll(`.ik-score-btn[data-dim="${dim}"]`).forEach(btn => {
+    btn.classList.toggle('selected', parseInt(btn.dataset.val) === val);
+  });
+  const lbl = document.getElementById(`ik-lbl-${dim}`);
+  if (lbl) lbl.textContent = IK_LEVELS[val];
+
+  // Update chart
+  const chartData = IK_DIMS.map(d => ikScores[d.key] || 0);
+  if (ikRadarChart) { ikRadarChart.data.datasets[0].data = chartData; ikRadarChart.update('active'); }
+
+  // Compute average
+  const filled = IK_DIMS.map(d => ikScores[d.key]).filter(v => v != null);
+  const allDone = filled.length === IK_DIMS.length;
+  const avg = filled.length ? filled.reduce((a,b) => a+b, 0) / filled.length : null;
+
+  const avgEl = document.getElementById('ik-avg-display');
+  const vEl   = document.getElementById('ik-verdict-inline');
+  const btnEl = document.getElementById('ik-btn-result');
+
+  if (avg !== null) {
+    const col = avg >= 4 ? 'var(--green-lt)' : avg >= 3 ? 'var(--amber)' : 'var(--red)';
+    avgEl.textContent = avg.toFixed(2);
+    avgEl.style.color = col;
+    if (allDone) {
+      btnEl.disabled = false;
+      vEl.textContent = avg >= 4 ? '✓ Viable · Recomendado para registro' : avg >= 3 ? '⚠ Revisar · Fortalecer antes de registrar' : '✗ No recomendado · Replantear iniciativa';
+      vEl.style.color = col;
+    } else {
+      vEl.textContent = `${filled.length} / ${IK_DIMS.length} dimensiones calificadas`;
+      vEl.style.color = 'var(--gray-3)';
+      btnEl.disabled = true;
+    }
+  }
+}
+
+function ikShowResult() {
+  const scores = IK_DIMS.map(d => ikScores[d.key] || 0);
+  const avg = scores.reduce((a,b) => a+b, 0) / scores.length;
+  const isViable = avg >= 4;
+  const isReview = avg >= 3 && avg < 4;
+
+  const col  = isViable ? '#34D399' : isReview ? '#F59E0B' : '#EF4444';
+  const verdict = isViable ? 'Viable para registro IS' : isReview ? 'Revisar antes de registrar' : 'No recomendado';
+  const sub  = isViable
+    ? 'La iniciativa demuestra alineación sólida con el Modelo IS. Se recomienda proceder al registro completo.'
+    : isReview
+    ? 'La iniciativa tiene potencial pero requiere fortalecer algunas dimensiones antes del registro formal.'
+    : 'La iniciativa no cumple los criterios mínimos del Modelo IS. Se recomienda replantear la estrategia.';
+
+  // Hero card
+  const hero = document.getElementById('ik-result-hero');
+  hero.style.setProperty('--accent-col', col);
+  hero.innerHTML = `
+    <div class="ik-score-big" style="color:${col}">${avg.toFixed(1)}</div>
+    <div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gray-3);text-transform:uppercase;margin-bottom:6px">Resultado</div>
+      <div class="ik-verdict-text" style="color:${col}">${verdict}</div>
+      <div class="ik-verdict-sub">${sub}</div>
+    </div>`;
+
+  // Dim table
+  document.getElementById('ik-dim-table').innerHTML = IK_DIMS.map(d => {
+    const v = ikScores[d.key];
+    const c = v >= 4 ? '#34D399' : v >= 3 ? '#F59E0B' : '#EF4444';
+    const statusHtml = v >= 4
+      ? '<span class="badge badge-proyecto">Sólido</span>'
+      : v >= 3
+      ? '<span class="badge badge-activacion">Revisar</span>'
+      : '<span style="display:inline-flex;padding:2px 8px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#EF4444;font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:1px">Débil</span>';
+    return `<tr>
+      <td style="font-weight:600">${d.label}</td>
+      <td style="font-family:var(--mono);font-weight:700;font-size:16px;color:${c}">${v}</td>
+      <td>${IK_LEVELS[v]}</td>
+      <td>${statusHtml}</td>
+    </tr>`;
+  }).join('');
+
+  // Step indicator
+  document.getElementById('ik-step-ind-1').classList.remove('active');
+  document.getElementById('ik-step-ind-2').classList.add('active');
+  document.getElementById('ik-panel-1').style.display = 'none';
+  document.getElementById('ik-panel-2').style.display = '';
+
+  // Result radar
+  requestAnimationFrame(() => {
+    const ctx2 = document.getElementById('ik-radar-result')?.getContext('2d');
+    if (!ctx2) return;
+    if (ikResultChart) ikResultChart.destroy();
+    const bgCol = isViable ? 'rgba(16,185,129,0.12)' : isReview ? 'rgba(245,158,11,0.12)' : 'rgba(239,68,68,0.12)';
+    ikResultChart = new Chart(ctx2, {
+      type: 'radar',
+      data: {
+        labels: IK_DIMS.map(d => d.label),
+        datasets: [{
+          data: scores,
+          backgroundColor: bgCol,
+          borderColor: col,
+          borderWidth: 2,
+          pointBackgroundColor: col,
+          pointRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            min: 0, max: 5,
+            ticks: { stepSize: 1, display: false, backdropColor: 'transparent' },
+            grid: { color: 'rgba(124,58,237,0.12)' },
+            angleLines: { color: 'rgba(124,58,237,0.18)' },
+            pointLabels: {
+              color: '#9B8EC4',
+              font: { size: 9, family: "'Barlow Condensed', sans-serif", weight: '700' }
+            }
+          }
+        },
+        plugins: { legend: { display: false } },
+        animation: { duration: 500 }
+      }
+    });
+  });
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function ikReset() {
+  ikScores = {};
+  document.querySelectorAll('.ik-score-btn').forEach(b => b.classList.remove('selected'));
+  IK_DIMS.forEach(d => {
+    const el = document.getElementById(`ik-lbl-${d.key}`);
+    if (el) el.textContent = 'selecciona';
+  });
+  const avgEl = document.getElementById('ik-avg-display');
+  if (avgEl) { avgEl.textContent = '—'; avgEl.style.color = 'var(--white)'; }
+  const vEl = document.getElementById('ik-verdict-inline');
+  if (vEl) vEl.textContent = '';
+  const btnEl = document.getElementById('ik-btn-result');
+  if (btnEl) btnEl.disabled = true;
+  if (ikRadarChart) { ikRadarChart.data.datasets[0].data = IK_DIMS.map(() => 0); ikRadarChart.update(); }
+
+  document.getElementById('ik-step-ind-1').classList.add('active');
+  document.getElementById('ik-step-ind-2').classList.remove('active');
+  document.getElementById('ik-panel-1').style.display = '';
+  document.getElementById('ik-panel-2').style.display = 'none';
+}
+
+function ikProceedToRegister() { navigate('nuevo'); }
 </script>
 
 <!-- ── FRAMER MOTION ANIMATIONS ──────────────────────────────── -->
