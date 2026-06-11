@@ -33,9 +33,9 @@
   --mono:        'DM Mono', monospace;
   --sans:        'Barlow', sans-serif;
   --cond:        'Barlow Condensed', sans-serif;
-  --r-sm:        8px;
-  --r-md:        12px;
-  --r-lg:        16px;
+  --r-sm:        0px;
+  --r-md:        0px;
+  --r-lg:        0px;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -95,9 +95,8 @@ body::before {
 }
 
 .logo-bars span {
-  width: 5px;
+  width: 4px;
   background: var(--purple);
-  border-radius: 2px;
 }
 .logo-bars span:nth-child(1) { height: 14px; }
 .logo-bars span:nth-child(2) { height: 22px; }
@@ -142,27 +141,28 @@ body::before {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--r-sm);
+  padding: 10px 12px 10px 9px;
+  border-radius: 0;
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
   color: var(--gray-2);
-  transition: all 0.15s;
-  border: 1px solid transparent;
+  transition: all 0.18s;
+  border: none;
+  border-left: 3px solid transparent;
   user-select: none;
 }
 
 .nav-item:hover {
   background: var(--purple-glow);
   color: var(--gray-1);
-  border-color: var(--purple-b);
+  border-left-color: rgba(124,58,237,0.5);
 }
 
 .nav-item.active {
   background: var(--purple-glow);
   color: var(--purple-lt);
-  border-color: var(--purple-b);
+  border-left-color: var(--purple);
 }
 
 .nav-item .nav-icon { font-size: 15px; width: 18px; text-align: center; }
@@ -173,8 +173,8 @@ body::before {
   color: var(--white);
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 10px;
+  padding: 2px 6px;
+  border-radius: 0;
   font-family: var(--mono);
 }
 
@@ -230,29 +230,33 @@ body::before {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  border-radius: var(--r-sm);
+  padding: 8px 18px;
+  border-radius: 0;
   font-family: var(--sans);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.18s;
   border: none;
+  position: relative;
 }
 
 .btn-primary {
   background: var(--purple);
   color: var(--white);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
 }
-.btn-primary:hover { background: var(--purple-mid); transform: translateY(-1px); }
+.btn-primary:hover { background: var(--purple-mid); box-shadow: 4px 4px 0 rgba(124,58,237,0.3); }
 
 .btn-ghost {
   background: transparent;
   color: var(--purple-lt);
   border: 1px solid var(--purple-b);
+  border-left: 3px solid var(--purple);
 }
-.btn-ghost:hover { background: var(--purple-glow); }
+.btn-ghost:hover { background: var(--purple-glow); border-left-color: var(--purple-lt); }
 
 .btn-sm { padding: 6px 12px; font-size: 11px; }
 
@@ -317,8 +321,8 @@ body::before {
 .stat-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
+  top: 0; left: 0; bottom: 0;
+  width: 3px;
   background: var(--accent, var(--purple));
 }
 
@@ -457,12 +461,13 @@ tbody tr:last-child td { border-bottom: none; }
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 0;
+  font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
+  font-family: var(--mono);
 }
 
 .badge-proyecto  { background: rgba(124,58,237,0.2); color: var(--purple-lt); border: 1px solid rgba(124,58,237,0.3); }
@@ -491,16 +496,16 @@ tbody tr:last-child td { border-bottom: none; }
 .type-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
   background: var(--tc, var(--purple));
-  transform: scaleX(0);
-  transition: transform 0.2s;
-  transform-origin: left;
+  transform: scaleY(0);
+  transition: transform 0.25s cubic-bezier(0.22,1,0.36,1);
+  transform-origin: top;
 }
 
-.type-card:hover { border-color: var(--tc, var(--purple)); transform: translateY(-3px); }
-.type-card:hover::before { transform: scaleX(1); }
+.type-card:hover { border-color: var(--tc, var(--purple)); border-left-color: transparent; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+.type-card:hover::before { transform: scaleY(1); }
 
 .type-icon {
   font-size: 36px;
@@ -559,16 +564,17 @@ tbody tr:last-child td { border-bottom: none; }
 .ps-step.done { color: var(--green); }
 
 .ps-dot {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 0;
   border: 2px solid currentColor;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
   flex-shrink: 0;
+  font-family: var(--mono);
 }
 
 .ps-step.active .ps-dot { background: var(--purple); border-color: var(--purple); color: var(--white); }
@@ -606,10 +612,10 @@ tbody tr:last-child td { border-bottom: none; }
 
 .form-section-title::before {
   content: '';
-  width: 4px;
+  width: 3px;
   height: 16px;
   background: var(--purple);
-  border-radius: 2px;
+  border-radius: 0;
   flex-shrink: 0;
 }
 
@@ -773,7 +779,7 @@ tbody tr:last-child td { border-bottom: none; }
   z-index: 200;
   background: var(--purple);
   border: none;
-  border-radius: 8px;
+  border-radius: 0;
   color: var(--white);
   font-size: 20px;
   width: 38px;
@@ -832,7 +838,8 @@ tbody tr:last-child td { border-bottom: none; }
 .filter-select {
   background: var(--bg3);
   border: 1px solid var(--gray-4);
-  border-radius: 6px;
+  border-radius: 0;
+  border-left: 2px solid var(--gray-4);
   padding: 7px 10px;
   font-family: var(--sans);
   font-size: 12px;
@@ -849,9 +856,10 @@ tbody tr:last-child td { border-bottom: none; }
 .filter-clear {
   background: rgba(239,68,68,0.1);
   border: 1px solid rgba(239,68,68,0.2);
+  border-left: 3px solid var(--red);
   color: var(--red);
   padding: 7px 14px;
-  border-radius: 6px;
+  border-radius: 0;
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 700;
@@ -868,11 +876,14 @@ tbody tr:last-child td { border-bottom: none; }
   gap: 6px;
   background: var(--purple-glow);
   border: 1px solid var(--purple-b);
+  border-left: 3px solid var(--purple);
   color: var(--purple-lt);
-  padding: 5px 14px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
+  padding: 4px 12px 4px 9px;
+  border-radius: 0;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  letter-spacing: 0.5px;
 }
 
 /* ── DASHBOARD SECTION TITLES ─────────────────────────────── */
@@ -908,16 +919,16 @@ tbody tr:last-child td { border-bottom: none; }
 .stat-progress-wrap {
   margin-top: 10px;
   background: var(--gray-4);
-  border-radius: 4px;
-  height: 4px;
+  border-radius: 0;
+  height: 3px;
   overflow: hidden;
 }
 
 .stat-progress {
   height: 100%;
   background: var(--accent, var(--purple));
-  border-radius: 4px;
-  transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  border-radius: 0;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   width: 0%;
 }
 
@@ -1289,10 +1300,9 @@ tbody tr:last-child td { border-bottom: none; }
 .dash-tabs {
   display: flex;
   gap: 0;
-  background: var(--bg2);
-  border: 1px solid var(--purple-b);
-  border-radius: var(--r-md);
-  padding: 4px;
+  background: transparent;
+  border-bottom: 2px solid var(--purple-b);
+  padding: 0;
   margin-bottom: 20px;
   width: fit-content;
 }
@@ -1301,19 +1311,23 @@ tbody tr:last-child td { border-bottom: none; }
   align-items: center;
   gap: 8px;
   padding: 9px 20px;
-  border-radius: 8px;
+  border-radius: 0;
   border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
   background: transparent;
-  color: var(--gray-2);
+  color: var(--gray-3);
   font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.18s;
   white-space: nowrap;
 }
-.dash-tab:hover { color: var(--gray-1); background: var(--bg3); }
-.dash-tab.active { background: var(--purple); color: var(--white); }
+.dash-tab:hover { color: var(--gray-1); border-bottom-color: var(--purple-b); }
+.dash-tab.active { color: var(--purple-lt); border-bottom-color: var(--purple); }
 .dash-tab .tab-icon { font-size: 14px; }
 .dash-panel { display: none; }
 .dash-panel.active { display: block; }
@@ -4652,6 +4666,107 @@ updateBadges();
 renderDashboard(filteredRecords);
 syncFromAPI();
 setInterval(syncFromAPI, 60000);
+</script>
+
+<!-- ── FRAMER MOTION ANIMATIONS ──────────────────────────────── -->
+<script type="module">
+import { animate, inView, stagger } from "https://cdn.jsdelivr.net/npm/framer-motion@11/+esm";
+
+const EASE_OUT = [0.22, 1, 0.36, 1];
+const EASE_IN_OUT = [0.4, 0, 0.2, 1];
+
+// ─── Selectors that get entrance animations ───────────────────
+const CARD_SEL = [
+  '.stat-card', '.chart-card', '.metric-card', '.type-card',
+  '.table-card', '.form-section', '.tablero-row', '.pr-header',
+  '.likert-group'
+].join(', ');
+
+// ─── Animate a view's cards with stagger ────────────────────
+function animateViewIn(viewEl) {
+  if (!viewEl) return;
+  const cards = Array.from(viewEl.querySelectorAll(CARD_SEL));
+  if (!cards.length) return;
+  cards.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(18px)'; });
+  animate(cards,
+    { opacity: [0, 1], transform: ['translateY(18px)', 'translateY(0px)'] },
+    { duration: 0.45, delay: stagger(0.055, { ease: EASE_OUT }), ease: EASE_OUT }
+  );
+
+  // Stagger table rows separately
+  const rows = Array.from(viewEl.querySelectorAll('tbody tr'));
+  if (rows.length) {
+    rows.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateX(-8px)'; });
+    animate(rows,
+      { opacity: [0, 1], transform: ['translateX(-8px)', 'translateX(0px)'] },
+      { duration: 0.3, delay: stagger(0.04, { startDelay: 0.25 }), ease: EASE_OUT }
+    );
+  }
+}
+
+// ─── Patch navigate to trigger animations ───────────────────
+const _origNavigate = window.navigate;
+window.navigate = function(viewName) {
+  _origNavigate(viewName);
+  requestAnimationFrame(() => {
+    const view = document.querySelector('.view.active');
+    animateViewIn(view);
+  });
+};
+
+// ─── Patch renderDashboard to re-animate metric cards ───────
+const _origRenderDash = window.renderDashboard;
+if (_origRenderDash) {
+  window.renderDashboard = function(...args) {
+    _origRenderDash(...args);
+    requestAnimationFrame(() => {
+      const mcards = Array.from(document.querySelectorAll('.metric-card'));
+      animate(mcards,
+        { opacity: [0, 1], transform: ['translateY(10px)', 'translateY(0px)'] },
+        { duration: 0.35, delay: stagger(0.03), ease: EASE_OUT }
+      );
+    });
+  };
+}
+
+// ─── Initial page load ───────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const view = document.querySelector('.view.active');
+  animateViewIn(view);
+});
+// Fallback if DOM already loaded
+if (document.readyState !== 'loading') {
+  const view = document.querySelector('.view.active');
+  animateViewIn(view);
+}
+
+// ─── Hover animations on type-cards ─────────────────────────
+document.querySelectorAll('.type-card').forEach(card => {
+  card.addEventListener('mouseenter', () =>
+    animate(card, { boxShadow: ['0 0 0 rgba(0,0,0,0)', '0 12px 40px rgba(0,0,0,0.5)'] }, { duration: 0.25 })
+  );
+  card.addEventListener('mouseleave', () =>
+    animate(card, { boxShadow: '0 0 0 rgba(0,0,0,0)' }, { duration: 0.25 })
+  );
+});
+
+// ─── Hover animations on buttons ─────────────────────────────
+document.querySelectorAll('.btn-primary').forEach(btn => {
+  btn.addEventListener('mouseenter', () =>
+    animate(btn, { transform: 'translateX(2px)' }, { duration: 0.15 })
+  );
+  btn.addEventListener('mouseleave', () =>
+    animate(btn, { transform: 'translateX(0px)' }, { duration: 0.15 })
+  );
+});
+
+// ─── Scroll-triggered fades for chart cards in comparativa ──
+inView('.chart-card', ({ target }) => {
+  animate(target,
+    { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0px)'] },
+    { duration: 0.5, ease: EASE_OUT }
+  );
+}, { amount: 0.2 });
 </script>
 </body>
 </html>
