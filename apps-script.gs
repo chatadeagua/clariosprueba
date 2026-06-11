@@ -41,11 +41,20 @@ const INDICADORES_HEADERS = [
   'as_voluntarios', 'as_num_eventos', 'as_tipo', 'as_horas_voluntariado', 'as_obs'
 ];
 
+// Headers de la hoja de Evaluaciones Impact Kit
+const IK_EVAL_HEADERS = [
+  'id', 'timestamp', 'folio', 'fecha', 'nombre',
+  'ik_valor_compartido', 'ik_liderazgo', 'ik_sostenibilidad',
+  'ik_proposito', 'ik_gestion', 'ik_cocreacion', 'ik_reputacion',
+  'ik_score', 'ik_veredicto', 'ik_status', 'status_fecha'
+];
+
 // Headers completos por tipo de hoja
 const SHEET_HEADERS = {
   'Proyectos':    [...BASE_HEADERS, 'duracion', 'presupuesto', 'aliados', 'indicador', 'meta', ...INDICADORES_HEADERS],
   'Eventos':      [...BASE_HEADERS, 'tipo_evento', 'asistentes', 'modalidad', 'media', 'logistica', ...INDICADORES_HEADERS],
-  'Activaciones': [...BASE_HEADERS, 'tipo_activacion', 'canal', 'alcance', 'inversion', 'mensaje', ...INDICADORES_HEADERS]
+  'Activaciones': [...BASE_HEADERS, 'tipo_activacion', 'canal', 'alcance', 'inversion', 'mensaje', ...INDICADORES_HEADERS],
+  'Evaluaciones': IK_EVAL_HEADERS
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -57,9 +66,10 @@ function doGet(e) {
   try {
     const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     const sheetTypes = [
-      { name: 'Proyectos',    type: 'proyecto'   },
-      { name: 'Eventos',      type: 'evento'     },
-      { name: 'Activaciones', type: 'activacion' }
+      { name: 'Proyectos',    type: 'proyecto'      },
+      { name: 'Eventos',      type: 'evento'        },
+      { name: 'Activaciones', type: 'activacion'    },
+      { name: 'Evaluaciones', type: 'evaluacion_ik' }
     ];
     const allRecords = [];
     sheetTypes.forEach(({ name, type }) => {
@@ -90,7 +100,7 @@ function doPost(e) {
   try {
     const payload = JSON.parse(e.postData.contents);
     const type = (payload.type || '').toLowerCase().trim();
-    const sheetMap = { proyecto: 'Proyectos', evento: 'Eventos', activacion: 'Activaciones' };
+    const sheetMap = { proyecto: 'Proyectos', evento: 'Eventos', activacion: 'Activaciones', evaluacion_ik: 'Evaluaciones' };
     const sheetName = sheetMap[type];
     if (!sheetName) throw new Error('Tipo inválido: ' + type);
 
@@ -102,7 +112,7 @@ function doPost(e) {
     asegurarColumnas_(sheet, SHEET_HEADERS[sheetName]);
 
     // Folio correlativo
-    const prefixMap = { Proyectos: 'PRO', Eventos: 'EVE', Activaciones: 'ACT' };
+    const prefixMap = { Proyectos: 'PRO', Eventos: 'EVE', Activaciones: 'ACT', Evaluaciones: 'IK' };
     const seq = String(sheet.getLastRow()).padStart(4, '0');
     const folio = prefixMap[sheetName] + '-' + seq + '-' + new Date().getFullYear();
 

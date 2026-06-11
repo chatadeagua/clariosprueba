@@ -1706,10 +1706,8 @@ tbody tr:last-child td { border-bottom: none; }
 
     <div class="nav-section">Seguimiento</div>
     <div class="nav-item" onclick="navigate('folios')">
-      <span class="nav-icon">📋</span> Folios activos
-    </div>
-    <div class="nav-item" onclick="navigate('tracking')">
-      <span class="nav-icon">📊</span> Tracking centralizado
+      <span class="nav-icon">📋</span> Evaluaciones IK
+      <span class="nav-badge" id="badge-folios" style="background:var(--amber);display:none">0</span>
     </div>
     <div class="nav-item" onclick="navigate('impact-kit')">
       <span class="nav-icon">✦</span> Clarios Impact Kit
@@ -2823,44 +2821,43 @@ tbody tr:last-child td { border-bottom: none; }
     </div>
     <div class="table-card" id="table-activaciones-wrap"></div>
   </div>
-  <!-- ═══ FOLIOS ACTIVOS ═══ -->
+  <!-- ═══ EVALUACIONES IMPACT KIT ═══ -->
   <div class="view" id="view-folios">
     <div class="page-header">
-      <div class="page-eyebrow">Seguimiento</div>
-      <div class="page-title">Folios <span>Activos</span></div>
-      <div class="page-desc">Todas las iniciativas registradas que requieren seguimiento activo por parte del equipo IS.</div>
+      <div class="page-eyebrow">Seguimiento · Impact Kit</div>
+      <div class="page-title">Evaluaciones <span>Impact Kit</span></div>
+      <div class="page-desc">Iniciativas evaluadas mediante el Chart de Valor Social. Aprueba o rechaza cada evaluación.</div>
     </div>
-    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
-      <select id="folio-filter-status" onchange="renderFolios()" style="background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:8px 12px;border-radius:8px;font-family:var(--sans);font-size:12px;">
-        <option value="">Todos los estados</option>
-        <option value="en-revision">En revisión</option>
-        <option value="aprobado">Aprobado</option>
-        <option value="pendiente">Pendiente info</option>
-      </select>
-      <select id="folio-filter-type" onchange="renderFolios()" style="background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:8px 12px;border-radius:8px;font-family:var(--sans);font-size:12px;">
-        <option value="">Todos los tipos</option>
-        <option value="proyecto">Proyecto</option>
-        <option value="evento">Evento</option>
-        <option value="activacion">Activación</option>
-      </select>
-    </div>
-    <div class="table-card" id="table-folios-wrap"></div>
-  </div>
 
-  <!-- ═══ TRACKING CENTRALIZADO ═══ -->
-  <div class="view" id="view-tracking">
-    <div class="page-header">
-      <div class="page-eyebrow">Seguimiento</div>
-      <div class="page-title">Tracking <span>Centralizado</span></div>
-      <div class="page-desc">Vista consolidada de todas las actividades con folio, calificación por eje del Chart de Valor Social e información clave para monitoreo estratégico.</div>
-    </div>
     <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
-      <div class="stat-card" style="--accent:var(--purple)"><div class="stat-icon">◈</div><div class="stat-label">Total registros</div><div class="stat-num" id="tk-total">0</div></div>
-      <div class="stat-card" style="--accent:var(--green)"><div class="stat-icon">✓</div><div class="stat-label">Score ≥ 4.0</div><div class="stat-num" id="tk-approved">0</div></div>
-      <div class="stat-card" style="--accent:var(--amber)"><div class="stat-icon">⚠</div><div class="stat-label">Score 3–3.9</div><div class="stat-num" id="tk-mid">0</div></div>
-      <div class="stat-card" style="--accent:var(--red)"><div class="stat-icon">✗</div><div class="stat-label">Score &lt; 3.0</div><div class="stat-num" id="tk-low">0</div></div>
+      <div class="stat-card" style="--accent:var(--purple)"><div class="stat-icon">◈</div><div class="stat-label">Total evaluaciones</div><div class="stat-num" id="fol-total">0</div></div>
+      <div class="stat-card" style="--accent:var(--amber)"><div class="stat-icon">◑</div><div class="stat-label">En revisión</div><div class="stat-num" id="fol-revision">0</div></div>
+      <div class="stat-card" style="--accent:var(--green)"><div class="stat-icon">✓</div><div class="stat-label">Aprobadas</div><div class="stat-num" id="fol-aprobadas">0</div></div>
+      <div class="stat-card" style="--accent:var(--red)"><div class="stat-icon">✗</div><div class="stat-label">Rechazadas</div><div class="stat-num" id="fol-rechazadas">0</div></div>
     </div>
-    <div class="table-card" id="table-tracking-wrap"></div>
+
+    <div class="filter-bar" style="margin-bottom:20px">
+      <div class="filter-group">
+        <div class="filter-label">Estado</div>
+        <select id="folio-filter-status" class="filter-select" onchange="renderFolios()">
+          <option value="">Todos los estados</option>
+          <option value="en-revision">En revisión</option>
+          <option value="aprobado">Aprobado</option>
+          <option value="rechazado">Rechazado</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Resultado IK</div>
+        <select id="folio-filter-verdict" class="filter-select" onchange="renderFolios()">
+          <option value="">Todos</option>
+          <option value="viable">Viable</option>
+          <option value="revisar">Revisar</option>
+          <option value="no_recomendado">No recomendado</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-card" id="table-folios-wrap"></div>
   </div>
 
   <!-- ═══════════════════════════
@@ -2893,6 +2890,10 @@ tbody tr:last-child td { border-bottom: none; }
         <!-- Left: dimension scoring form -->
         <div class="form-section" style="flex:1;min-width:0">
           <div class="form-section-title">Chart de Valor Social</div>
+          <div class="field" style="margin-bottom:22px">
+            <label>Nombre de la iniciativa <span class="req">*</span></label>
+            <input type="text" id="ik-nombre" placeholder="Ej. Programa de Reciclaje Escolar 2026" oninput="ikUpdateNombreState()">
+          </div>
           <p style="font-size:12px;color:var(--gray-2);margin-bottom:22px;line-height:1.6">
             Califica cada dimensión del 1 (Inicial) al 5 (Referente). El promedio ponderado determina la recomendación de registro.
           </p>
@@ -2957,9 +2958,15 @@ tbody tr:last-child td { border-bottom: none; }
             </table>
           </div>
 
+          <!-- Saved notice -->
+          <div id="ik-saved-notice" style="display:none;padding:12px 16px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);border-left:3px solid var(--green);margin-bottom:16px;font-size:12px;color:var(--green-lt)">
+            <strong>✓ Evaluación guardada</strong> · Folio <span id="ik-saved-folio" style="font-family:var(--mono)"></span> · Disponible en Evaluaciones IK
+          </div>
+
           <!-- Action buttons -->
           <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn btn-primary" onclick="ikProceedToRegister()">Proceder al registro →</button>
+            <button class="btn btn-primary" onclick="ikProceedToRegister()">Proceder al registro IS →</button>
+            <button class="btn btn-ghost" onclick="navigate('folios')">Ver en Evaluaciones</button>
             <button class="btn btn-ghost" onclick="ikReset()">← Nueva evaluación</button>
           </div>
         </div>
@@ -3171,8 +3178,7 @@ function navigate(view) {
     activaciones: 'Activaciones',
     form1: 'Registro · Paso 1',
     form2: 'Registro · Paso 2',
-    folios: 'Folios Activos',
-    tracking: 'Tracking Centralizado',
+    folios: 'Evaluaciones Impact Kit',
     'impact-kit': 'Clarios Impact Kit',
     registros: 'Todos los registros',
     reporte: 'Reporte de indicadores'
@@ -3187,7 +3193,6 @@ function navigate(view) {
   if (view === 'eventos') renderList('evento', 'table-eventos-wrap');
   if (view === 'activaciones') renderList('activacion', 'table-activaciones-wrap');
   if (view === 'folios') renderFolios();
-  if (view === 'tracking') renderTracking();
   if (view === 'registros') renderRegistros();
   if (view === 'impact-kit') ikInit();
 
@@ -4099,6 +4104,13 @@ function updateBadges() {
   document.getElementById('badge-activaciones').textContent = byType.activacion;
   const br = document.getElementById('badge-registros');
   if (br) br.textContent = records.length;
+  // IK pending badge
+  const bf = document.getElementById('badge-folios');
+  if (bf) {
+    const pending = loadIkEvals().filter(e => e.ik_status === 'en-revision').length;
+    bf.textContent = pending;
+    bf.style.display = pending ? '' : 'none';
+  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -4186,126 +4198,104 @@ function toggleSidebar() {
 
 
 // ═══════════════════════════════════════════════════
-// FOLIOS ACTIVOS
+// IK EVALUACIONES — STORAGE
+// ═══════════════════════════════════════════════════
+const IK_STORAGE_KEY = 'clarios_ik_evals_v1';
+
+function loadIkEvals() {
+  try { return JSON.parse(localStorage.getItem(IK_STORAGE_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveIkEvals(evals) {
+  localStorage.setItem(IK_STORAGE_KEY, JSON.stringify(evals));
+}
+
+function ikGenFolio() {
+  const evals = loadIkEvals();
+  const seq = String(evals.length + 1).padStart(4, '0');
+  return `IK-${seq}-${new Date().getFullYear()}`;
+}
+
+// ═══════════════════════════════════════════════════
+// EVALUACIONES IMPACT KIT — RENDER
 // ═══════════════════════════════════════════════════
 function renderFolios() {
-  const statusFilter = (document.getElementById('folio-filter-status')||{}).value || '';
-  const typeFilter   = (document.getElementById('folio-filter-type')||{}).value || '';
+  const statusFilter  = document.getElementById('folio-filter-status')?.value  || '';
+  const verdictFilter = document.getElementById('folio-filter-verdict')?.value || '';
 
-  let data = [...records];
-  if (typeFilter) data = data.filter(r => r.type === typeFilter);
+  const allEvals = loadIkEvals();
+  setText('fol-total',     allEvals.length);
+  setText('fol-revision',  allEvals.filter(e => e.ik_status === 'en-revision').length);
+  setText('fol-aprobadas', allEvals.filter(e => e.ik_status === 'aprobado').length);
+  setText('fol-rechazadas',allEvals.filter(e => e.ik_status === 'rechazado').length);
 
-  // Assign status: simulate "en-revision" for newer, "aprobado" for older
-  data = data.map((r, i) => ({...r, _status: i < 3 ? 'en-revision' : i < 6 ? 'aprobado' : 'pendiente'}));
-  if (statusFilter) data = data.filter(r => r._status === statusFilter);
+  let data = [...allEvals];
+  if (statusFilter)  data = data.filter(e => e.ik_status    === statusFilter);
+  if (verdictFilter) data = data.filter(e => e.ik_veredicto === verdictFilter);
+  // Newest first
+  data.reverse();
 
   const el = document.getElementById('table-folios-wrap');
-  const statusLabel = { 'en-revision':'🟡 En revisión', 'aprobado':'🟢 Aprobado', 'pendiente':'🔴 Pendiente info' };
 
+  if (!allEvals.length) {
+    el.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">◌</div>
+      <p>Aún no hay evaluaciones. Ve al Impact Kit para comenzar.</p>
+      <button class="btn btn-primary" onclick="navigate('impact-kit')" style="margin-top:16px">Ir al Impact Kit →</button>
+    </div>`;
+    return;
+  }
   if (!data.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin folios en este estado.</p></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin evaluaciones con este filtro.</p></div>`;
     return;
   }
 
-  el.innerHTML = `
-    <div class="table-header">
-      <div class="table-title">Folios activos (${data.length})</div>
-    </div>
-    <table>
-      <thead><tr>
-        <th>Folio</th><th>Nombre</th><th>Tipo</th><th>Programa</th><th>Responsable</th>
-        <th>Beneficiarios</th><th>Score IS</th><th>Estado</th><th>Fecha</th><th></th>
-      </tr></thead>
-      <tbody>${data.map(r => {
-        const scoreIS = getRecordScore(r);
-        const scoreColor = scoreIS >= 4 ? 'var(--green)' : scoreIS >= 3 ? 'var(--amber)' : 'var(--red)';
-        const progMap = {arranca:'Arranca el Futuro',guardianes:'Guardianes del Planeta',infraestructura:'Infraestructura',activacion_social:'Act. Social',general:'General'};
-        return `<tr>
-          <td style="font-family:var(--mono);font-size:11px;color:var(--purple-lt)">${r.id}</td>
-          <td class="fw700">${r.nombre||'—'}</td>
-          <td><span class="badge badge-${r.type}">${LABELS[r.type]}</span></td>
-          <td style="font-size:11px;color:var(--gray-2)">${progMap[r.programa]||'—'}</td>
-          <td>${r.responsable||'—'}</td>
-          <td style="font-family:var(--mono)">${(parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
-          <td style="font-family:var(--mono);font-weight:700;color:${scoreColor}">${scoreIS.toFixed(1)}</td>
-          <td style="font-size:11px">${statusLabel[r._status]||'—'}</td>
-          <td style="font-family:var(--mono);font-size:11px">${formatDate(r.fecha)}</td>
-          <td><button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button></td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table>`;
-}
+  const sc = s => s >= 4 ? 'var(--green-lt)' : s >= 3 ? 'var(--amber)' : 'var(--red)';
 
-function getRecordScore(r) {
-  const dims = ['proposito','liderazgo','reputacion','sostenibilidad','cocreacion','gestion','valor'];
-  const vals = dims.map(d => parseFloat(r['score_'+d]||r[d]||3));
-  return vals.reduce((a,b)=>a+b,0)/vals.length;
-}
-
-// ═══════════════════════════════════════════════════
-// TRACKING CENTRALIZADO
-// ═══════════════════════════════════════════════════
-function renderTracking() {
-  const el = document.getElementById('table-tracking-wrap');
-  const data = [...records];
-
-  // Stats
-  const approved = data.filter(r => getRecordScore(r) >= 4).length;
-  const mid      = data.filter(r => { const s=getRecordScore(r); return s>=3&&s<4; }).length;
-  const low      = data.filter(r => getRecordScore(r) < 3).length;
-  document.getElementById('tk-total').textContent = data.length;
-  document.getElementById('tk-approved').textContent = approved;
-  document.getElementById('tk-mid').textContent = mid;
-  document.getElementById('tk-low').textContent = low;
-
-  if (!data.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin registros aún.</p></div>`;
-    return;
-  }
-
-  const dims = [
-    {key:'proposito',   label:'Propósito'},
-    {key:'liderazgo',  label:'Liderazgo'},
-    {key:'reputacion', label:'Reputación'},
-    {key:'sostenibilidad',label:'Sostenib.'},
-    {key:'cocreacion', label:'Cocreación'},
-    {key:'gestion',    label:'Gestión'},
-    {key:'valor',      label:'Val. Comp.'},
-  ];
-
-  const progMap = {arranca:'Arranca',guardianes:'Guardianes',infraestructura:'Infraest.',activacion_social:'Act. Social',general:'General'};
-  const scoreColor = s => s >= 4 ? 'var(--green)' : s >= 3 ? 'var(--amber)' : 'var(--red)';
+  const statusBadge = {
+    'en-revision':'<span style="display:inline-flex;padding:2px 8px;background:rgba(245,158,11,0.12);border-left:3px solid var(--amber);color:var(--amber);font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:1px">EN REVISIÓN</span>',
+    'aprobado':   '<span style="display:inline-flex;padding:2px 8px;background:rgba(16,185,129,0.12);border-left:3px solid var(--green);color:var(--green-lt);font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:1px">APROBADO</span>',
+    'rechazado':  '<span style="display:inline-flex;padding:2px 8px;background:rgba(239,68,68,0.12);border-left:3px solid var(--red);color:var(--red);font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:1px">RECHAZADO</span>',
+  };
+  const verdictBadge = {
+    'viable':         '<span class="badge badge-proyecto">VIABLE</span>',
+    'revisar':        '<span class="badge badge-activacion">REVISAR</span>',
+    'no_recomendado': '<span style="display:inline-flex;padding:2px 8px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:var(--red);font-size:9px;font-weight:700;font-family:var(--mono)">NO REC.</span>',
+  };
 
   el.innerHTML = `
     <div class="table-header">
-      <div class="table-title">Tracking centralizado (${data.length} registros)</div>
+      <span class="table-title">Evaluaciones IK (${data.length})</span>
     </div>
     <div style="overflow-x:auto">
     <table>
       <thead><tr>
-        <th>Folio</th><th>Nombre</th><th>Tipo</th><th>Programa</th>
-        <th>Score total</th>
-        ${dims.map(d=>`<th>${d.label}</th>`).join('')}
-        <th>Ben. directos</th><th>Horas form.</th><th>% Mujeres</th><th>Municipio</th><th>Fecha</th><th></th>
+        <th>Folio</th><th>Nombre</th><th>Score</th>
+        <th>Val.C.</th><th>Lidera.</th><th>Sosten.</th><th>Propós.</th><th>Gestión</th><th>Cocrec.</th><th>Reputa.</th>
+        <th>Resultado IK</th><th>Estado</th><th>Fecha</th><th>Acciones</th>
       </tr></thead>
-      <tbody>${data.map(r => {
-        const total = getRecordScore(r);
-        const dimVals = dims.map(d => parseFloat(r['score_'+d.key]||r[d.key]||3));
+      <tbody>${data.map(e => {
+        const score = parseFloat(e.ik_score) || 0;
+        const dims = ['ik_valor_compartido','ik_liderazgo','ik_sostenibilidad','ik_proposito','ik_gestion','ik_cocreacion','ik_reputacion'];
         return `<tr>
-          <td style="font-family:var(--mono);font-size:10px;color:var(--purple-lt)">${r.id}</td>
-          <td class="fw700" style="white-space:nowrap">${r.nombre||'—'}</td>
-          <td><span class="badge badge-${r.type}">${LABELS[r.type]}</span></td>
-          <td style="font-size:11px;color:var(--gray-2)">${progMap[r.programa]||'—'}</td>
-          <td style="font-family:var(--mono);font-weight:800;color:${scoreColor(total)};text-align:center">${total.toFixed(1)}</td>
-          ${dimVals.map(v=>`<td style="font-family:var(--mono);font-size:11px;color:${scoreColor(v)};text-align:center">${v.toFixed(1)}</td>`).join('')}
-          <td style="font-family:var(--mono)">${(parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
-          <td style="font-family:var(--mono)">${parseInt(r.g_horas_formacion)||0}</td>
-          <td style="font-family:var(--mono)">${r.g_pct_mujeres?r.g_pct_mujeres+'%':'—'}</td>
-          <td style="font-size:11px">${r.ubicacion||'—'}</td>
-          <td style="font-family:var(--mono);font-size:11px">${formatDate(r.fecha)}</td>
-          <td><button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button></td>
+          <td style="font-family:var(--mono);font-size:10px;color:var(--purple-lt);white-space:nowrap">${e.folio}</td>
+          <td class="fw700" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.nombre||''}">${e.nombre||'—'}</td>
+          <td style="font-family:var(--mono);font-weight:900;font-size:18px;color:${sc(score)}">${score.toFixed(1)}</td>
+          ${dims.map(k=>`<td style="font-family:var(--mono);font-size:12px;font-weight:700;color:${sc(parseFloat(e[k]))};text-align:center">${e[k]||'—'}</td>`).join('')}
+          <td>${verdictBadge[e.ik_veredicto]||'—'}</td>
+          <td>${statusBadge[e.ik_status]||'—'}</td>
+          <td style="font-family:var(--mono);font-size:11px;color:var(--gray-2);white-space:nowrap">${e.fecha||'—'}</td>
+          <td style="white-space:nowrap">
+            <div style="display:flex;gap:5px">
+              ${e.ik_status !== 'aprobado'   ? `<button class="btn btn-ghost btn-sm" style="color:var(--green-lt);border-color:rgba(16,185,129,0.35)" onclick="ikUpdateStatus('${e.id}','aprobado')">✓ Aprobar</button>` : ''}
+              ${e.ik_status !== 'rechazado'  ? `<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(239,68,68,0.35)" onclick="ikUpdateStatus('${e.id}','rechazado')">✗ Rechazar</button>` : ''}
+              ${e.ik_status !== 'en-revision'? `<button class="btn btn-ghost btn-sm" onclick="ikUpdateStatus('${e.id}','en-revision')">↺</button>` : ''}
+            </div>
+          </td>
         </tr>`;
-      }).join('')}</tbody>
+      }).join('')}
+      </tbody>
     </table></div>`;
 }
 
@@ -4870,6 +4860,15 @@ let ikScores = {};
 let ikRadarChart = null;
 let ikResultChart = null;
 let ikInitialized = false;
+let ikCurrentEvalId = null;
+
+function ikUpdateNombreState() {
+  const nombre = document.getElementById('ik-nombre')?.value?.trim();
+  const btnEl  = document.getElementById('ik-btn-result');
+  if (!btnEl) return;
+  const filled = IK_DIMS.map(d => ikScores[d.key]).filter(v => v != null);
+  btnEl.disabled = !(filled.length === IK_DIMS.length && nombre);
+}
 
 function ikInit() {
   if (ikInitialized) return;
@@ -4955,7 +4954,8 @@ function ikScore(dim, val) {
     avgEl.textContent = avg.toFixed(2);
     avgEl.style.color = col;
     if (allDone) {
-      btnEl.disabled = false;
+      const nombre = document.getElementById('ik-nombre')?.value?.trim();
+      btnEl.disabled = !nombre;
       vEl.textContent = avg >= 4 ? '✓ Viable · Recomendado para registro' : avg >= 3 ? '⚠ Revisar · Fortalecer antes de registrar' : '✗ No recomendado · Replantear iniciativa';
       vEl.style.color = col;
     } else {
@@ -4967,10 +4967,51 @@ function ikScore(dim, val) {
 }
 
 function ikShowResult() {
+  const nombre = document.getElementById('ik-nombre')?.value?.trim() || 'Sin nombre';
   const scores = IK_DIMS.map(d => ikScores[d.key] || 0);
   const avg = scores.reduce((a,b) => a+b, 0) / scores.length;
   const isViable = avg >= 4;
   const isReview = avg >= 3 && avg < 4;
+
+  // ── Save evaluation ──────────────────────────────
+  const folio = ikGenFolio();
+  ikCurrentEvalId = 'IK-' + Date.now();
+  const eval_ = {
+    id:          ikCurrentEvalId,
+    folio,
+    fecha:       new Date().toISOString().split('T')[0],
+    timestamp:   new Date().toISOString(),
+    nombre,
+    ik_valor_compartido: ikScores.valor_compartido,
+    ik_liderazgo:        ikScores.liderazgo,
+    ik_sostenibilidad:   ikScores.sostenibilidad,
+    ik_proposito:        ikScores.proposito,
+    ik_gestion:          ikScores.gestion,
+    ik_cocreacion:       ikScores.cocreacion,
+    ik_reputacion:       ikScores.reputacion,
+    ik_score:            parseFloat(avg.toFixed(2)),
+    ik_veredicto:        isViable ? 'viable' : isReview ? 'revisar' : 'no_recomendado',
+    ik_status:           'en-revision',
+  };
+  const evals = loadIkEvals();
+  evals.push(eval_);
+  saveIkEvals(evals);
+  updateBadges();
+
+  // Show saved notice
+  const notice = document.getElementById('ik-saved-notice');
+  const folioEl = document.getElementById('ik-saved-folio');
+  if (notice) { notice.style.display = ''; }
+  if (folioEl) folioEl.textContent = folio;
+
+  // Push to API (fire and forget)
+  if (typeof GAS_URL !== 'undefined' && GAS_URL && !GAS_URL.includes('TU_URL')) {
+    fetch(GAS_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'evaluacion_ik', ...eval_ })
+    }).catch(() => {});
+  }
 
   const col  = isViable ? '#34D399' : isReview ? '#F59E0B' : '#EF4444';
   const verdict = isViable ? 'Viable para registro IS' : isReview ? 'Revisar antes de registrar' : 'No recomendado';
@@ -5059,17 +5100,22 @@ function ikShowResult() {
 
 function ikReset() {
   ikScores = {};
+  ikCurrentEvalId = null;
   document.querySelectorAll('.ik-score-btn').forEach(b => b.classList.remove('selected'));
   IK_DIMS.forEach(d => {
     const el = document.getElementById(`ik-lbl-${d.key}`);
     if (el) el.textContent = 'selecciona';
   });
+  const nombreEl = document.getElementById('ik-nombre');
+  if (nombreEl) nombreEl.value = '';
   const avgEl = document.getElementById('ik-avg-display');
   if (avgEl) { avgEl.textContent = '—'; avgEl.style.color = 'var(--white)'; }
   const vEl = document.getElementById('ik-verdict-inline');
   if (vEl) vEl.textContent = '';
   const btnEl = document.getElementById('ik-btn-result');
   if (btnEl) btnEl.disabled = true;
+  const notice = document.getElementById('ik-saved-notice');
+  if (notice) notice.style.display = 'none';
   if (ikRadarChart) { ikRadarChart.data.datasets[0].data = IK_DIMS.map(() => 0); ikRadarChart.update(); }
 
   document.getElementById('ik-step-ind-1').classList.add('active');
@@ -5079,6 +5125,18 @@ function ikReset() {
 }
 
 function ikProceedToRegister() { navigate('nuevo'); }
+
+function ikUpdateStatus(id, status) {
+  const evals = loadIkEvals();
+  const idx = evals.findIndex(e => e.id === id);
+  if (idx === -1) return;
+  evals[idx].ik_status = status;
+  evals[idx].status_fecha = new Date().toISOString().split('T')[0];
+  saveIkEvals(evals);
+  renderFolios();
+  const labels = { aprobado: '✓ Evaluación aprobada', rechazado: '✗ Evaluación rechazada', 'en-revision': '↺ Vuelto a revisión' };
+  showToast(labels[status] || 'Estado actualizado');
+}
 </script>
 
 <!-- ── FRAMER MOTION ANIMATIONS ──────────────────────────────── -->
