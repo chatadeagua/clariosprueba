@@ -832,8 +832,8 @@ tbody tr:last-child td { border-bottom: none; }
   background: var(--bg2);
   border: 1px solid var(--border);
   border-bottom: 2px solid var(--purple-b);
-  padding: 8px 14px;
-  margin-bottom: 14px;
+  padding: 6px 12px;
+  margin-bottom: 8px;
   overflow-x: auto;
 }
 
@@ -991,40 +991,40 @@ tbody tr:last-child td { border-bottom: none; }
 .gap-8 { display: flex; gap: 8px; align-items: center; }
 
 /* ── TABLERO DE IMPACTO ───────────────────────────────────── */
-.tablero { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.tablero { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
 
 .tablero-row {
   display: grid;
-  grid-template-columns: 120px 1fr;
+  grid-template-columns: 90px 1fr;
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
-  min-height: 100px;
+  min-height: 72px;
 }
 
 .tablero-label {
   background: var(--row-color, var(--purple));
-  padding: 18px 14px;
+  padding: 10px 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .tablero-label-name {
   font-family: var(--cond);
-  font-size: 19px;
+  font-size: 15px;
   font-weight: 900;
   color: rgba(255,255,255,0.95);
   line-height: 1.1;
 }
 
 .tablero-label-count {
-  font-size: 9px;
+  font-size: 8px;
   color: rgba(255,255,255,0.45);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
 }
 
 .tablero-cards {
@@ -1035,11 +1035,11 @@ tbody tr:last-child td { border-bottom: none; }
 }
 
 .metric-card {
-  padding: 14px 16px;
+  padding: 8px 12px;
   border-left: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
   transition: background 0.15s;
 }
@@ -1057,15 +1057,15 @@ tbody tr:last-child td { border-bottom: none; }
 
 .metric-num {
   font-family: var(--cond);
-  font-size: 38px;
+  font-size: 26px;
   font-weight: 900;
   color: var(--white);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 
-.metric-num.lg { font-size: 48px; }
-.metric-num.sm { font-size: 26px; }
+.metric-num.lg { font-size: 32px; }
+.metric-num.sm { font-size: 20px; }
 
 .metric-sub {
   font-size: 10px;
@@ -1101,27 +1101,27 @@ tbody tr:last-child td { border-bottom: none; }
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 .act-strip-item {
   flex: 1;
-  padding: 14px 16px;
+  padding: 8px 12px;
   border-right: 1px solid var(--border);
   text-align: center;
 }
 .act-strip-item:last-child { border-right: none; }
 .act-strip-num {
   font-family: var(--cond);
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 900;
   color: var(--white);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .act-strip-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   color: var(--gray-2);
   margin-top: 2px;
@@ -1352,14 +1352,14 @@ tbody tr:last-child td { border-bottom: none; }
   background: transparent;
   border-bottom: 2px solid var(--purple-b);
   padding: 0;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   width: fit-content;
 }
 .dash-tab {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 20px;
+  gap: 6px;
+  padding: 6px 14px;
   border-radius: 0;
   border: none;
   border-bottom: 2px solid transparent;
@@ -1367,7 +1367,7 @@ tbody tr:last-child td { border-bottom: none; }
   background: transparent;
   color: var(--gray-3);
   font-family: var(--sans);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -1879,9 +1879,9 @@ tbody tr:last-child td { border-bottom: none; }
     <div class="dash-panel active" id="dash-pr">
 
       <!-- Record selector -->
-      <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:var(--r-lg);padding:18px 24px;margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:16px">
+      <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:var(--r-lg);padding:7px 12px;margin-bottom:8px;display:flex;align-items:center;flex-wrap:wrap;gap:10px">
         <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray-3);white-space:nowrap">Vista de indicadores</div>
-        <select id="pr-record-select" onchange="renderRecordTablero()" style="flex:1;min-width:260px;max-width:600px;background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:10px 14px;border-radius:var(--r-sm);font-family:var(--sans);font-size:13px;appearance:none;cursor:pointer">
+        <select id="pr-record-select" onchange="renderRecordTablero()" style="flex:1;min-width:200px;max-width:600px;background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:5px 10px;border-radius:var(--r-sm);font-family:var(--sans);font-size:11px;appearance:none;cursor:pointer;height:28px">
           <option value="">☰ Todos los registros — acumulado</option>
         </select>
       </div>
