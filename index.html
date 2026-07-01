@@ -1909,24 +1909,24 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
             <div class="tablero-cards">
               <div class="metric-card">
-                <div class="metric-card-label">% Aumento en habilidades técnicas / digitales / liderazgo</div>
-                <div id="mc-habilidades"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Prototipos con enfoque circular</div>
-                <div id="mc-prototipos"></div>
-              </div>
-              <div class="metric-card">
                 <div class="metric-card-label">Grado de satisfacción</div>
                 <div id="mc-satisfaccion"></div>
               </div>
               <div class="metric-card">
-                <div class="metric-card-label">Grado de participación</div>
-                <div id="mc-participacion"></div>
+                <div class="metric-card-label">% Aumento en habilidades técnicas / digitales / liderazgo</div>
+                <div id="mc-habilidades"></div>
               </div>
               <div class="metric-card">
-                <div class="metric-card-label">Talento canalizado a Clarios</div>
-                <div id="mc-talento"></div>
+                <div class="metric-card-label">% Mujeres con autonomía digital</div>
+                <div id="mc-autonomia"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">% Becarios en sostenibilidad</div>
+                <div id="mc-becarios"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Prototipos con enfoque circular</div>
+                <div id="mc-prototipos"></div>
               </div>
               <div class="metric-card">
                 <div class="metric-card-label">Alumnos con perspectiva de género</div>
@@ -1943,20 +1943,16 @@ tbody tr:last-child td { border-bottom: none; }
             </div>
             <div class="tablero-cards">
               <div class="metric-card">
+                <div class="metric-card-label">Beneficiarios directos</div>
+                <div id="mc-ben-dir"></div>
+              </div>
+              <div class="metric-card">
                 <div class="metric-card-label">Reconocimiento de CLARIOS</div>
                 <div id="mc-reconocimiento"></div>
               </div>
               <div class="metric-card">
-                <div class="metric-card-label">% Empleador deseado</div>
-                <div id="mc-empleador"></div>
-              </div>
-              <div class="metric-card">
                 <div class="metric-card-label">Narrativas positivas en medios</div>
                 <div id="mc-narrativas"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Beneficiarios directos</div>
-                <div id="mc-ben-dir-rep"></div>
               </div>
               <div class="metric-card" ondblclick="showConfianzaPop(event,'aggregate')" style="cursor:pointer" title="Doble clic para ver desglose por pregunta">
                 <div class="metric-card-label">Índice de confianza <span style="font-size:8px;opacity:0.5">⊞ dbl-clic</span></div>
@@ -1965,6 +1961,10 @@ tbody tr:last-child td { border-bottom: none; }
               <div class="metric-card">
                 <div class="metric-card-label">NPS</div>
                 <div id="mc-nps"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">% Empleador deseado</div>
+                <div id="mc-empleador"></div>
               </div>
             </div>
           </div>
@@ -1976,10 +1976,6 @@ tbody tr:last-child td { border-bottom: none; }
               <div class="tablero-label-count">6 indicadores</div>
             </div>
             <div class="tablero-cards">
-              <div class="metric-card">
-                <div class="metric-card-label">Beneficiados directos</div>
-                <div id="mc-ben-directos"></div>
-              </div>
               <div class="metric-card">
                 <div class="metric-card-label">Horas de formación impartidas</div>
                 <div id="mc-horas"></div>
@@ -1993,12 +1989,16 @@ tbody tr:last-child td { border-bottom: none; }
                 <div id="mc-mujeres"></div>
               </div>
               <div class="metric-card">
+                <div class="metric-card-label">Quejas recibidas / atendidas</div>
+                <div id="mc-quejas"></div>
+              </div>
+              <div class="metric-card">
                 <div class="metric-card-label">Escuelas beneficiadas</div>
                 <div id="mc-escuelas"></div>
               </div>
-              <div class="metric-card" style="border-left:2px solid rgba(52,211,153,0.4)">
-                <div class="metric-card-label">sROI · costo / beneficiario</div>
-                <div id="mc-sroi"></div>
+              <div class="metric-card">
+                <div class="metric-card-label">Grado de participación</div>
+                <div id="mc-participacion"></div>
               </div>
             </div>
           </div>
@@ -2007,7 +2007,7 @@ tbody tr:last-child td { border-bottom: none; }
           <div class="tablero-row">
             <div class="tablero-label" style="--row-color:#0369A1">
               <div class="tablero-label-name">Proceso social</div>
-              <div class="tablero-label-count">5 indicadores</div>
+              <div class="tablero-label-count">3 indicadores</div>
             </div>
             <div class="tablero-cards">
               <div class="metric-card">
@@ -2019,16 +2019,8 @@ tbody tr:last-child td { border-bottom: none; }
                 <div id="mc-rondas"></div>
               </div>
               <div class="metric-card">
-                <div class="metric-card-label">Quejas recibidas / atendidas</div>
-                <div id="mc-quejas"></div>
-              </div>
-              <div class="metric-card">
                 <div class="metric-card-label">Voluntarios movilizados</div>
                 <div id="mc-voluntarios"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">% Becarios en sostenibilidad</div>
-                <div id="mc-becarios"></div>
               </div>
             </div>
           </div>
@@ -2259,25 +2251,14 @@ tbody tr:last-child td { border-bottom: none; }
         </div>
         <div class="field-row cols-2">
           <div class="field">
-            <label>Beneficiarios directos estimados</label>
-            <input type="number" id="g_ben_directos" placeholder="0" min="0">
-          </div>
-          <div class="field">
             <label>Beneficiarios indirectos estimados</label>
             <input type="number" id="g_ben_indirectos" placeholder="0" min="0">
             <div class="helper">Meta 2026: 32,000</div>
           </div>
-        </div>
-        <div class="field-row cols-2">
           <div class="field">
             <label>Inversión social total (MXN) <span class="req">*</span></label>
             <input type="number" id="g_inversion" placeholder="0.00" min="0" step="0.01">
             <div class="helper">Base para el cálculo del sROI · presupuesto o inversión comprometida</div>
-          </div>
-          <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:6px">
-            <div class="helper" style="font-size:11px;color:var(--purple-lt);font-weight:600">sROI = Inversión ÷ Beneficiarios directos</div>
-            <div id="sroi-preview" style="font-family:var(--mono);font-size:18px;color:var(--white);font-weight:700">—</div>
-            <div class="helper">Costo por persona impactada</div>
           </div>
         </div>
         <div class="field-row cols-2">
@@ -2285,29 +2266,6 @@ tbody tr:last-child td { border-bottom: none; }
             <label>% mujeres participantes</label>
             <input type="number" id="g_pct_mujeres" placeholder="0" min="0" max="100">
             <div class="helper">Porcentaje del total de participantes</div>
-          </div>
-          <div class="field">
-            <label>Alianzas activas (universidades, ONGs, gobierno, centros)</label>
-            <input type="number" id="g_alianzas" placeholder="0" min="0">
-            <div class="helper">Meta 2026: 15 alianzas</div>
-          </div>
-        </div>
-        <div class="field-row cols-2">
-          <div class="field">
-            <label>Proyectos / prototipos con enfoque circular</label>
-            <input type="number" id="g_prototipos" placeholder="0" min="0">
-          </div>
-          <div class="field">
-            <label>Narrativas positivas en medios o plataformas</label>
-            <input type="number" id="g_narrativas" placeholder="0" min="0">
-            <div class="helper">Notas de prensa, publicaciones, menciones</div>
-          </div>
-        </div>
-        <div class="field-row cols-2">
-          <div class="field">
-            <label>Total de alumnos con perspectiva de género aplicada</label>
-            <input type="number" id="g_alumnos_genero" placeholder="0" min="0">
-            <div class="helper">Alumnos que recibieron contenidos o talleres con enfoque de género</div>
           </div>
           <div class="field">
             <label>Grado de participación comunitaria (1–5)</label>
@@ -2319,6 +2277,16 @@ tbody tr:last-child td { border-bottom: none; }
               <option>4 — Alta</option>
               <option>5 — Muy alta / Co-creación activa</option>
             </select>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Quejas recibidas</label>
+            <input type="number" id="g_quejas_recibidas" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Quejas atendidas</label>
+            <input type="number" id="g_quejas_atendidas" placeholder="0" min="0">
           </div>
         </div>
         </div><!-- /indic-body-resultado -->
@@ -2359,17 +2327,52 @@ tbody tr:last-child td { border-bottom: none; }
             </select>
           </div>
         </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Proyectos / prototipos con enfoque circular</label>
+            <input type="number" id="g_prototipos" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Total de alumnos con perspectiva de género aplicada</label>
+            <input type="number" id="g_alumnos_genero" placeholder="0" min="0">
+            <div class="helper">Alumnos que recibieron contenidos o talleres con enfoque de género</div>
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Nivel de satisfacción de estudiantes y docentes</label>
+            <select id="g_satisfaccion">
+              <option value="">Selecciona...</option>
+              <option>1 — Muy insatisfecho</option>
+              <option>2 — Insatisfecho</option>
+              <option>3 — Neutral</option>
+              <option>4 — Satisfecho</option>
+              <option>5 — Muy satisfecho</option>
+            </select>
+          </div>
+        </div>
         </div><!-- /indic-body-impacto -->
       </div>
 
       <div class="form-section">
         <div class="form-section-title indic-toggle-header" onclick="toggleIndic('reputacion')">
-          Indicadores — Reputación y Proceso
+          Indicadores — Reputación
           <button class="indic-toggle-btn" id="indic-btn-reputacion" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('reputacion')">
             <span class="indic-toggle-dot"></span><span>NO APLICA</span>
           </button>
         </div>
         <div class="indic-section-body" id="indic-body-reputacion">
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Beneficiarios directos estimados</label>
+            <input type="number" id="g_ben_directos" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Narrativas positivas en medios o plataformas</label>
+            <input type="number" id="g_narrativas" placeholder="0" min="0">
+            <div class="helper">Notas de prensa, publicaciones, menciones</div>
+          </div>
+        </div>
         <div class="field-row cols-2">
           <div class="field">
             <label>Grado de reconocimiento de CLARIOS</label>
@@ -2383,42 +2386,12 @@ tbody tr:last-child td { border-bottom: none; }
             </select>
           </div>
           <div class="field">
-            <label>Nivel de satisfacción de estudiantes y docentes</label>
-            <select id="g_satisfaccion">
-              <option value="">Selecciona...</option>
-              <option>1 — Muy insatisfecho</option>
-              <option>2 — Insatisfecho</option>
-              <option>3 — Neutral</option>
-              <option>4 — Satisfecho</option>
-              <option>5 — Muy satisfecho</option>
-            </select>
-          </div>
-        </div>
-        <div class="field-row cols-2">
-          <div class="field">
-            <label>Rondas de mentoría / seguimiento con egresados</label>
-            <input type="number" id="g_rondas_mentoria" placeholder="0" min="0">
-            <div class="helper">Incluye sesiones presenciales, videollamadas o email</div>
-          </div>
-          <div class="field">
-            <label>Canal principal de seguimiento a egresados</label>
-            <select id="g_canal_seguimiento">
-              <option value="">Selecciona...</option>
-              <option>Email</option>
-              <option>WhatsApp / Telegram</option>
-              <option>Reunión presencial</option>
-              <option>Videollamada</option>
-              <option>Mixto</option>
-              <option>No aplica</option>
-            </select>
-          </div>
-        </div>
-        <div class="field-row cols-2">
-          <div class="field">
             <label>NPS — Net Promoter Score</label>
             <input type="number" id="g_nps" placeholder="0" min="-100" max="100">
             <div class="helper">Escala de -100 a 100</div>
           </div>
+        </div>
+        <div class="field-row cols-2">
           <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:6px">
             <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple-lt)">Índice de confianza (calculado)</div>
             <div id="ic-preview" style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white)">—</div>
@@ -2492,17 +2465,44 @@ tbody tr:last-child td { border-bottom: none; }
           </table>
         </div>
 
+        </div><!-- /indic-body-reputacion -->
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title indic-toggle-header" onclick="toggleIndic('proceso_social')">
+          Indicadores — Proceso Social
+          <button class="indic-toggle-btn" id="indic-btn-proceso_social" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('proceso_social')">
+            <span class="indic-toggle-dot"></span><span>NO APLICA</span>
+          </button>
+        </div>
+        <div class="indic-section-body" id="indic-body-proceso_social">
         <div class="field-row cols-2">
           <div class="field">
-            <label>Quejas recibidas</label>
-            <input type="number" id="g_quejas_recibidas" placeholder="0" min="0">
+            <label>Alianzas activas (universidades, ONGs, gobierno, centros)</label>
+            <input type="number" id="g_alianzas" placeholder="0" min="0">
+            <div class="helper">Meta 2026: 15 alianzas</div>
           </div>
           <div class="field">
-            <label>Quejas atendidas</label>
-            <input type="number" id="g_quejas_atendidas" placeholder="0" min="0">
+            <label>Rondas de mentoría / seguimiento con egresados</label>
+            <input type="number" id="g_rondas_mentoria" placeholder="0" min="0">
+            <div class="helper">Incluye sesiones presenciales, videollamadas o email</div>
           </div>
         </div>
-        </div><!-- /indic-body-reputacion -->
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Canal principal de seguimiento a egresados</label>
+            <select id="g_canal_seguimiento">
+              <option value="">Selecciona...</option>
+              <option>Email</option>
+              <option>WhatsApp / Telegram</option>
+              <option>Reunión presencial</option>
+              <option>Videollamada</option>
+              <option>Mixto</option>
+              <option>No aplica</option>
+            </select>
+          </div>
+        </div>
+        </div><!-- /indic-body-proceso_social -->
       </div>
 
       <div class="form-footer">
@@ -3193,7 +3193,7 @@ let chartDonut, chartBar, chartLine;
 let currentView = 'dashboard';
 
 // Indicator section opt-in toggles (default: all off)
-const _indicActivos = { resultado: false, impacto: false, reputacion: false };
+const _indicActivos = { resultado: false, impacto: false, reputacion: false, proceso_social: false };
 
 function toggleIndic(key) {
   _indicActivos[key] = !_indicActivos[key];
@@ -3208,7 +3208,7 @@ function toggleIndic(key) {
 }
 
 function resetIndicToggles() {
-  ['resultado','impacto','reputacion'].forEach(k => {
+  ['resultado','impacto','reputacion','proceso_social'].forEach(k => {
     _indicActivos[k] = false;
     const body = document.getElementById('indic-body-' + k);
     const btn  = document.getElementById('indic-btn-' + k);
@@ -3456,29 +3456,29 @@ function saveRecord() {
   const _ir = _indicActivos.resultado;
   const _ii = _indicActivos.impacto;
   const _irep = _indicActivos.reputacion;
+  const _ips = _indicActivos.proceso_social;
   const generales = {
     // ── Resultado ──────────────────────────────────────────
     g_escuelas:              _ir ? (parseInt(document.getElementById('g_escuelas').value) || 0) : null,
     g_horas_formacion:       _ir ? (parseInt(document.getElementById('g_horas_formacion').value) || 0) : null,
-    g_ben_directos:          _ir ? (parseInt(document.getElementById('g_ben_directos').value) || 0) : null,
     g_ben_indirectos:        _ir ? (parseInt(document.getElementById('g_ben_indirectos').value) || 0) : null,
-    g_pct_mujeres:           _ir ? (parseFloat(document.getElementById('g_pct_mujeres').value) || 0) : null,
-    g_alianzas:              _ir ? (parseInt(document.getElementById('g_alianzas').value) || 0) : null,
-    g_prototipos:            _ir ? (parseInt(document.getElementById('g_prototipos').value) || 0) : null,
-    g_narrativas:            _ir ? (parseInt(document.getElementById('g_narrativas').value) || 0) : null,
-    g_alumnos_genero:        _ir ? (parseInt(document.getElementById('g_alumnos_genero').value) || 0) : null,
-    g_grado_participacion:   _ir ? document.getElementById('g_grado_participacion').value : null,
     g_inversion:             _ir ? (parseFloat(document.getElementById('g_inversion').value) || 0) : null,
+    g_pct_mujeres:           _ir ? (parseFloat(document.getElementById('g_pct_mujeres').value) || 0) : null,
+    g_grado_participacion:   _ir ? document.getElementById('g_grado_participacion').value : null,
+    g_quejas_recibidas:      _ir ? (parseInt(document.getElementById('g_quejas_recibidas').value) || 0) : null,
+    g_quejas_atendidas:      _ir ? (parseInt(document.getElementById('g_quejas_atendidas').value) || 0) : null,
     // ── Impacto ────────────────────────────────────────────
     g_pct_habilidades:       _ii ? (parseFloat(document.getElementById('g_pct_habilidades').value) || 0) : null,
     g_pct_autonomia_mujeres: _ii ? (parseFloat(document.getElementById('g_pct_autonomia_mujeres').value) || 0) : null,
     g_pct_becarios_sost:     _ii ? (parseFloat(document.getElementById('g_pct_becarios_sost').value) || 0) : null,
     g_percepcion_clarios:    _ii ? document.getElementById('g_percepcion_clarios').value : null,
-    // ── Reputación y Proceso ───────────────────────────────
+    g_prototipos:            _ii ? (parseInt(document.getElementById('g_prototipos').value) || 0) : null,
+    g_alumnos_genero:        _ii ? (parseInt(document.getElementById('g_alumnos_genero').value) || 0) : null,
+    g_satisfaccion:          _ii ? document.getElementById('g_satisfaccion').value : null,
+    // ── Reputación ─────────────────────────────────────────
+    g_ben_directos:          _irep ? (parseInt(document.getElementById('g_ben_directos').value) || 0) : null,
+    g_narrativas:            _irep ? (parseInt(document.getElementById('g_narrativas').value) || 0) : null,
     g_reconocimiento:        _irep ? document.getElementById('g_reconocimiento').value : null,
-    g_satisfaccion:          _irep ? document.getElementById('g_satisfaccion').value : null,
-    g_rondas_mentoria:       _irep ? (parseInt(document.getElementById('g_rondas_mentoria').value) || 0) : null,
-    g_canal_seguimiento:     _irep ? document.getElementById('g_canal_seguimiento').value : null,
     g_nps:                   _irep ? (parseFloat(document.getElementById('g_nps').value) || null) : null,
     g_ic_q1_l1: _irep ? (parseInt(document.getElementById('g_ic_q1_l1')?.value) || 0) : null,
     g_ic_q1_l2: _irep ? (parseInt(document.getElementById('g_ic_q1_l2')?.value) || 0) : null,
@@ -3509,10 +3509,12 @@ function saveRecord() {
       const avgs = [this.g_ic_q1, this.g_ic_q2, this.g_ic_q3, this.g_ic_q4].filter(v => v != null);
       return avgs.length ? parseFloat((avgs.reduce((a,b) => a+b, 0) / avgs.length).toFixed(2)) : null;
     },
-    g_quejas_recibidas: _irep ? (parseInt(document.getElementById('g_quejas_recibidas').value) || 0) : null,
-    g_quejas_atendidas: _irep ? (parseInt(document.getElementById('g_quejas_atendidas').value) || 0) : null,
+    // ── Proceso Social ─────────────────────────────────────
+    g_alianzas:              _ips ? (parseInt(document.getElementById('g_alianzas').value) || 0) : null,
+    g_rondas_mentoria:       _ips ? (parseInt(document.getElementById('g_rondas_mentoria').value) || 0) : null,
+    g_canal_seguimiento:     _ips ? document.getElementById('g_canal_seguimiento').value : null,
     // Track which indicator groups were active for this record
-    indic_activos: ['resultado','impacto','reputacion'].filter(k => _indicActivos[k]).join(',') || 'ninguno',
+    indic_activos: ['resultado','impacto','reputacion','proceso_social'].filter(k => _indicActivos[k]).join(',') || 'ninguno',
   };
 
   // Program-specific indicators
@@ -3708,6 +3710,7 @@ function renderDashboard(data) {
   let totalAlumnosGenero = 0, totalTalento = 0, totalQuejas_r = 0, totalQuejas_a = 0;
   let sumMujeres = 0, cntMujeres = 0;
   let sumHabilidades = 0, cntHabilidades = 0;
+  let sumAutonomia = 0, cntAutonomia = 0;
   let sumBecarios = 0, cntBecarios = 0;
   let sumEmpleador = 0, cntEmpleador = 0;
   let avgRecon = '', avgSat = '', avgConf = '', avgNps = '';
@@ -3738,10 +3741,11 @@ function renderDashboard(data) {
     totalQuejas_a += parseInt(r.g_quejas_atendidas) || 0;
     totalVoluntarios += parseInt(r.as_voluntarios) || 0;
 
-    if (r.g_pct_mujeres)          { sumMujeres    += parseFloat(r.g_pct_mujeres);     cntMujeres++; }
-    if (r.g_pct_habilidades)      { sumHabilidades += parseFloat(r.g_pct_habilidades); cntHabilidades++; }
-    if (r.g_pct_becarios_sost)    { sumBecarios    += parseFloat(r.g_pct_becarios_sost); cntBecarios++; }
-    if (r.af_pct_beneficiados_clarios) { sumEmpleador += parseFloat(r.af_pct_beneficiados_clarios); cntEmpleador++; }
+    if (r.g_pct_mujeres)               { sumMujeres    += parseFloat(r.g_pct_mujeres);           cntMujeres++; }
+    if (r.g_pct_habilidades)           { sumHabilidades += parseFloat(r.g_pct_habilidades);      cntHabilidades++; }
+    if (r.g_pct_autonomia_mujeres)     { sumAutonomia  += parseFloat(r.g_pct_autonomia_mujeres); cntAutonomia++; }
+    if (r.g_pct_becarios_sost)         { sumBecarios    += parseFloat(r.g_pct_becarios_sost);    cntBecarios++; }
+    if (r.af_pct_beneficiados_clarios) { sumEmpleador   += parseFloat(r.af_pct_beneficiados_clarios); cntEmpleador++; }
 
     const reconNum = parseInt((r.g_reconocimiento||'').charAt(0));
     const satNum   = parseInt((r.g_satisfaccion||'').charAt(0));
@@ -3778,18 +3782,17 @@ function renderDashboard(data) {
   let avgPart = cntParticipacion ? String(Math.round(sumParticipacion/cntParticipacion)) + ' — ...' : '';
 
   // ── IMPACTO ──
-  mNum('mc-habilidades', cntHabilidades ? Math.round(sumHabilidades/cntHabilidades)+'%' : null, { color:'#A78BFA', pending: !cntHabilidades });
-  mNum('mc-prototipos',  totalPrototipos || null, { color:'#FCD34D', pending: !totalPrototipos });
   mGauge('mc-satisfaccion', cntSat ? avgSat : '', 'scale5');
-  mGauge('mc-participacion', cntParticipacion ? (String(Math.round(sumParticipacion/cntParticipacion)) + ' — ...') : '', 'scale5');
-  mNum('mc-talento', totalTalento || null, { color:'#34D399', pending: !totalTalento });
+  mNum('mc-habilidades', cntHabilidades ? Math.round(sumHabilidades/cntHabilidades)+'%' : null, { color:'#A78BFA', pending: !cntHabilidades });
+  mNum('mc-autonomia',   cntAutonomia  ? Math.round(sumAutonomia/cntAutonomia)+'%'   : null, { color:'#C084FC', pending: !cntAutonomia });
+  mNum('mc-becarios',    cntBecarios   ? Math.round(sumBecarios/cntBecarios)+'%'     : null, { color:'#34D399', pending: !cntBecarios });
+  mNum('mc-prototipos',  totalPrototipos || null, { color:'#FCD34D', pending: !totalPrototipos });
   mNum('mc-genero',  totalAlumnosGenero || null, { color:'#F472B6', pending: !totalAlumnosGenero });
 
   // ── REPUTACIÓN ──
+  mNum('mc-ben-dir', totalBenDir ? totalBenDir.toLocaleString('es-MX') : null, { color:'#34D399', pending: !totalBenDir });
   mGauge('mc-reconocimiento', cntRecon ? avgRecon : '', 'scale5');
-  mNum('mc-empleador',  cntEmpleador ? Math.round(sumEmpleador/cntEmpleador)+'%' : null, { color:'#60A5FA', pending: !cntEmpleador });
   mNum('mc-narrativas', totalNarrativas || null, { color:'#F59E0B', pending: !totalNarrativas });
-  mNum('mc-ben-dir-rep', totalBenDir ? totalBenDir.toLocaleString('es-MX') : null, { color:'#34D399', pending: !totalBenDir });
   // Store per-question aggregates (distribution-based) for popover
   const icDistAvg = icDist.map(dist => {
     const sw = dist.reduce((s,n,i) => s + (i+1)*n, 0);
@@ -3804,22 +3807,20 @@ function renderDashboard(data) {
   const icAvgStr = cntConfianza ? (sumConfianza/cntConfianza).toFixed(2) : '';
   mGauge('mc-confianza', icAvgStr, 'scale5f');
   mGauge('mc-nps', cntNps ? (sumNps/cntNps).toFixed(0) : '', 'nps');
+  mNum('mc-empleador',  cntEmpleador ? Math.round(sumEmpleador/cntEmpleador)+'%' : null, { color:'#60A5FA', pending: !cntEmpleador });
 
   // ── RESULTADO ──
-  mNum('mc-ben-directos',  totalBenDir.toLocaleString('es-MX'), { color:'#34D399', large: true });
   mNum('mc-horas',         totalHoras.toLocaleString('es-MX'),  { color:'#A78BFA', large: true, sub: 'Meta 2026: 900 hrs' });
   mNum('mc-ben-indirectos', totalBenInd ? totalBenInd.toLocaleString('es-MX') : null, { color:'#22D3EE', pending: !totalBenInd, sub: 'Meta 2026: 32,000' });
   mNum('mc-mujeres', cntMujeres ? Math.round(sumMujeres/cntMujeres)+'%' : null, { color:'#F472B6', pending: !cntMujeres });
+  mNum('mc-quejas',      (totalQuejas_r || totalQuejas_a) ? `${totalQuejas_a} / ${totalQuejas_r}` : null, { color:'#FCD34D', pending: !totalQuejas_r && !totalQuejas_a, sub: 'Atendidas / Recibidas' });
   mNum('mc-escuelas', totalEscuelas || null, { color:'#A78BFA', pending: !totalEscuelas, sub: 'Meta 2026: 17' });
-  const sRoiVal = (totalInversion > 0 && totalBenDir > 0) ? (totalInversion / totalBenDir) : null;
-  mNum('mc-sroi', sRoiVal !== null ? '$' + sRoiVal.toLocaleString('es-MX', {minimumFractionDigits:0, maximumFractionDigits:0}) : null, { color:'#34D399', pending: sRoiVal === null, sub: 'por beneficiario' });
+  mGauge('mc-participacion', cntParticipacion ? (String(Math.round(sumParticipacion/cntParticipacion)) + ' — ...') : '', 'scale5');
 
   // ── PROCESO SOCIAL ──
   mNum('mc-alianzas',    totalAlianzas  || null, { color:'#22D3EE', pending: !totalAlianzas, sub: 'Meta 2026: 15' });
   mNum('mc-rondas',      totalMentoria  || null, { color:'#34D399', pending: !totalMentoria });
-  mNum('mc-quejas',      (totalQuejas_r || totalQuejas_a) ? `${totalQuejas_a} / ${totalQuejas_r}` : null, { color:'#FCD34D', pending: !totalQuejas_r && !totalQuejas_a, sub: 'Atendidas / Recibidas' });
   mNum('mc-voluntarios', totalVoluntarios || null, { color:'#F59E0B', pending: !totalVoluntarios });
-  mNum('mc-becarios',    cntBecarios ? Math.round(sumBecarios/cntBecarios)+'%' : null, { color:'#34D399', pending: !cntBecarios });
 
   // Program-specific section
   renderProgSection(prog, document.getElementById('fil-programa').value);
