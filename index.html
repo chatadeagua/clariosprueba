@@ -954,6 +954,36 @@ tbody tr:last-child td { border-bottom: none; }
 ::-webkit-scrollbar-thumb:hover { background: var(--purple); }
 
 /* ── UTIL ─────────────────────────────────────────────────── */
+
+/* ── INDICATOR TOGGLES ───────────────────────────────────── */
+.indic-toggle-header {
+  cursor: pointer;
+  justify-content: space-between;
+  user-select: none;
+}
+.indic-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--gray-3);
+  color: var(--gray-2);
+  padding: 3px 10px 3px 8px;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.indic-toggle-btn:hover { background: rgba(16,185,129,0.06); border-left-color: var(--green); color: var(--green); }
+.indic-toggle-btn[aria-pressed="true"] { border-left-color: var(--green); color: var(--green); background: rgba(16,185,129,0.08); }
+.indic-toggle-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.indic-section-body { display: none; margin-top: 20px; }
+.indic-section-body.open { display: block; }
 .divider { height: 1px; background: var(--border); margin: 24px 0; }
 .text-muted { color: var(--gray-2); font-size: 12px; }
 .fw700 { font-weight: 700; }
@@ -2208,7 +2238,13 @@ tbody tr:last-child td { border-bottom: none; }
 
       <!-- INDICADORES GENERALES -->
       <div class="form-section">
-        <div class="form-section-title">Indicadores Generales — Resultado</div>
+        <div class="form-section-title indic-toggle-header" onclick="toggleIndic('resultado')">
+          Indicadores — Resultado
+          <button class="indic-toggle-btn" id="indic-btn-resultado" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('resultado')">
+            <span class="indic-toggle-dot"></span><span>NO APLICA</span>
+          </button>
+        </div>
+        <div class="indic-section-body" id="indic-body-resultado">
         <div class="field-row cols-2">
           <div class="field">
             <label>Escuelas beneficiadas</label>
@@ -2285,10 +2321,17 @@ tbody tr:last-child td { border-bottom: none; }
             </select>
           </div>
         </div>
+        </div><!-- /indic-body-resultado -->
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">Indicadores Generales — Impacto</div>
+        <div class="form-section-title indic-toggle-header" onclick="toggleIndic('impacto')">
+          Indicadores — Impacto
+          <button class="indic-toggle-btn" id="indic-btn-impacto" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('impacto')">
+            <span class="indic-toggle-dot"></span><span>NO APLICA</span>
+          </button>
+        </div>
+        <div class="indic-section-body" id="indic-body-impacto">
         <div class="field-row cols-2">
           <div class="field">
             <label>% participantes con mejora en habilidades técnicas / digitales / liderazgo</label>
@@ -2316,10 +2359,17 @@ tbody tr:last-child td { border-bottom: none; }
             </select>
           </div>
         </div>
+        </div><!-- /indic-body-impacto -->
       </div>
 
       <div class="form-section">
-        <div class="form-section-title">Indicadores Generales — Reputación y Proceso</div>
+        <div class="form-section-title indic-toggle-header" onclick="toggleIndic('reputacion')">
+          Indicadores — Reputación y Proceso
+          <button class="indic-toggle-btn" id="indic-btn-reputacion" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('reputacion')">
+            <span class="indic-toggle-dot"></span><span>NO APLICA</span>
+          </button>
+        </div>
+        <div class="indic-section-body" id="indic-body-reputacion">
         <div class="field-row cols-2">
           <div class="field">
             <label>Grado de reconocimiento de CLARIOS</label>
@@ -2452,6 +2502,7 @@ tbody tr:last-child td { border-bottom: none; }
             <input type="number" id="g_quejas_atendidas" placeholder="0" min="0">
           </div>
         </div>
+        </div><!-- /indic-body-reputacion -->
       </div>
 
       <div class="form-footer">
@@ -3141,6 +3192,31 @@ let formData1 = {};
 let chartDonut, chartBar, chartLine;
 let currentView = 'dashboard';
 
+// Indicator section opt-in toggles (default: all off)
+const _indicActivos = { resultado: false, impacto: false, reputacion: false };
+
+function toggleIndic(key) {
+  _indicActivos[key] = !_indicActivos[key];
+  const on = _indicActivos[key];
+  const body = document.getElementById('indic-body-' + key);
+  const btn  = document.getElementById('indic-btn-' + key);
+  if (body) body.classList.toggle('open', on);
+  if (btn) {
+    btn.setAttribute('aria-pressed', String(on));
+    btn.querySelector('span:last-child').textContent = on ? 'ACTIVO' : 'NO APLICA';
+  }
+}
+
+function resetIndicToggles() {
+  ['resultado','impacto','reputacion'].forEach(k => {
+    _indicActivos[k] = false;
+    const body = document.getElementById('indic-body-' + k);
+    const btn  = document.getElementById('indic-btn-' + k);
+    if (body) body.classList.remove('open');
+    if (btn)  { btn.setAttribute('aria-pressed','false'); btn.querySelector('span:last-child').textContent = 'NO APLICA'; }
+  });
+}
+
 const COLORS = {
   proyecto:   '#7C3AED',
   evento:     '#0891B2',
@@ -3802,18 +3878,47 @@ function renderProgSection(prog, activeProg) {
 }
 
 function renderCharts(data, byType, prog) {
-  const tickStyle = { color:'#9B8EC4', font:{ family:'Barlow', size:11 } };
-  const gridStyle = { color:'rgba(124,58,237,0.1)' };
+  const tickStyle = { color:'#94A3B8', font:{ family:'Plus Jakarta Sans', size:11 }, padding: 6 };
+  const gridStyle = { color:'rgba(71,85,105,0.15)', lineWidth:1 };
+  const chartAnim = { duration:700, easing:'easeInOutQuart' };
+  const tooltipCfg = {
+    backgroundColor:'#0D0A1C', borderColor:'rgba(124,58,237,0.45)', borderWidth:1,
+    titleColor:'#F8FAFC', bodyColor:'#94A3B8', padding:10, cornerRadius:0,
+    titleFont:{ family:'Plus Jakarta Sans', size:12, weight:'700' },
+    bodyFont:{ family:'DM Mono', size:11 }
+  };
+
+  const makeCenterPlugin = (big, small, color='#F8FAFC') => ({
+    id: 'centerText',
+    beforeDraw(chart) {
+      const { ctx, chartArea } = chart;
+      if (!chartArea) return;
+      ctx.save();
+      const cx = (chartArea.left + chartArea.right) / 2;
+      const cy = (chartArea.top  + chartArea.bottom) / 2;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = color;
+      ctx.font = '900 28px "Barlow Condensed"';
+      ctx.fillText(big, cx, cy - 8);
+      ctx.fillStyle = '#94A3B8';
+      ctx.font = '700 8px "Plus Jakarta Sans"';
+      ctx.fillText((small+'').toUpperCase(), cx, cy + 11);
+      ctx.restore();
+    }
+  });
 
   // DONUT — tipo
+  const totalActivities = (byType.proyecto||0) + (byType.evento||0) + (byType.activacion||0);
   if (chartDonut) chartDonut.destroy();
   chartDonut = new Chart(document.getElementById('chart-donut').getContext('2d'), {
     type: 'doughnut',
+    plugins: [makeCenterPlugin(totalActivities, 'TOTAL')],
     data: {
       labels: ['Proyectos','Eventos','Activaciones'],
-      datasets: [{ data:[byType.proyecto,byType.evento,byType.activacion], backgroundColor:['rgba(124,58,237,0.8)','rgba(8,145,178,0.8)','rgba(245,158,11,0.8)'], borderColor:['#7C3AED','#0891B2','#F59E0B'], borderWidth:2, hoverOffset:8 }]
+      datasets: [{ data:[byType.proyecto,byType.evento,byType.activacion], backgroundColor:['rgba(124,58,237,0.85)','rgba(8,145,178,0.85)','rgba(245,158,11,0.85)'], borderWidth:0, hoverBorderWidth:2 }]
     },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'68%', plugins:{ legend:{ position:'bottom', labels:{ color:'#9B8EC4', font:{family:'Barlow',size:11}, padding:16 } } } }
+    options: { responsive:true, maintainAspectRatio:false, cutout:'72%', animation:chartAnim,
+      plugins:{ legend:{ position:'bottom', labels:{ color:'#94A3B8', font:{family:'Plus Jakarta Sans',size:11}, padding:20, usePointStyle:true, pointStyle:'rectRot' } }, tooltip:tooltipCfg } }
   });
 
   // BAR — beneficiarios por programa
@@ -3824,12 +3929,16 @@ function renderCharts(data, byType, prog) {
     const ben = parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0;
     if (i >= 0) progBen[i] += ben; else progBen[4] += ben;
   });
+  const barColors = ['rgba(52,211,153,0.75)','rgba(167,139,250,0.75)','rgba(34,211,238,0.75)','rgba(252,211,77,0.75)','rgba(109,40,217,0.75)'];
+  const barPairs = progLabels.map((l,i) => ({ label:l, value:progBen[i], color:barColors[i] })).sort((a,b)=>b.value-a.value);
 
   if (chartBar) chartBar.destroy();
   chartBar = new Chart(document.getElementById('chart-bar').getContext('2d'), {
     type: 'bar',
-    data: { labels:progLabels, datasets:[{ label:'Beneficiarios', data:progBen, backgroundColor:['rgba(52,211,153,0.6)','rgba(167,139,250,0.6)','rgba(34,211,238,0.6)','rgba(252,211,77,0.6)','rgba(124,58,237,0.4)'], borderColor:['#34D399','#A78BFA','#22D3EE','#FCD34D','#7C3AED'], borderWidth:1.5, borderRadius:6 }] },
-    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{ grid:gridStyle, ticks:tickStyle }, y:{ grid:gridStyle, ticks:tickStyle } }, plugins:{ legend:{ display:false } } }
+    data: { labels:barPairs.map(p=>p.label), datasets:[{ label:'Beneficiarios', data:barPairs.map(p=>p.value), backgroundColor:barPairs.map(p=>p.color), borderWidth:0, borderRadius:0, barPercentage:0.65, categoryPercentage:0.8 }] },
+    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
+      scales:{ x:{ grid:gridStyle, ticks:tickStyle }, y:{ grid:gridStyle, ticks:tickStyle, beginAtZero:true } },
+      plugins:{ legend:{ display:false }, tooltip:tooltipCfg } }
   });
 
   // LINE — actividades por mes
@@ -3839,10 +3948,16 @@ function renderCharts(data, byType, prog) {
   const mLabels = months.map(m => { const [y,mo]=m.split('-'); return new Date(+y,+mo-1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}); });
 
   if (chartLine) chartLine.destroy();
-  chartLine = new Chart(document.getElementById('chart-line').getContext('2d'), {
+  const lineCtx = document.getElementById('chart-line').getContext('2d');
+  const lineGrad = lineCtx.createLinearGradient(0, 0, 0, 300);
+  lineGrad.addColorStop(0, 'rgba(124,58,237,0.3)');
+  lineGrad.addColorStop(1, 'rgba(124,58,237,0)');
+  chartLine = new Chart(lineCtx, {
     type: 'line',
-    data: { labels: mLabels.length?mLabels:['—'], datasets:[{ label:'Actividades', data:months.map(m=>monthMap[m]), borderColor:'#7C3AED', backgroundColor:'rgba(124,58,237,0.1)', fill:true, tension:0.4, pointBackgroundColor:'#7C3AED', pointRadius:4 }] },
-    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle,stepSize:1} }, plugins:{legend:{display:false}} }
+    data: { labels: mLabels.length?mLabels:['—'], datasets:[{ label:'Actividades', data:months.map(m=>monthMap[m]), borderColor:'#7C3AED', borderWidth:2, backgroundColor:lineGrad, fill:true, tension:0.35, pointBackgroundColor:'#7C3AED', pointBorderColor:'#A78BFA', pointBorderWidth:1.5, pointRadius:3, pointHoverRadius:6, pointHitRadius:12 }] },
+    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
+      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle,stepSize:1} },
+      plugins:{legend:{display:false},tooltip:tooltipCfg} }
   });
 
   // HORAS por mes
@@ -3854,8 +3969,10 @@ function renderCharts(data, byType, prog) {
   if (window.chartHoras) window.chartHoras.destroy();
   window.chartHoras = new Chart(document.getElementById('chart-horas').getContext('2d'), {
     type: 'bar',
-    data: { labels: horaLabels.length?horaLabels:['—'], datasets:[{ label:'Horas', data:horaMonths.map(m=>horasMap[m]), backgroundColor:'rgba(52,211,153,0.6)', borderColor:'#34D399', borderWidth:1.5, borderRadius:6 }] },
-    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle} }, plugins:{legend:{display:false}} }
+    data: { labels: horaLabels.length?horaLabels:['—'], datasets:[{ label:'Horas', data:horaMonths.map(m=>horasMap[m]), backgroundColor:'rgba(52,211,153,0.8)', borderWidth:0, borderRadius:0, barPercentage:0.65, categoryPercentage:0.8 }] },
+    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
+      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle} },
+      plugins:{legend:{display:false},tooltip:tooltipCfg} }
   });
 
   // % MUJERES por actividad (scatter points as bar)
@@ -3865,8 +3982,10 @@ function renderCharts(data, byType, prog) {
   if (window.chartMujeres) window.chartMujeres.destroy();
   window.chartMujeres = new Chart(document.getElementById('chart-mujeres').getContext('2d'), {
     type: 'bar',
-    data: { labels: mujLabels.length?mujLabels:['Sin datos'], datasets:[{ label:'% Mujeres', data:mujData.length?mujData:[0], backgroundColor:'rgba(244,114,182,0.6)', borderColor:'#F472B6', borderWidth:1.5, borderRadius:6 }] },
-    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:{...tickStyle,maxRotation:35}}, y:{grid:gridStyle,ticks:tickStyle,min:0,max:100} }, plugins:{legend:{display:false}} }
+    data: { labels: mujLabels.length?mujLabels:['Sin datos'], datasets:[{ label:'% Mujeres', data:mujData.length?mujData:[0], backgroundColor:'rgba(244,114,182,0.8)', borderWidth:0, borderRadius:0, barPercentage:0.65, categoryPercentage:0.8 }] },
+    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
+      scales:{ x:{grid:gridStyle,ticks:{...tickStyle,maxRotation:35}}, y:{grid:gridStyle,ticks:tickStyle,min:0,max:100} },
+      plugins:{legend:{display:false},tooltip:tooltipCfg} }
   });
 
   // PIE — % mujeres participantes
@@ -3876,8 +3995,10 @@ function renderCharts(data, byType, prog) {
   if (window.chartPieMujeres) window.chartPieMujeres.destroy();
   window.chartPieMujeres = new Chart(document.getElementById('chart-pie-mujeres').getContext('2d'), {
     type: 'doughnut',
-    data: { labels:['Mujeres','Otros'], datasets:[{ data:[pctMuj,100-pctMuj], backgroundColor:['rgba(244,114,182,0.8)','rgba(74,65,117,0.4)'], borderColor:['#F472B6','#4A4175'], borderWidth:2 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:'#9B8EC4', font:{family:'Barlow',size:11} } } } }
+    plugins: [makeCenterPlugin(pctMuj+'%', 'MUJERES', '#F472B6')],
+    data: { labels:['Mujeres','Resto'], datasets:[{ data:[pctMuj,100-pctMuj], backgroundColor:['rgba(244,114,182,0.8)','rgba(30,41,59,0.8)'], borderWidth:0 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'70%', animation:chartAnim,
+      plugins:{ legend:{ position:'bottom', labels:{ color:'#94A3B8', font:{family:'Plus Jakarta Sans',size:11}, usePointStyle:true, pointStyle:'circle' } }, tooltip:tooltipCfg } }
   });
 
   // PIE — % mujeres con autonomía digital
@@ -3887,8 +4008,10 @@ function renderCharts(data, byType, prog) {
   if (window.chartPieAutonomia) window.chartPieAutonomia.destroy();
   window.chartPieAutonomia = new Chart(document.getElementById('chart-pie-autonomia').getContext('2d'), {
     type: 'doughnut',
-    data: { labels:['Autonomía digital','Resto'], datasets:[{ data:[pctAut,100-pctAut], backgroundColor:['rgba(34,211,238,0.8)','rgba(74,65,117,0.4)'], borderColor:['#22D3EE','#4A4175'], borderWidth:2 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:'#9B8EC4', font:{family:'Barlow',size:11} } } } }
+    plugins: [makeCenterPlugin(pctAut+'%', 'AUTONOMIA', '#22D3EE')],
+    data: { labels:['Autonomía digital','Resto'], datasets:[{ data:[pctAut,100-pctAut], backgroundColor:['rgba(34,211,238,0.8)','rgba(30,41,59,0.8)'], borderWidth:0 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'70%', animation:chartAnim,
+      plugins:{ legend:{ position:'bottom', labels:{ color:'#94A3B8', font:{family:'Plus Jakarta Sans',size:11}, usePointStyle:true, pointStyle:'circle' } }, tooltip:tooltipCfg } }
   });
 
   // PIE — % becarios en sostenibilidad
@@ -3898,8 +4021,10 @@ function renderCharts(data, byType, prog) {
   if (window.chartPieBecarios) window.chartPieBecarios.destroy();
   window.chartPieBecarios = new Chart(document.getElementById('chart-pie-becarios').getContext('2d'), {
     type: 'doughnut',
-    data: { labels:['Becarios sost.','Resto'], datasets:[{ data:[pctBec,100-pctBec], backgroundColor:['rgba(52,211,153,0.8)','rgba(74,65,117,0.4)'], borderColor:['#34D399','#4A4175'], borderWidth:2 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom', labels:{ color:'#9B8EC4', font:{family:'Barlow',size:11} } } } }
+    plugins: [makeCenterPlugin(pctBec+'%', 'BECARIOS', '#34D399')],
+    data: { labels:['Becarios sost.','Resto'], datasets:[{ data:[pctBec,100-pctBec], backgroundColor:['rgba(52,211,153,0.8)','rgba(30,41,59,0.8)'], borderWidth:0 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'70%', animation:chartAnim,
+      plugins:{ legend:{ position:'bottom', labels:{ color:'#94A3B8', font:{family:'Plus Jakarta Sans',size:11}, usePointStyle:true, pointStyle:'circle' } }, tooltip:tooltipCfg } }
   });
 
   // LINE — voluntarios Activación Social por mes
@@ -3911,10 +4036,16 @@ function renderCharts(data, byType, prog) {
   const volMonths = Object.keys(volMap).sort();
   const volLabels = volMonths.map(m=>{ const [y,mo]=m.split('-'); return new Date(+y,+mo-1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}); });
   if (window.chartVoluntarios) window.chartVoluntarios.destroy();
-  window.chartVoluntarios = new Chart(document.getElementById('chart-voluntarios').getContext('2d'), {
+  const volCtx = document.getElementById('chart-voluntarios').getContext('2d');
+  const volGrad = volCtx.createLinearGradient(0, 0, 0, 300);
+  volGrad.addColorStop(0, 'rgba(252,211,77,0.3)');
+  volGrad.addColorStop(1, 'rgba(252,211,77,0)');
+  window.chartVoluntarios = new Chart(volCtx, {
     type: 'line',
-    data: { labels: volLabels.length?volLabels:['Sin datos'], datasets:[{ label:'Voluntarios', data:volMonths.map(m=>volMap[m]), borderColor:'#FCD34D', backgroundColor:'rgba(252,211,77,0.1)', fill:true, tension:0.4, pointBackgroundColor:'#FCD34D', pointRadius:4 }] },
-    options: { responsive:true, maintainAspectRatio:false, scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle,stepSize:1} }, plugins:{legend:{display:false}} }
+    data: { labels: volLabels.length?volLabels:['Sin datos'], datasets:[{ label:'Voluntarios', data:volMonths.map(m=>volMap[m]), borderColor:'#FCD34D', borderWidth:2, backgroundColor:volGrad, fill:true, tension:0.35, pointBackgroundColor:'#FCD34D', pointBorderColor:'#FDE68A', pointBorderWidth:1.5, pointRadius:3, pointHoverRadius:6, pointHitRadius:12 }] },
+    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
+      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle,stepSize:1} },
+      plugins:{legend:{display:false},tooltip:tooltipCfg} }
   });
 
   // HORIZONTAL BAR — reconocimiento de CLARIOS
@@ -3924,8 +4055,10 @@ function renderCharts(data, byType, prog) {
   window.chartReconocimiento = new Chart(document.getElementById('chart-reconocimiento').getContext('2d'), {
     type: 'bar',
     data: { labels:['No conocido','Poco conocido','Comunidad','Referente local','Ref. nacional'],
-      datasets:[{ label:'Registros', data:[reconMap['1'],reconMap['2'],reconMap['3'],reconMap['4'],reconMap['5']], backgroundColor:'rgba(167,139,250,0.6)', borderColor:'#A78BFA', borderWidth:1.5, borderRadius:6, indexAxis:'y' }] },
-    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle} }, plugins:{legend:{display:false}} }
+      datasets:[{ label:'Registros', data:[reconMap['1'],reconMap['2'],reconMap['3'],reconMap['4'],reconMap['5']], backgroundColor:['rgba(239,68,68,0.75)','rgba(245,158,11,0.75)','rgba(148,163,184,0.75)','rgba(52,211,153,0.75)','rgba(16,185,129,0.75)'], borderWidth:0, borderRadius:0 }] },
+    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', animation:chartAnim,
+      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{ grid:{ display:false }, ticks:tickStyle } },
+      plugins:{legend:{display:false},tooltip:tooltipCfg} }
   });
 
   // HORIZONTAL BAR — canal de seguimiento
@@ -3936,8 +4069,10 @@ function renderCharts(data, byType, prog) {
   window.chartCanal = new Chart(document.getElementById('chart-canal').getContext('2d'), {
     type: 'bar',
     data: { labels: canalKeys.length?canalKeys:['Sin datos'],
-      datasets:[{ label:'Registros', data:canalKeys.map(k=>canalMap[k]), backgroundColor:'rgba(34,211,238,0.6)', borderColor:'#22D3EE', borderWidth:1.5, borderRadius:6 }] },
-    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle} }, plugins:{legend:{display:false}} }
+      datasets:[{ label:'Registros', data:canalKeys.map(k=>canalMap[k]), backgroundColor:'rgba(34,211,238,0.75)', borderWidth:0, borderRadius:0 }] },
+    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', animation:chartAnim,
+      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{ grid:{ display:false }, ticks:tickStyle } },
+      plugins:{legend:{display:false},tooltip:tooltipCfg} }
   });
 }
 
