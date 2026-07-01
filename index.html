@@ -3329,6 +3329,9 @@ function startForm(type) {
   // Clear errors
   document.querySelectorAll('.field.error').forEach(f => f.classList.remove('error'));
 
+  // Reset indicator toggles
+  resetIndicToggles();
+
   const typeLabels = { proyecto: 'Proyecto', evento: 'Evento', activacion: 'Activación' };
   const label = typeLabels[type];
 
@@ -3449,58 +3452,67 @@ function saveRecord() {
     };
   }
 
-  // General indicators (always captured)
+  // General indicators — only active sections contribute values
+  const _ir = _indicActivos.resultado;
+  const _ii = _indicActivos.impacto;
+  const _irep = _indicActivos.reputacion;
   const generales = {
-    g_escuelas:              parseInt(document.getElementById('g_escuelas').value) || 0,
-    g_horas_formacion:       parseInt(document.getElementById('g_horas_formacion').value) || 0,
-    g_ben_directos:          parseInt(document.getElementById('g_ben_directos').value) || 0,
-    g_ben_indirectos:        parseInt(document.getElementById('g_ben_indirectos').value) || 0,
-    g_pct_mujeres:           parseFloat(document.getElementById('g_pct_mujeres').value) || 0,
-    g_alianzas:              parseInt(document.getElementById('g_alianzas').value) || 0,
-    g_prototipos:            parseInt(document.getElementById('g_prototipos').value) || 0,
-    g_narrativas:            parseInt(document.getElementById('g_narrativas').value) || 0,
-    g_pct_habilidades:       parseFloat(document.getElementById('g_pct_habilidades').value) || 0,
-    g_pct_autonomia_mujeres: parseFloat(document.getElementById('g_pct_autonomia_mujeres').value) || 0,
-    g_pct_becarios_sost:     parseFloat(document.getElementById('g_pct_becarios_sost').value) || 0,
-    g_percepcion_clarios:    document.getElementById('g_percepcion_clarios').value,
-    g_reconocimiento:        document.getElementById('g_reconocimiento').value,
-    g_satisfaccion:          document.getElementById('g_satisfaccion').value,
-    g_rondas_mentoria:       parseInt(document.getElementById('g_rondas_mentoria').value) || 0,
-    g_canal_seguimiento:     document.getElementById('g_canal_seguimiento').value,
-    g_alumnos_genero:        parseInt(document.getElementById('g_alumnos_genero').value) || 0,
-    g_grado_participacion:   document.getElementById('g_grado_participacion').value,
-    g_inversion:             parseFloat(document.getElementById('g_inversion').value) || 0,
-    g_nps:                   parseFloat(document.getElementById('g_nps').value) || null,
-    g_ic_q1_l1: parseInt(document.getElementById('g_ic_q1_l1')?.value) || 0,
-    g_ic_q1_l2: parseInt(document.getElementById('g_ic_q1_l2')?.value) || 0,
-    g_ic_q1_l3: parseInt(document.getElementById('g_ic_q1_l3')?.value) || 0,
-    g_ic_q1_l4: parseInt(document.getElementById('g_ic_q1_l4')?.value) || 0,
-    g_ic_q1_l5: parseInt(document.getElementById('g_ic_q1_l5')?.value) || 0,
-    g_ic_q2_l1: parseInt(document.getElementById('g_ic_q2_l1')?.value) || 0,
-    g_ic_q2_l2: parseInt(document.getElementById('g_ic_q2_l2')?.value) || 0,
-    g_ic_q2_l3: parseInt(document.getElementById('g_ic_q2_l3')?.value) || 0,
-    g_ic_q2_l4: parseInt(document.getElementById('g_ic_q2_l4')?.value) || 0,
-    g_ic_q2_l5: parseInt(document.getElementById('g_ic_q2_l5')?.value) || 0,
-    g_ic_q3_l1: parseInt(document.getElementById('g_ic_q3_l1')?.value) || 0,
-    g_ic_q3_l2: parseInt(document.getElementById('g_ic_q3_l2')?.value) || 0,
-    g_ic_q3_l3: parseInt(document.getElementById('g_ic_q3_l3')?.value) || 0,
-    g_ic_q3_l4: parseInt(document.getElementById('g_ic_q3_l4')?.value) || 0,
-    g_ic_q3_l5: parseInt(document.getElementById('g_ic_q3_l5')?.value) || 0,
-    g_ic_q4_l1: parseInt(document.getElementById('g_ic_q4_l1')?.value) || 0,
-    g_ic_q4_l2: parseInt(document.getElementById('g_ic_q4_l2')?.value) || 0,
-    g_ic_q4_l3: parseInt(document.getElementById('g_ic_q4_l3')?.value) || 0,
-    g_ic_q4_l4: parseInt(document.getElementById('g_ic_q4_l4')?.value) || 0,
-    g_ic_q4_l5: parseInt(document.getElementById('g_ic_q4_l5')?.value) || 0,
-    get g_ic_q1() { const c=[this.g_ic_q1_l1,this.g_ic_q1_l2,this.g_ic_q1_l3,this.g_ic_q1_l4,this.g_ic_q1_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
-    get g_ic_q2() { const c=[this.g_ic_q2_l1,this.g_ic_q2_l2,this.g_ic_q2_l3,this.g_ic_q2_l4,this.g_ic_q2_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
-    get g_ic_q3() { const c=[this.g_ic_q3_l1,this.g_ic_q3_l2,this.g_ic_q3_l3,this.g_ic_q3_l4,this.g_ic_q3_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
-    get g_ic_q4() { const c=[this.g_ic_q4_l1,this.g_ic_q4_l2,this.g_ic_q4_l3,this.g_ic_q4_l4,this.g_ic_q4_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
+    // ── Resultado ──────────────────────────────────────────
+    g_escuelas:              _ir ? (parseInt(document.getElementById('g_escuelas').value) || 0) : null,
+    g_horas_formacion:       _ir ? (parseInt(document.getElementById('g_horas_formacion').value) || 0) : null,
+    g_ben_directos:          _ir ? (parseInt(document.getElementById('g_ben_directos').value) || 0) : null,
+    g_ben_indirectos:        _ir ? (parseInt(document.getElementById('g_ben_indirectos').value) || 0) : null,
+    g_pct_mujeres:           _ir ? (parseFloat(document.getElementById('g_pct_mujeres').value) || 0) : null,
+    g_alianzas:              _ir ? (parseInt(document.getElementById('g_alianzas').value) || 0) : null,
+    g_prototipos:            _ir ? (parseInt(document.getElementById('g_prototipos').value) || 0) : null,
+    g_narrativas:            _ir ? (parseInt(document.getElementById('g_narrativas').value) || 0) : null,
+    g_alumnos_genero:        _ir ? (parseInt(document.getElementById('g_alumnos_genero').value) || 0) : null,
+    g_grado_participacion:   _ir ? document.getElementById('g_grado_participacion').value : null,
+    g_inversion:             _ir ? (parseFloat(document.getElementById('g_inversion').value) || 0) : null,
+    // ── Impacto ────────────────────────────────────────────
+    g_pct_habilidades:       _ii ? (parseFloat(document.getElementById('g_pct_habilidades').value) || 0) : null,
+    g_pct_autonomia_mujeres: _ii ? (parseFloat(document.getElementById('g_pct_autonomia_mujeres').value) || 0) : null,
+    g_pct_becarios_sost:     _ii ? (parseFloat(document.getElementById('g_pct_becarios_sost').value) || 0) : null,
+    g_percepcion_clarios:    _ii ? document.getElementById('g_percepcion_clarios').value : null,
+    // ── Reputación y Proceso ───────────────────────────────
+    g_reconocimiento:        _irep ? document.getElementById('g_reconocimiento').value : null,
+    g_satisfaccion:          _irep ? document.getElementById('g_satisfaccion').value : null,
+    g_rondas_mentoria:       _irep ? (parseInt(document.getElementById('g_rondas_mentoria').value) || 0) : null,
+    g_canal_seguimiento:     _irep ? document.getElementById('g_canal_seguimiento').value : null,
+    g_nps:                   _irep ? (parseFloat(document.getElementById('g_nps').value) || null) : null,
+    g_ic_q1_l1: _irep ? (parseInt(document.getElementById('g_ic_q1_l1')?.value) || 0) : null,
+    g_ic_q1_l2: _irep ? (parseInt(document.getElementById('g_ic_q1_l2')?.value) || 0) : null,
+    g_ic_q1_l3: _irep ? (parseInt(document.getElementById('g_ic_q1_l3')?.value) || 0) : null,
+    g_ic_q1_l4: _irep ? (parseInt(document.getElementById('g_ic_q1_l4')?.value) || 0) : null,
+    g_ic_q1_l5: _irep ? (parseInt(document.getElementById('g_ic_q1_l5')?.value) || 0) : null,
+    g_ic_q2_l1: _irep ? (parseInt(document.getElementById('g_ic_q2_l1')?.value) || 0) : null,
+    g_ic_q2_l2: _irep ? (parseInt(document.getElementById('g_ic_q2_l2')?.value) || 0) : null,
+    g_ic_q2_l3: _irep ? (parseInt(document.getElementById('g_ic_q2_l3')?.value) || 0) : null,
+    g_ic_q2_l4: _irep ? (parseInt(document.getElementById('g_ic_q2_l4')?.value) || 0) : null,
+    g_ic_q2_l5: _irep ? (parseInt(document.getElementById('g_ic_q2_l5')?.value) || 0) : null,
+    g_ic_q3_l1: _irep ? (parseInt(document.getElementById('g_ic_q3_l1')?.value) || 0) : null,
+    g_ic_q3_l2: _irep ? (parseInt(document.getElementById('g_ic_q3_l2')?.value) || 0) : null,
+    g_ic_q3_l3: _irep ? (parseInt(document.getElementById('g_ic_q3_l3')?.value) || 0) : null,
+    g_ic_q3_l4: _irep ? (parseInt(document.getElementById('g_ic_q3_l4')?.value) || 0) : null,
+    g_ic_q3_l5: _irep ? (parseInt(document.getElementById('g_ic_q3_l5')?.value) || 0) : null,
+    g_ic_q4_l1: _irep ? (parseInt(document.getElementById('g_ic_q4_l1')?.value) || 0) : null,
+    g_ic_q4_l2: _irep ? (parseInt(document.getElementById('g_ic_q4_l2')?.value) || 0) : null,
+    g_ic_q4_l3: _irep ? (parseInt(document.getElementById('g_ic_q4_l3')?.value) || 0) : null,
+    g_ic_q4_l4: _irep ? (parseInt(document.getElementById('g_ic_q4_l4')?.value) || 0) : null,
+    g_ic_q4_l5: _irep ? (parseInt(document.getElementById('g_ic_q4_l5')?.value) || 0) : null,
+    get g_ic_q1() { if (!_irep) return null; const c=[this.g_ic_q1_l1,this.g_ic_q1_l2,this.g_ic_q1_l3,this.g_ic_q1_l4,this.g_ic_q1_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
+    get g_ic_q2() { if (!_irep) return null; const c=[this.g_ic_q2_l1,this.g_ic_q2_l2,this.g_ic_q2_l3,this.g_ic_q2_l4,this.g_ic_q2_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
+    get g_ic_q3() { if (!_irep) return null; const c=[this.g_ic_q3_l1,this.g_ic_q3_l2,this.g_ic_q3_l3,this.g_ic_q3_l4,this.g_ic_q3_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
+    get g_ic_q4() { if (!_irep) return null; const c=[this.g_ic_q4_l1,this.g_ic_q4_l2,this.g_ic_q4_l3,this.g_ic_q4_l4,this.g_ic_q4_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
     get g_indice_confianza() {
+      if (!_irep) return null;
       const avgs = [this.g_ic_q1, this.g_ic_q2, this.g_ic_q3, this.g_ic_q4].filter(v => v != null);
       return avgs.length ? parseFloat((avgs.reduce((a,b) => a+b, 0) / avgs.length).toFixed(2)) : null;
     },
-    g_quejas_recibidas:      parseInt(document.getElementById('g_quejas_recibidas').value) || 0,
-    g_quejas_atendidas:      parseInt(document.getElementById('g_quejas_atendidas').value) || 0,
+    g_quejas_recibidas: _irep ? (parseInt(document.getElementById('g_quejas_recibidas').value) || 0) : null,
+    g_quejas_atendidas: _irep ? (parseInt(document.getElementById('g_quejas_atendidas').value) || 0) : null,
+    // Track which indicator groups were active for this record
+    indic_activos: ['resultado','impacto','reputacion'].filter(k => _indicActivos[k]).join(',') || 'ninguno',
   };
 
   // Program-specific indicators

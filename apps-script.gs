@@ -29,7 +29,7 @@ const INDICADORES_HEADERS = [
   'g_ic_q3_l1', 'g_ic_q3_l2', 'g_ic_q3_l3', 'g_ic_q3_l4', 'g_ic_q3_l5',
   'g_ic_q4_l1', 'g_ic_q4_l2', 'g_ic_q4_l3', 'g_ic_q4_l4', 'g_ic_q4_l5',
   'g_ic_q1', 'g_ic_q2', 'g_ic_q3', 'g_ic_q4', 'g_indice_confianza',
-  'g_quejas_recibidas', 'g_quejas_atendidas',
+  'g_quejas_recibidas', 'g_quejas_atendidas', 'indic_activos',
   // Programa: Arranca el Futuro
   'af_pct_perfiles', 'af_pct_intervenidos', 'af_gimnasios', 'af_sesiones', 'af_obs',
   'af_talento_canalizado', 'af_pct_beneficiados_clarios',
