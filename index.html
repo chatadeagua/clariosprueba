@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clarios · Sistema de Indicadores IS</title>
+<title>Clarios IS · Portal de Registro</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -1699,7 +1699,6 @@ tbody tr:last-child td { border-bottom: none; }
   max-width: 380px;
 }
 </style>
-</head>
 <body>
 
 <!-- MOBILE TOGGLE -->
@@ -1708,428 +1707,41 @@ tbody tr:last-child td { border-bottom: none; }
 <!-- TOAST -->
 <div class="toast" id="toast">✓ <span id="toast-msg">Registro guardado</span></div>
 
-<!-- DETAIL MODAL -->
-<!-- REPORT PICKER OVERLAY -->
-<div class="rp-overlay" id="rp-overlay" onclick="closeReportPicker(event)">
-  <div class="rp-box" onclick="event.stopPropagation()">
-    <div class="rp-eyebrow">Clarios IS · Reportes</div>
-    <div class="rp-title">Generar reporte</div>
-    <div class="rp-sub">Selecciona el registro del que quieres generar el reporte completo de indicadores.</div>
-    <select class="rp-select" id="rp-select">
-      <option value="">— Elige un registro —</option>
-    </select>
-    <div class="rp-actions">
-      <button class="btn btn-primary" onclick="generateReport()">Generar reporte</button>
-      <button class="btn btn-ghost" onclick="closeReportPicker()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-head">
-      <div>
-        <div id="modal-badge"></div>
-        <div style="font-family:var(--cond);font-size:22px;font-weight:800;color:var(--white);margin-top:8px" id="modal-title"></div>
-      </div>
-      <button class="modal-close" onclick="closeModal()">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="detail-grid" id="modal-grid"></div>
-    </div>
-  </div>
-</div>
-
-<!-- SIDEBAR -->
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-mark">
       <div class="logo-bars"><span></span><span></span><span></span></div>
       <span class="logo-text">CLARIOS</span>
     </div>
-    <div class="logo-sub">Sistema IS · Indicadores</div>
+    <div class="logo-sub">Portal de Registro · IS</div>
   </div>
 
   <div class="sidebar-nav">
-    <div class="nav-section">Panel</div>
-    <div class="nav-item active" onclick="navigate('dashboard')">
-      <span class="nav-icon">◈</span> Dashboard
-    </div>
-
     <div class="nav-section">Registro</div>
-    <div class="nav-item" onclick="navigate('nuevo')">
+    <div class="nav-item active" id="nav-nuevo" onclick="navigate('nuevo')">
       <span class="nav-icon">＋</span> Nueva actividad
     </div>
-    <div class="nav-item" onclick="navigate('proyectos')">
-      <span class="nav-icon">◉</span> Proyectos
-      <span class="nav-badge" id="badge-proyectos">0</span>
-    </div>
-    <div class="nav-item" onclick="navigate('eventos')">
-      <span class="nav-icon">◈</span> Eventos
-      <span class="nav-badge" id="badge-eventos" style="background:var(--teal)">0</span>
-    </div>
-    <div class="nav-item" onclick="navigate('activaciones')">
-      <span class="nav-icon">◆</span> Activaciones
-      <span class="nav-badge" id="badge-activaciones" style="background:var(--amber)">0</span>
-    </div>
 
-    <div class="nav-section">Seguimiento</div>
-    <div class="nav-item" onclick="navigate('folios')">
-      <span class="nav-icon">📋</span> Evaluaciones IK
-      <span class="nav-badge" id="badge-folios" style="background:var(--amber);display:none">0</span>
-    </div>
-    <div class="nav-item" onclick="navigate('impact-kit')">
+    <div class="nav-section">Evaluación</div>
+    <div class="nav-item" id="nav-impact-kit" onclick="navigate('impact-kit')">
       <span class="nav-icon">✦</span> Clarios Impact Kit
-    </div>
-
-    <div class="nav-section">Registros</div>
-    <div class="nav-item" onclick="navigate('registros')">
-      <span class="nav-icon">☰</span> Todos los registros
-      <span class="nav-badge" id="badge-registros" style="background:var(--gray-3)">0</span>
-    </div>
-    <div class="nav-item" onclick="openReportPicker()">
-      <span class="nav-icon">⎙</span> Generar reporte
     </div>
   </div>
 
   <div class="sidebar-footer">
     <div class="version-tag">v1.0.0 · Clarios IS 2026</div>
-    <div id="sync-label" style="font-family:var(--mono);font-size:9px;color:var(--gray-3);margin-top:4px"></div>
   </div>
 </nav>
 
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div class="topbar-title" id="topbar-title">Nueva actividad</div>
     <div class="topbar-right">
-      <button class="btn btn-ghost btn-sm" onclick="openReportPicker()">⎙ Generar reporte</button>
       <button class="btn btn-primary btn-sm" onclick="navigate('nuevo')">＋ Nueva actividad</button>
     </div>
   </div>
 
-  <!-- ═══════════════════════════
-       VIEW: DASHBOARD
-  ════════════════════════════ -->
-  <div class="view active" id="view-dashboard">
-    <div class="page-header">
-      <div class="page-eyebrow">Panel de control</div>
-      <div class="page-title">Indicadores <span>en tiempo real</span></div>
-      <div class="page-desc">Registros capturados automáticamente. Usa los filtros para segmentar por periodo, año o programa.</div>
-    </div>
-
-    <!-- FILTER BAR -->
-    <div class="filter-bar">
-      <div class="filter-group">
-        <div class="filter-label">Año</div>
-        <select class="filter-select" id="fil-year" onchange="applyFilters()">
-          <option value="">Todos</option>
-          <option value="2024">2024</option>
-          <option value="2025" selected>2025</option>
-          <option value="2026">2026</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <div class="filter-label">Periodo</div>
-        <select class="filter-select" id="fil-period" onchange="applyFilters()">
-          <option value="">Todo el año</option>
-          <option value="Q1">Q1 — Ene–Mar</option>
-          <option value="Q2">Q2 — Abr–Jun</option>
-          <option value="Q3">Q3 — Jul–Sep</option>
-          <option value="Q4">Q4 — Oct–Dic</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <div class="filter-label">Fecha desde</div>
-        <input type="date" class="filter-select" id="fil-from" onchange="applyFilters()">
-      </div>
-      <div class="filter-group">
-        <div class="filter-label">Fecha hasta</div>
-        <input type="date" class="filter-select" id="fil-to" onchange="applyFilters()">
-      </div>
-      <div class="filter-group">
-        <div class="filter-label">Programa</div>
-        <select class="filter-select" id="fil-programa" onchange="applyFilters()">
-          <option value="">Todos los programas</option>
-          <option value="arranca">Arranca el Futuro</option>
-          <option value="guardianes">Guardianes del Planeta</option>
-          <option value="infraestructura">Infraestructura Resiliente</option>
-          <option value="activacion_social">Activación Social</option>
-          <option value="general">General</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <div class="filter-label">Tipo</div>
-        <select class="filter-select" id="fil-type" onchange="applyFilters()">
-          <option value="">Todos los tipos</option>
-          <option value="proyecto">Proyecto</option>
-          <option value="evento">Evento</option>
-          <option value="activacion">Activación</option>
-        </select>
-      </div>
-      <button class="filter-clear" onclick="clearFilters()">✕ Limpiar</button>
-    </div>
-
-    <!-- FILTER ACTIVE PILL -->
-    <div id="filter-active-bar" style="display:none;margin-bottom:20px">
-      <div class="active-filter-pill" id="filter-pill-text"></div>
-    </div>
-
-    <!-- DASH TAB TOGGLES -->
-    <div class="dash-tabs">
-      <button class="dash-tab active" id="tab-pr" onclick="setDashTab('pr')">
-        <span class="tab-icon">◉</span> Por registro
-      </button>
-      <button class="dash-tab" id="tab-comp" onclick="setDashTab('comp')">
-        <span class="tab-icon">📊</span> Comparativa
-      </button>
-    </div>
-
-    <!-- ── PANEL: POR REGISTRO ── -->
-    <div class="dash-panel active" id="dash-pr">
-
-      <!-- Record selector -->
-      <div style="background:var(--bg2);border:1px solid var(--purple-b);border-radius:var(--r-lg);padding:18px 24px;margin-bottom:16px;display:flex;align-items:center;flex-wrap:wrap;gap:16px">
-        <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gray-3);white-space:nowrap">Vista de indicadores</div>
-        <select id="pr-record-select" onchange="renderRecordTablero()" style="flex:1;min-width:260px;max-width:600px;background:var(--bg3);border:1px solid var(--purple-b);color:var(--gray-1);padding:10px 14px;border-radius:var(--r-sm);font-family:var(--sans);font-size:13px;appearance:none;cursor:pointer">
-          <option value="">☰ Todos los registros — acumulado</option>
-        </select>
-      </div>
-
-      <!-- Sub-view A: Aggregate (shown when "Todos" selected) -->
-      <div id="pr-aggregate">
-
-        <!-- ACTIVITY STRIP -->
-        <div class="act-strip">
-          <div class="act-strip-item">
-            <div class="act-strip-num" id="stat-total">0</div>
-            <div class="act-strip-label">Total actividades</div>
-          </div>
-          <div class="act-strip-item">
-            <div class="act-strip-num" style="color:var(--purple-lt)" id="stat-proyectos">0</div>
-            <div class="act-strip-label">Proyectos</div>
-          </div>
-          <div class="act-strip-item">
-            <div class="act-strip-num" style="color:var(--teal-lt)" id="stat-eventos">0</div>
-            <div class="act-strip-label">Eventos</div>
-          </div>
-          <div class="act-strip-item">
-            <div class="act-strip-num" style="color:var(--amber-lt)" id="stat-activaciones">0</div>
-            <div class="act-strip-label">Activaciones</div>
-          </div>
-        </div>
-
-        <!-- TABLERO DE IMPACTO — 4 filas -->
-        <div class="tablero">
-
-          <!-- IMPACTO -->
-          <div class="tablero-row">
-            <div class="tablero-label" style="--row-color:#5B21B6">
-              <div class="tablero-label-name">Impacto</div>
-              <div class="tablero-label-count">6 indicadores</div>
-            </div>
-            <div class="tablero-cards">
-              <div class="metric-card">
-                <div class="metric-card-label">Grado de satisfacción</div>
-                <div id="mc-satisfaccion"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">% Aumento en habilidades técnicas / digitales / liderazgo</div>
-                <div id="mc-habilidades"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">% Mujeres con autonomía digital</div>
-                <div id="mc-autonomia"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">% Becarios en sostenibilidad</div>
-                <div id="mc-becarios"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Prototipos con enfoque circular</div>
-                <div id="mc-prototipos"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Alumnos con perspectiva de género</div>
-                <div id="mc-genero"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- REPUTACIÓN -->
-          <div class="tablero-row">
-            <div class="tablero-label" style="--row-color:#1D4ED8">
-              <div class="tablero-label-name">Reputación</div>
-              <div class="tablero-label-count">6 indicadores</div>
-            </div>
-            <div class="tablero-cards">
-              <div class="metric-card">
-                <div class="metric-card-label">Beneficiarios directos</div>
-                <div id="mc-ben-dir"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Reconocimiento de CLARIOS</div>
-                <div id="mc-reconocimiento"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Narrativas positivas en medios</div>
-                <div id="mc-narrativas"></div>
-              </div>
-              <div class="metric-card" ondblclick="showConfianzaPop(event,'aggregate')" style="cursor:pointer" title="Doble clic para ver desglose por pregunta">
-                <div class="metric-card-label">Índice de confianza <span style="font-size:8px;opacity:0.5">⊞ dbl-clic</span></div>
-                <div id="mc-confianza"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">NPS</div>
-                <div id="mc-nps"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">% Empleador deseado</div>
-                <div id="mc-empleador"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- RESULTADO -->
-          <div class="tablero-row">
-            <div class="tablero-label" style="--row-color:#0E7490">
-              <div class="tablero-label-name">Resultado</div>
-              <div class="tablero-label-count">6 indicadores</div>
-            </div>
-            <div class="tablero-cards">
-              <div class="metric-card">
-                <div class="metric-card-label">Horas de formación impartidas</div>
-                <div id="mc-horas"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Beneficiarios indirectos</div>
-                <div id="mc-ben-indirectos"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">% Mujeres participantes</div>
-                <div id="mc-mujeres"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Quejas recibidas / atendidas</div>
-                <div id="mc-quejas"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Escuelas beneficiadas</div>
-                <div id="mc-escuelas"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Grado de participación</div>
-                <div id="mc-participacion"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- PROCESO SOCIAL -->
-          <div class="tablero-row">
-            <div class="tablero-label" style="--row-color:#0369A1">
-              <div class="tablero-label-name">Proceso social</div>
-              <div class="tablero-label-count">3 indicadores</div>
-            </div>
-            <div class="tablero-cards">
-              <div class="metric-card">
-                <div class="metric-card-label">Alianzas activas</div>
-                <div id="mc-alianzas"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Rondas de seguimiento</div>
-                <div id="mc-rondas"></div>
-              </div>
-              <div class="metric-card">
-                <div class="metric-card-label">Voluntarios movilizados</div>
-                <div id="mc-voluntarios"></div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- SECTION: PROGRAMA ESPECÍFICO (condicional) -->
-        <div id="prog-dashboard-section" style="display:none">
-          <div class="dash-section-title" id="prog-dashboard-title" style="margin-top:8px">Indicadores de programa</div>
-          <div class="stat-grid stat-grid-4" id="prog-dashboard-grid"></div>
-        </div>
-
-      </div><!-- /pr-aggregate -->
-
-      <!-- Sub-view B: Individual record (shown when a record is selected) -->
-      <div id="pr-individual" style="display:none">
-        <div id="pr-tablero-wrap"></div>
-      </div>
-
-    </div><!-- /dash-pr -->
-
-    <!-- ── PANEL: COMPARATIVA (solo gráficas) ── -->
-    <div class="dash-panel" id="dash-comp">
-
-      <!-- CHARTS -->
-      <div class="dash-section-title" style="margin-top:0">Visualizaciones comparativas</div>
-      <div class="chart-grid">
-        <div class="chart-card">
-          <div class="chart-title">Distribución por tipo<span class="chart-subtitle">Proyectos · Eventos · Activaciones</span></div>
-          <div class="chart-container"><canvas id="chart-donut"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">Beneficiarios por programa<span class="chart-subtitle">Beneficiarios directos acumulados</span></div>
-          <div class="chart-container"><canvas id="chart-bar"></canvas></div>
-        </div>
-        <div class="chart-card wide">
-          <div class="chart-title">Actividades por mes<span class="chart-subtitle">Frecuencia mensual de registros</span></div>
-          <div class="chart-container" style="height:180px"><canvas id="chart-line"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">Horas de formación por mes<span class="chart-subtitle">Horas acumuladas por período</span></div>
-          <div class="chart-container"><canvas id="chart-horas"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">% Mujeres por actividad<span class="chart-subtitle">Participación femenina por registro</span></div>
-          <div class="chart-container"><canvas id="chart-mujeres"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">% Mujeres participantes<span class="chart-subtitle">Promedio del período</span></div>
-          <div class="chart-container"><canvas id="chart-pie-mujeres"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">% Mujeres con autonomía digital<span class="chart-subtitle">Promedio del período</span></div>
-          <div class="chart-container"><canvas id="chart-pie-autonomia"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">% Becarios en sostenibilidad<span class="chart-subtitle">Promedio del período</span></div>
-          <div class="chart-container"><canvas id="chart-pie-becarios"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">Voluntarios Activación Social por mes<span class="chart-subtitle">Act. Social únicamente</span></div>
-          <div class="chart-container"><canvas id="chart-voluntarios"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">Reconocimiento de CLARIOS<span class="chart-subtitle">Distribución de respuestas</span></div>
-          <div class="chart-container"><canvas id="chart-reconocimiento"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">Canal de seguimiento a beneficiados<span class="chart-subtitle">Distribución de canales</span></div>
-          <div class="chart-container"><canvas id="chart-canal"></canvas></div>
-        </div>
-      </div>
-
-      <!-- RECENT TABLE -->
-      <div class="table-card">
-        <div class="table-header">
-          <div class="table-title">Actividades del periodo</div>
-          <button class="btn btn-ghost btn-sm" onclick="navigate('registros')">Ver todos →</button>
-        </div>
-        <div id="table-recent"></div>
-      </div>
-
-    </div><!-- /dash-comp -->
-  </div>
-
-  <!-- ═══════════════════════════
-       VIEW: NUEVO — SELECTOR
-  ════════════════════════════ -->
   <div class="view" id="view-nuevo">
     <div class="page-header">
       <div class="page-eyebrow">Registro</div>
@@ -2533,6 +2145,7 @@ tbody tr:last-child td { border-bottom: none; }
     </div>
   </div>
 
+
   <!-- ═══════════════════════════
        VIEW: FORM PART 2
   ════════════════════════════ -->
@@ -2886,71 +2499,6 @@ tbody tr:last-child td { border-bottom: none; }
   </div>
 
   <!-- ═══════════════════════════
-       VIEW: LISTS
-  ════════════════════════════ -->
-  <div class="view" id="view-proyectos">
-    <div class="page-header">
-      <div class="page-eyebrow">Registros</div>
-      <div class="page-title"><span>Proyectos</span></div>
-    </div>
-    <div class="table-card" id="table-proyectos-wrap"></div>
-  </div>
-
-  <div class="view" id="view-eventos">
-    <div class="page-header">
-      <div class="page-eyebrow">Registros</div>
-      <div class="page-title"><span>Eventos</span></div>
-    </div>
-    <div class="table-card" id="table-eventos-wrap"></div>
-  </div>
-
-  <div class="view" id="view-activaciones">
-    <div class="page-header">
-      <div class="page-eyebrow">Registros</div>
-      <div class="page-title"><span>Activaciones</span></div>
-    </div>
-    <div class="table-card" id="table-activaciones-wrap"></div>
-  </div>
-  <!-- ═══ EVALUACIONES IMPACT KIT ═══ -->
-  <div class="view" id="view-folios">
-    <div class="page-header">
-      <div class="page-eyebrow">Seguimiento · Impact Kit</div>
-      <div class="page-title">Evaluaciones <span>Impact Kit</span></div>
-      <div class="page-desc">Iniciativas evaluadas mediante el Chart de Valor Social. Aprueba o rechaza cada evaluación.</div>
-    </div>
-
-    <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px">
-      <div class="stat-card" style="--accent:var(--purple)"><div class="stat-icon">◈</div><div class="stat-label">Total evaluaciones</div><div class="stat-num" id="fol-total">0</div></div>
-      <div class="stat-card" style="--accent:var(--amber)"><div class="stat-icon">◑</div><div class="stat-label">En revisión</div><div class="stat-num" id="fol-revision">0</div></div>
-      <div class="stat-card" style="--accent:var(--green)"><div class="stat-icon">✓</div><div class="stat-label">Aprobadas</div><div class="stat-num" id="fol-aprobadas">0</div></div>
-      <div class="stat-card" style="--accent:var(--red)"><div class="stat-icon">✗</div><div class="stat-label">Rechazadas</div><div class="stat-num" id="fol-rechazadas">0</div></div>
-    </div>
-
-    <div class="filter-bar" style="margin-bottom:20px">
-      <div class="filter-group">
-        <div class="filter-label">Estado</div>
-        <select id="folio-filter-status" class="filter-select" onchange="renderFolios()">
-          <option value="">Todos los estados</option>
-          <option value="en-revision">En revisión</option>
-          <option value="aprobado">Aprobado</option>
-          <option value="rechazado">Rechazado</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <div class="filter-label">Resultado IK</div>
-        <select id="folio-filter-verdict" class="filter-select" onchange="renderFolios()">
-          <option value="">Todos</option>
-          <option value="viable">Viable</option>
-          <option value="revisar">Revisar</option>
-          <option value="no_recomendado">No recomendado</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="table-card" id="table-folios-wrap"></div>
-  </div>
-
-  <!-- ═══════════════════════════
        VIEW: IMPACT KIT
   ════════════════════════════ -->
   <div class="view" id="view-impact-kit">
@@ -3056,7 +2604,6 @@ tbody tr:last-child td { border-bottom: none; }
           <!-- Action buttons -->
           <div style="display:flex;gap:12px;flex-wrap:wrap">
             <button class="btn btn-primary" onclick="ikProceedToRegister()">Proceder al registro IS →</button>
-            <button class="btn btn-ghost" onclick="navigate('folios')">Ver en Evaluaciones</button>
             <button class="btn btn-ghost" onclick="ikReset()">← Nueva evaluación</button>
           </div>
         </div>
@@ -3075,78 +2622,32 @@ tbody tr:last-child td { border-bottom: none; }
   </div><!-- /#view-impact-kit -->
 
   <!-- ═══════════════════════════
-       VIEW: TODOS LOS REGISTROS
+       VIEW: SUCCESS
   ════════════════════════════ -->
-  <div class="view" id="view-registros">
+  <div class="view" id="view-success">
     <div class="page-header">
-      <div class="page-eyebrow">Registros</div>
-      <div class="page-title">Todos los <span>registros</span></div>
-      <div class="page-desc">Historial completo de actividades capturadas en el sistema.</div>
+      <div class="page-eyebrow">Registro completado</div>
+      <div class="page-title">Actividad <span>registrada</span></div>
     </div>
-    <div class="filter-bar" style="margin-bottom:20px">
-      <div class="filter-group">
-        <div class="filter-label">Tipo</div>
-        <select class="filter-select" id="reg-filter-type" onchange="renderRegistros()">
-          <option value="">Todos</option>
-          <option value="proyecto">Proyecto</option>
-          <option value="evento">Evento</option>
-          <option value="activacion">Activación</option>
-        </select>
+    <div class="table-card" style="max-width:540px;padding:32px 28px">
+      <div style="font-family:var(--cond);font-size:56px;font-weight:900;color:var(--green);margin-bottom:12px;line-height:1">✓</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gray-3);text-transform:uppercase;margin-bottom:4px">Folio asignado</div>
+      <div id="success-folio" style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white);margin-bottom:20px;border-left:3px solid var(--green);padding-left:12px"></div>
+      <p style="font-size:13px;color:var(--gray-2);margin-bottom:28px;line-height:1.7">El registro fue guardado y enviado al servidor. Puedes registrar otra actividad o evaluar una iniciativa con el Impact Kit.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="navigate('nuevo')">＋ Nueva actividad</button>
+        <button class="btn btn-ghost" onclick="navigate('impact-kit')">✦ Impact Kit</button>
       </div>
-      <div class="filter-group">
-        <div class="filter-label">Programa</div>
-        <select class="filter-select" id="reg-filter-prog" onchange="renderRegistros()">
-          <option value="">Todos los programas</option>
-          <option value="arranca">Arranca el Futuro</option>
-          <option value="guardianes">Guardianes del Planeta</option>
-          <option value="infraestructura">Infraestructura Resiliente</option>
-          <option value="activacion_social">Activación Social</option>
-          <option value="general">General</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <div class="filter-label">Año</div>
-        <select class="filter-select" id="reg-filter-year" onchange="renderRegistros()">
-          <option value="">Todos</option>
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
-        </select>
-      </div>
-      <button class="filter-clear" onclick="clearRegistrosFilters()">✕ Limpiar</button>
     </div>
-    <div class="table-card" id="table-registros-wrap"></div>
   </div>
 
-  <!-- ═══════════════════════════
-       VIEW: REPORTE
-  ════════════════════════════ -->
-  <div class="view" id="view-reporte">
-    <div class="page-header">
-      <div class="page-eyebrow">Reportes</div>
-      <div class="page-title">Reporte de <span>indicadores</span></div>
-      <div class="page-desc">Resumen completo de todos los indicadores registrados para la actividad seleccionada.</div>
-    </div>
-    <div style="display:flex;gap:10px;margin-bottom:20px">
-      <button class="btn btn-primary btn-sm" onclick="openReportPicker()">Cambiar registro</button>
-      <button class="btn btn-ghost btn-sm" onclick="window.print()">⎙ Imprimir / PDF</button>
-      <button class="btn btn-ghost btn-sm" onclick="navigate('registros')">← Volver a registros</button>
-    </div>
-    <div id="report-content"></div>
-  </div>
-
-</div>
+</div><!-- /.main -->
 
 <script>
 // ═══════════════════════════════════════════════════
 // API
 // ═══════════════════════════════════════════════════
 const API_URL = 'https://script.google.com/macros/s/AKfycbyOTcuEiLodVWdgHGdWC4X3GgJLdZT2ecJ2GJXl14zD56NH0YZcReh69utG4VX9FA3T/exec';
-
-function setSyncLabel(msg) {
-  const el = document.getElementById('sync-label');
-  if (el) el.textContent = msg;
-}
 
 async function postToAPI(record) {
   try {
@@ -3158,62 +2659,14 @@ async function postToAPI(record) {
   } catch (_) { /* fail silently */ }
 }
 
-async function syncFromAPI() {
-  setSyncLabel('⟳ Sincronizando...');
-  try {
-    const res = await fetch(API_URL);
-    const json = await res.json();
-    if (json.status !== 'ok') throw new Error(json.message);
-    const apiRecords = json.data || [];
-
-    // IDs eliminados localmente — nunca los restauramos desde la API
-    const deletedIds = new Set(JSON.parse(localStorage.getItem('clarios_deleted_v2') || '[]'));
-
-    // Merge: API records keyed by folio/id; keep local-only records not in API
-    const apiIds = new Set(apiRecords.map(r => r.folio || r.id));
-    const localOnly = records.filter(r => !apiIds.has(r.folio) && !apiIds.has(r.id));
-
-    // Normalize API records, skipping deleted ones
-    const normalized = apiRecords
-      .filter(r => !deletedIds.has(r.folio) && !deletedIds.has(r.id))
-      .map(r => ({
-        id: r.folio || ('API-' + Date.now() + Math.random()),
-        timestamp: r.fecha_registro || new Date().toISOString(),
-        type: r.type || 'proyecto',
-        ...r
-      }));
-
-    records = [...normalized, ...localOnly];
-    localStorage.setItem('clarios_is_v2', JSON.stringify(records));
-    filteredRecords = [...records];
-    updateBadges();
-    refreshCurrentView();
-    setSyncLabel('✓ Sync ' + new Date().toLocaleTimeString('es-MX', {hour:'2-digit',minute:'2-digit'}));
-  } catch (e) {
-    setSyncLabel('⚠ Sin conexión');
-  }
-}
-
-function refreshCurrentView() {
-  if (currentView === 'dashboard') { renderDashboard(filteredRecords.length ? filteredRecords : records); populatePrSelect(); }
-  if (currentView === 'proyectos') renderList('proyecto', 'table-proyectos-wrap');
-  if (currentView === 'eventos') renderList('evento', 'table-eventos-wrap');
-  if (currentView === 'activaciones') renderList('activacion', 'table-activaciones-wrap');
-  if (currentView === 'folios') renderFolios();
-  if (currentView === 'tracking') renderTracking();
-  if (currentView === 'registros') renderRegistros();
-}
-
 // ═══════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════
 let records = JSON.parse(localStorage.getItem('clarios_is_v2') || '[]');
 let currentType = '';
 let formData1 = {};
-let chartDonut, chartBar, chartLine;
-let currentView = 'dashboard';
+let currentView = 'nuevo';
 
-// Indicator section opt-in toggles (default: all off)
 const _indicActivos = { resultado: false, impacto: false, reputacion: false, proceso_social: false };
 
 function toggleIndic(key) {
@@ -3238,84 +2691,40 @@ function resetIndicToggles() {
   });
 }
 
-const COLORS = {
-  proyecto:   '#7C3AED',
-  evento:     '#0891B2',
-  activacion: '#F59E0B'
-};
-
-const LABELS = {
-  proyecto:   'Proyecto',
-  evento:     'Evento',
-  activacion: 'Activación'
-};
+const COLORS = { proyecto: '#7C3AED', evento: '#0891B2', activacion: '#F59E0B' };
+const LABELS = { proyecto: 'Proyecto', evento: 'Evento', activacion: 'Activación' };
 
 // ═══════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════
 function navigate(view) {
-  // Hide all views
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-
-  // Map shortcuts
-  const viewMap = {
-    form1:      'form1',
-    nuevo:      'nuevo',
-    dashboard:  'dashboard',
-    proyectos:  'proyectos',
-    eventos:    'eventos',
-    activaciones:'activaciones'
-  };
-
-  const target = viewMap[view] || view;
-  const el = document.getElementById('view-' + target);
+  const el = document.getElementById('view-' + (view === 'form1' ? 'form1' : view === 'form2' ? 'form2' : view));
   if (el) el.classList.add('active');
 
-  // Update nav items
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const navMap = { dashboard:'dashboard', nuevo:'nuevo', proyectos:'proyectos', eventos:'eventos', activaciones:'activaciones' };
-  const navKey = Object.keys(navMap).find(k => k === view);
-  if (navKey) {
-    const items = document.querySelectorAll('.nav-item');
-    items.forEach(item => {
-      if (item.textContent.trim().startsWith(navMap[navKey] === 'dashboard' ? '◈' : '') && item.onclick && item.onclick.toString().includes(navKey)) {
-        item.classList.add('active');
-      }
-    });
+  if (view === 'nuevo' || view === 'form1' || view === 'form2' || view === 'success') {
+    document.getElementById('nav-nuevo')?.classList.add('active');
+  }
+  if (view === 'impact-kit') {
+    document.getElementById('nav-impact-kit')?.classList.add('active');
   }
 
-  // Update topbar
   const titles = {
-    dashboard: 'Dashboard · Indicadores IS',
-    nuevo: 'Nueva actividad',
-    proyectos: 'Proyectos',
-    eventos: 'Eventos',
-    activaciones: 'Activaciones',
-    form1: 'Registro · Paso 1',
-    form2: 'Registro · Paso 2',
-    folios: 'Evaluaciones Impact Kit',
-    'impact-kit': 'Clarios Impact Kit',
-    registros: 'Todos los registros',
-    reporte: 'Reporte de indicadores'
+    nuevo: 'Nueva actividad', form1: 'Registro · Paso 1', form2: 'Registro · Paso 2',
+    'impact-kit': 'Clarios Impact Kit', success: 'Actividad registrada'
   };
   document.getElementById('topbar-title').textContent = titles[view] || 'Clarios IS';
-
   currentView = view;
 
-  // Refresh relevant view
-  if (view === 'dashboard') { renderDashboard(filteredRecords.length ? filteredRecords : records); populatePrSelect(); }
-  if (view === 'proyectos') renderList('proyecto', 'table-proyectos-wrap');
-  if (view === 'eventos') renderList('evento', 'table-eventos-wrap');
-  if (view === 'activaciones') renderList('activacion', 'table-activaciones-wrap');
-  if (view === 'folios') renderFolios();
-  if (view === 'registros') renderRegistros();
   if (view === 'impact-kit') ikInit();
-
-  // Close sidebar on mobile
   document.getElementById('sidebar').classList.remove('open');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ═══════════════════════════════════════════════════
+// FORM FLOW
+// ═══════════════════════════════════════════════════
 // ═══════════════════════════════════════════════════
 // FORM FLOW
 // ═══════════════════════════════════════════════════
@@ -3440,6 +2849,7 @@ function onProgramaChange() {
     document.getElementById('prog-' + p).style.display = p === val ? 'block' : 'none';
   });
 }
+
 
 function saveRecord() {
   const id = 'IS-' + Date.now();
@@ -3590,688 +3000,10 @@ function saveRecord() {
   postToAPI(record);
 
   showToast(`${LABELS[currentType]} registrado exitosamente`);
-  navigate('dashboard');
+  navigate('success');
+  document.getElementById('success-folio').textContent = record.id;
 }
 
-// ═══════════════════════════════════════════════════
-// FILTERS
-// ═══════════════════════════════════════════════════
-let filteredRecords = [];
-
-function getFilteredRecords() {
-  const year    = document.getElementById('fil-year').value;
-  const period  = document.getElementById('fil-period').value;
-  const from    = document.getElementById('fil-from').value;
-  const to      = document.getElementById('fil-to').value;
-  const prog    = document.getElementById('fil-programa').value;
-  const type    = document.getElementById('fil-type').value;
-
-  const Q = { Q1:['01','02','03'], Q2:['04','05','06'], Q3:['07','08','09'], Q4:['10','11','12'] };
-
-  return records.filter(r => {
-    const d = (r.fecha || r.timestamp.slice(0,10));
-    const [ry, rm] = d.split('-');
-
-    if (year   && ry !== year) return false;
-    if (period && !Q[period].includes(rm)) return false;
-    if (from   && d < from) return false;
-    if (to     && d > to)   return false;
-    if (prog   && r.programa !== prog) return false;
-    if (type   && r.type !== type) return false;
-    return true;
-  });
-}
-
-function applyFilters() {
-  filteredRecords = getFilteredRecords();
-
-  // Build active filter label
-  const year   = document.getElementById('fil-year').value;
-  const period = document.getElementById('fil-period').value;
-  const from   = document.getElementById('fil-from').value;
-  const to     = document.getElementById('fil-to').value;
-  const prog   = document.getElementById('fil-programa').value;
-  const type   = document.getElementById('fil-type').value;
-  const parts  = [];
-  if (year)   parts.push(year);
-  if (period) parts.push(period);
-  if (from)   parts.push('Desde ' + formatDate(from));
-  if (to)     parts.push('Hasta ' + formatDate(to));
-  const progLabels = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura', activacion_social:'Activación Social', general:'General' };
-  if (prog)  parts.push(progLabels[prog] || prog);
-  if (type)  parts.push(LABELS[type] || type);
-
-  const bar = document.getElementById('filter-active-bar');
-  if (parts.length) {
-    bar.style.display = 'block';
-    document.getElementById('filter-pill-text').textContent = '🔍 Filtrando: ' + parts.join(' · ') + ' — ' + filteredRecords.length + ' registro(s)';
-  } else {
-    bar.style.display = 'none';
-  }
-
-  renderDashboard(filteredRecords);
-}
-
-function clearFilters() {
-  ['fil-year','fil-period','fil-from','fil-to','fil-programa','fil-type'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el.tagName === 'SELECT') el.value = '';
-    else el.value = '';
-  });
-  document.getElementById('filter-active-bar').style.display = 'none';
-  filteredRecords = [...records];
-  renderDashboard(filteredRecords);
-}
-
-// ═══════════════════════════════════════════════════
-// DASHBOARD HELPERS
-// ═══════════════════════════════════════════════════
-const _gaugeCharts = {};
-
-function mNum(id, value, opts = {}) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const { color = 'var(--white)', large = false, sub = '', pending = false } = opts;
-  if (pending || value === null || value === undefined) {
-    el.innerHTML = `<span class="metric-pending">● POR MEDIR</span>`;
-    return;
-  }
-  const cls = large ? 'metric-num lg' : 'metric-num';
-  el.innerHTML = `<div class="${cls}" style="color:${color}">${value}</div>${sub ? `<div class="metric-sub">${sub}</div>` : ''}`;
-}
-
-function mGauge(id, rawVal, type = 'scale5') {
-  const el = document.getElementById(id);
-  if (!el) return;
-  if (!rawVal || rawVal === '—' || rawVal === '') {
-    el.innerHTML = `<span class="metric-pending">● POR MEDIR</span>`;
-    return;
-  }
-  let pct = 0, label = '';
-  if (type === 'scale5') {
-    const n = parseInt(rawVal.toString().charAt(0));
-    pct = isNaN(n) ? 0 : (n / 5) * 100;
-    const L = {'1':'Muy bajo','2':'Bajo','3':'Medio','4':'Alto','5':'Muy alto'};
-    label = L[n] || rawVal;
-  } else if (type === 'scale10') {
-    const n = parseFloat(rawVal);
-    pct = isNaN(n) ? 0 : (n / 10) * 100;
-    label = isNaN(n) ? rawVal : n.toFixed(1);
-  } else if (type === 'scale5f') {
-    const n = parseFloat(rawVal);
-    pct = isNaN(n) ? 0 : ((n - 1) / 4) * 100;
-    label = isNaN(n) ? rawVal : n.toFixed(2);
-  } else if (type === 'nps') {
-    const n = parseFloat(rawVal);
-    pct = isNaN(n) ? 50 : ((n + 100) / 200) * 100;
-    label = isNaN(n) ? rawVal : (n > 0 ? '+' : '') + n.toFixed(0);
-  }
-  const col = pct >= 70 ? '#10B981' : pct >= 40 ? '#F59E0B' : '#EF4444';
-  const cid = 'gc-' + id;
-  el.innerHTML = `<div class="gauge-wrap"><canvas id="${cid}" width="90" height="50" style="display:block"></canvas><div class="gauge-text" style="color:${col};margin-top:2px">${label}</div></div>`;
-  if (_gaugeCharts[cid]) { _gaugeCharts[cid].destroy(); delete _gaugeCharts[cid]; }
-  const ctx = document.getElementById(cid);
-  if (!ctx) return;
-  _gaugeCharts[cid] = new Chart(ctx.getContext('2d'), {
-    type: 'doughnut',
-    data: { datasets: [{ data: [pct, 100 - pct], backgroundColor: [col + 'CC', 'rgba(74,65,117,0.3)'], borderWidth: 0, borderRadius: 3 }] },
-    options: { rotation: -90, circumference: 180, cutout: '72%', responsive: false, animation: { duration: 600 }, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
-  });
-}
-
-// ═══════════════════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════════════════
-function renderDashboard(data) {
-  if (!data) data = filteredRecords.length || document.getElementById('fil-year').value ? filteredRecords : records;
-
-  const byType = { proyecto:0, evento:0, activacion:0 };
-  let totalBenDir = 0, totalBenInd = 0, totalEscuelas = 0, totalHoras = 0, totalInversion = 0;
-  let totalAlianzas = 0, totalPrototipos = 0, totalNarrativas = 0, totalMentoria = 0;
-  let totalAlumnosGenero = 0, totalTalento = 0, totalQuejas_r = 0, totalQuejas_a = 0;
-  let sumMujeres = 0, cntMujeres = 0;
-  let sumHabilidades = 0, cntHabilidades = 0;
-  let sumAutonomia = 0, cntAutonomia = 0;
-  let sumBecarios = 0, cntBecarios = 0;
-  let sumEmpleador = 0, cntEmpleador = 0;
-  let avgRecon = '', avgSat = '', avgConf = '', avgNps = '';
-  let sumReconNum = 0, cntRecon = 0;
-  let sumSatNum = 0, cntSat = 0;
-  let sumConfianza = 0, cntConfianza = 0;
-  const icDist = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
-  let sumNps = 0, cntNps = 0;
-  let sumParticipacion = 0, cntParticipacion = 0;
-  let totalVoluntarios = 0;
-
-  const prog = { guardianes:{ guardianes:0, residuos:0, estaciones:0 }, arranca:{ perfiles:0, intervenidos:0, gimnasios:0, sesiones:0 }, infraestructura:{ arboles:0, intervenciones:0, digitales:0 }, activacion_social:{ voluntarios:0, eventos:0, horas_vol:0 } };
-
-  data.forEach(r => {
-    byType[r.type] = (byType[r.type]||0) + 1;
-    totalBenDir  += parseInt(r.g_ben_directos)  || parseInt(r.beneficiarios) || 0;
-    totalBenInd  += parseInt(r.g_ben_indirectos) || 0;
-    totalInversion += parseFloat(r.g_inversion) || parseFloat(r.presupuesto) || parseFloat(r.inversion) || 0;
-    totalEscuelas += parseInt(r.g_escuelas) || 0;
-    totalHoras    += parseInt(r.g_horas_formacion) || 0;
-    totalAlianzas += parseInt(r.g_alianzas) || 0;
-    totalPrototipos += parseInt(r.g_prototipos) || 0;
-    totalNarrativas += parseInt(r.g_narrativas) || 0;
-    totalMentoria   += parseInt(r.g_rondas_mentoria) || 0;
-    totalAlumnosGenero += parseInt(r.g_alumnos_genero) || 0;
-    totalTalento += parseInt(r.af_talento_canalizado) || 0;
-    totalQuejas_r += parseInt(r.g_quejas_recibidas) || 0;
-    totalQuejas_a += parseInt(r.g_quejas_atendidas) || 0;
-    totalVoluntarios += parseInt(r.as_voluntarios) || 0;
-
-    if (r.g_pct_mujeres)               { sumMujeres    += parseFloat(r.g_pct_mujeres);           cntMujeres++; }
-    if (r.g_pct_habilidades)           { sumHabilidades += parseFloat(r.g_pct_habilidades);      cntHabilidades++; }
-    if (r.g_pct_autonomia_mujeres)     { sumAutonomia  += parseFloat(r.g_pct_autonomia_mujeres); cntAutonomia++; }
-    if (r.g_pct_becarios_sost)         { sumBecarios    += parseFloat(r.g_pct_becarios_sost);    cntBecarios++; }
-    if (r.af_pct_beneficiados_clarios) { sumEmpleador   += parseFloat(r.af_pct_beneficiados_clarios); cntEmpleador++; }
-
-    const reconNum = parseInt((r.g_reconocimiento||'').charAt(0));
-    const satNum   = parseInt((r.g_satisfaccion||'').charAt(0));
-    const partNum  = parseInt((r.g_grado_participacion||'').charAt(0));
-    if (reconNum) { sumReconNum += reconNum; cntRecon++; }
-    if (satNum)   { sumSatNum   += satNum;   cntSat++; }
-    if (partNum)  { sumParticipacion += partNum; cntParticipacion++; }
-
-    const conf = parseFloat(r.g_indice_confianza);
-    const nps  = parseFloat(r.g_nps);
-    if (!isNaN(conf) && conf > 0) { sumConfianza += conf; cntConfianza++; }
-    if (!isNaN(nps)  && r.g_nps != null && r.g_nps !== '') { sumNps += nps; cntNps++; }
-    for (let q = 0; q < 4; q++) {
-      for (let l = 0; l < 5; l++) {
-        icDist[q][l] += parseInt(r[`g_ic_q${q+1}_l${l+1}`]) || 0;
-      }
-    }
-
-    if (r.programa === 'guardianes')       { prog.guardianes.guardianes += parseInt(r.gp_guardianes)||0; prog.guardianes.residuos += parseFloat(r.gp_residuos_kg)||0; prog.guardianes.estaciones += parseInt(r.gp_estaciones)||0; }
-    if (r.programa === 'arranca')          { prog.arranca.perfiles += parseFloat(r.af_pct_perfiles)||0; prog.arranca.intervenidos += parseFloat(r.af_pct_intervenidos)||0; prog.arranca.gimnasios += parseInt(r.af_gimnasios)||0; prog.arranca.sesiones += parseInt(r.af_sesiones)||0; }
-    if (r.programa === 'infraestructura')  { prog.infraestructura.arboles += parseInt(r.inf_arboles)||0; prog.infraestructura.intervenciones += parseInt(r.inf_intervenciones)||0; prog.infraestructura.digitales += parseInt(r.inf_espacios_digitales)||0; }
-    if (r.programa === 'activacion_social'){ prog.activacion_social.voluntarios += parseInt(r.as_voluntarios)||0; prog.activacion_social.eventos += parseInt(r.as_num_eventos)||0; prog.activacion_social.horas_vol += parseInt(r.as_horas_voluntariado)||0; }
-  });
-
-  // Activity strip
-  setText('stat-total', data.length);
-  setText('stat-proyectos', byType.proyecto);
-  setText('stat-eventos', byType.evento);
-  setText('stat-activaciones', byType.activacion);
-
-  // Average scale-5 raw strings for gauge
-  if (cntRecon)        avgRecon = String(Math.round(sumReconNum/cntRecon)) + ' — ' + (['','Muy bajo','Bajo','Medio','Alto','Muy alto'][Math.round(sumReconNum/cntRecon)]||'');
-  if (cntSat)          avgSat   = String(Math.round(sumSatNum/cntSat))   + ' — ' + (['','Muy bajo','Bajo','Medio','Alto','Muy alto'][Math.round(sumSatNum/cntSat)]||'');
-  let avgPart = cntParticipacion ? String(Math.round(sumParticipacion/cntParticipacion)) + ' — ...' : '';
-
-  // ── IMPACTO ──
-  mGauge('mc-satisfaccion', cntSat ? avgSat : '', 'scale5');
-  mNum('mc-habilidades', cntHabilidades ? Math.round(sumHabilidades/cntHabilidades)+'%' : null, { color:'#A78BFA', pending: !cntHabilidades });
-  mNum('mc-autonomia',   cntAutonomia  ? Math.round(sumAutonomia/cntAutonomia)+'%'   : null, { color:'#C084FC', pending: !cntAutonomia });
-  mNum('mc-becarios',    cntBecarios   ? Math.round(sumBecarios/cntBecarios)+'%'     : null, { color:'#34D399', pending: !cntBecarios });
-  mNum('mc-prototipos',  totalPrototipos || null, { color:'#FCD34D', pending: !totalPrototipos });
-  mNum('mc-genero',  totalAlumnosGenero || null, { color:'#F472B6', pending: !totalAlumnosGenero });
-
-  // ── REPUTACIÓN ──
-  mNum('mc-ben-dir', totalBenDir ? totalBenDir.toLocaleString('es-MX') : null, { color:'#34D399', pending: !totalBenDir });
-  mGauge('mc-reconocimiento', cntRecon ? avgRecon : '', 'scale5');
-  mNum('mc-narrativas', totalNarrativas || null, { color:'#F59E0B', pending: !totalNarrativas });
-  // Store per-question aggregates (distribution-based) for popover
-  const icDistAvg = icDist.map(dist => {
-    const sw = dist.reduce((s,n,i) => s + (i+1)*n, 0);
-    const sn = dist.reduce((s,n) => s + n, 0);
-    return sn > 0 ? sw/sn : null;
-  });
-  window._icAgg = {
-    q1: icDistAvg[0], q2: icDistAvg[1], q3: icDistAvg[2], q4: icDistAvg[3],
-    q1dist: icDist[0], q2dist: icDist[1], q3dist: icDist[2], q4dist: icDist[3],
-    avg: cntConfianza ? sumConfianza/cntConfianza : null
-  };
-  const icAvgStr = cntConfianza ? (sumConfianza/cntConfianza).toFixed(2) : '';
-  mGauge('mc-confianza', icAvgStr, 'scale5f');
-  mGauge('mc-nps', cntNps ? (sumNps/cntNps).toFixed(0) : '', 'nps');
-  mNum('mc-empleador',  cntEmpleador ? Math.round(sumEmpleador/cntEmpleador)+'%' : null, { color:'#60A5FA', pending: !cntEmpleador });
-
-  // ── RESULTADO ──
-  mNum('mc-horas',         totalHoras.toLocaleString('es-MX'),  { color:'#A78BFA', large: true, sub: 'Meta 2026: 900 hrs' });
-  mNum('mc-ben-indirectos', totalBenInd ? totalBenInd.toLocaleString('es-MX') : null, { color:'#22D3EE', pending: !totalBenInd, sub: 'Meta 2026: 32,000' });
-  mNum('mc-mujeres', cntMujeres ? Math.round(sumMujeres/cntMujeres)+'%' : null, { color:'#F472B6', pending: !cntMujeres });
-  mNum('mc-quejas',      (totalQuejas_r || totalQuejas_a) ? `${totalQuejas_a} / ${totalQuejas_r}` : null, { color:'#FCD34D', pending: !totalQuejas_r && !totalQuejas_a, sub: 'Atendidas / Recibidas' });
-  mNum('mc-escuelas', totalEscuelas || null, { color:'#A78BFA', pending: !totalEscuelas, sub: 'Meta 2026: 17' });
-  mGauge('mc-participacion', cntParticipacion ? (String(Math.round(sumParticipacion/cntParticipacion)) + ' — ...') : '', 'scale5');
-
-  // ── PROCESO SOCIAL ──
-  mNum('mc-alianzas',    totalAlianzas  || null, { color:'#22D3EE', pending: !totalAlianzas, sub: 'Meta 2026: 15' });
-  mNum('mc-rondas',      totalMentoria  || null, { color:'#34D399', pending: !totalMentoria });
-  mNum('mc-voluntarios', totalVoluntarios || null, { color:'#F59E0B', pending: !totalVoluntarios });
-
-  // Program-specific section
-  renderProgSection(prog, document.getElementById('fil-programa').value);
-
-  renderCharts(data, byType, prog);
-  renderRecentTable(data);
-}
-
-function setText(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
-}
-
-function setBar(id, val, max) {
-  const el = document.getElementById(id);
-  if (el) el.style.width = Math.min(100, Math.round((val/max)*100)) + '%';
-}
-
-function renderProgSection(prog, activeProg) {
-  const section = document.getElementById('prog-dashboard-section');
-  const title   = document.getElementById('prog-dashboard-title');
-  const grid    = document.getElementById('prog-dashboard-grid');
-
-  const hasGuardianes = prog.guardianes.guardianes || prog.guardianes.residuos;
-  const hasArranca    = prog.arranca.gimnasios || prog.arranca.sesiones;
-  const hasInfra      = prog.infraestructura.arboles || prog.infraestructura.intervenciones;
-  const hasActivacion = prog.activacion_social.voluntarios || prog.activacion_social.eventos;
-  const hasAny = hasGuardianes || hasArranca || hasInfra || hasActivacion;
-
-  if (!hasAny) { section.style.display='none'; return; }
-  section.style.display='block';
-
-  let cards = '';
-
-  if (hasGuardianes || !activeProg || activeProg==='guardianes') {
-    const g = prog.guardianes;
-    if (g.guardianes || g.residuos || g.estaciones) cards += `
-      <div class="stat-card" style="--accent:#34D399"><div class="stat-icon">🌍</div><div class="stat-label" style="color:#34D399">Guardianes formados</div><div class="stat-num">${g.guardianes.toLocaleString('es-MX')}</div><div class="stat-sub">Líderes comunitarios</div></div>
-      <div class="stat-card" style="--accent:#34D399"><div class="stat-icon">♻</div><div class="stat-label" style="color:#34D399">Residuos recuperados</div><div class="stat-num">${g.residuos.toLocaleString('es-MX')}<span style="font-size:18px"> kg</span></div><div class="stat-sub">Por escuelas aliadas</div></div>
-      <div class="stat-card" style="--accent:#34D399"><div class="stat-icon">🏫</div><div class="stat-label" style="color:#34D399">Estaciones reciclaje</div><div class="stat-num">${g.estaciones}</div><div class="stat-sub">Funcionales</div></div>`;
-  }
-
-  if (hasArranca || !activeProg || activeProg==='arranca') {
-    const a = prog.arranca;
-    if (a.gimnasios || a.sesiones) cards += `
-      <div class="stat-card" style="--accent:#A78BFA"><div class="stat-icon">🔬</div><div class="stat-label" style="color:#A78BFA">Gimnasios activos</div><div class="stat-num">${a.gimnasios}</div><div class="stat-sub">Arranca el Futuro</div></div>
-      <div class="stat-card" style="--accent:#A78BFA"><div class="stat-icon">📚</div><div class="stat-label" style="color:#A78BFA">Sesiones realizadas</div><div class="stat-num">${a.sesiones}</div><div class="stat-sub">En el periodo</div></div>
-      <div class="stat-card" style="--accent:#A78BFA"><div class="stat-icon">🎯</div><div class="stat-label" style="color:#A78BFA">% perfiles detectados</div><div class="stat-num">${a.perfiles ? Math.round(a.perfiles)+'%' : '—'}</div><div class="stat-sub">Talento identificado</div></div>`;
-  }
-
-  if (hasInfra || !activeProg || activeProg==='infraestructura') {
-    const i = prog.infraestructura;
-    if (i.arboles || i.intervenciones) cards += `
-      <div class="stat-card" style="--accent:#22D3EE"><div class="stat-icon">🌳</div><div class="stat-label" style="color:#22D3EE">Árboles reforestados</div><div class="stat-num">${i.arboles.toLocaleString('es-MX')}</div><div class="stat-sub">Infraestructura resiliente</div></div>
-      <div class="stat-card" style="--accent:#22D3EE"><div class="stat-icon">⬡</div><div class="stat-label" style="color:#22D3EE">Espacios intervenidos</div><div class="stat-num">${i.intervenciones}</div><div class="stat-sub">Sostenibles</div></div>
-      <div class="stat-card" style="--accent:#22D3EE"><div class="stat-icon">💻</div><div class="stat-label" style="color:#22D3EE">Espacios digitales</div><div class="stat-num">${i.digitales}</div><div class="stat-sub">Con acceso digital</div></div>`;
-  }
-
-  if (hasActivacion || !activeProg || activeProg==='activacion_social') {
-    const s = prog.activacion_social;
-    if (s.voluntarios || s.eventos) cards += `
-      <div class="stat-card" style="--accent:#FCD34D"><div class="stat-icon">🙋</div><div class="stat-label" style="color:#FCD34D">Voluntarios Clarios</div><div class="stat-num">${s.voluntarios.toLocaleString('es-MX')}</div><div class="stat-sub">Activamente movilizados</div></div>
-      <div class="stat-card" style="--accent:#FCD34D"><div class="stat-icon">📅</div><div class="stat-label" style="color:#FCD34D">Eventos realizados</div><div class="stat-num">${s.eventos}</div><div class="stat-sub">Activación Social</div></div>
-      <div class="stat-card" style="--accent:#FCD34D"><div class="stat-icon">⏱</div><div class="stat-label" style="color:#FCD34D">Horas voluntariado</div><div class="stat-num">${s.horas_vol.toLocaleString('es-MX')}</div><div class="stat-sub">Aportadas por el equipo</div></div>`;
-  }
-
-  grid.innerHTML = cards || '<div style="color:var(--gray-3);font-size:13px;padding:12px">Sin datos de programa en este periodo.</div>';
-}
-
-function renderCharts(data, byType, prog) {
-  const tickStyle = { color:'#94A3B8', font:{ family:'Plus Jakarta Sans', size:11 }, padding: 6 };
-  const gridStyle = { color:'rgba(71,85,105,0.15)', lineWidth:1 };
-  const chartAnim = { duration:700, easing:'easeInOutQuart' };
-  const tooltipCfg = {
-    backgroundColor:'#0D0A1C', borderColor:'rgba(124,58,237,0.45)', borderWidth:1,
-    titleColor:'#F8FAFC', bodyColor:'#94A3B8', padding:10, cornerRadius:0,
-    titleFont:{ family:'Plus Jakarta Sans', size:12, weight:'700' },
-    bodyFont:{ family:'DM Mono', size:11 }
-  };
-
-  const makeCenterPlugin = (big, small, color='#F8FAFC') => ({
-    id: 'centerText',
-    beforeDraw(chart) {
-      const { ctx, chartArea } = chart;
-      if (!chartArea) return;
-      ctx.save();
-      const cx = (chartArea.left + chartArea.right) / 2;
-      const cy = (chartArea.top  + chartArea.bottom) / 2;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = color;
-      ctx.font = '900 28px "Barlow Condensed"';
-      ctx.fillText(big, cx, cy - 8);
-      ctx.fillStyle = '#94A3B8';
-      ctx.font = '700 8px "Plus Jakarta Sans"';
-      ctx.fillText((small+'').toUpperCase(), cx, cy + 11);
-      ctx.restore();
-    }
-  });
-
-  // DONUT — tipo
-  const totalActivities = (byType.proyecto||0) + (byType.evento||0) + (byType.activacion||0);
-  if (chartDonut) chartDonut.destroy();
-  chartDonut = new Chart(document.getElementById('chart-donut').getContext('2d'), {
-    type: 'doughnut',
-    plugins: [makeCenterPlugin(totalActivities, 'TOTAL')],
-    data: {
-      labels: ['Proyectos','Eventos','Activaciones'],
-      datasets: [{ data:[byType.proyecto,byType.evento,byType.activacion], backgroundColor:['rgba(124,58,237,0.85)','rgba(8,145,178,0.85)','rgba(245,158,11,0.85)'], borderWidth:0, hoverBorderWidth:2 }]
-    },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'72%', animation:chartAnim,
-      plugins:{ legend:{ position:'bottom', labels:{ color:'#94A3B8', font:{family:'Plus Jakarta Sans',size:11}, padding:20, usePointStyle:true, pointStyle:'rectRot' } }, tooltip:tooltipCfg } }
-  });
-
-  // BAR — beneficiarios por programa
-  const progLabels = ['Guardianes','Arranca el Futuro','Infraestructura','Act. Social','Sin programa'];
-  const progBen = [0,0,0,0,0];
-  data.forEach(r => {
-    const i = ['guardianes','arranca','infraestructura','activacion_social'].indexOf(r.programa);
-    const ben = parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0;
-    if (i >= 0) progBen[i] += ben; else progBen[4] += ben;
-  });
-  const barColors = ['rgba(52,211,153,0.75)','rgba(167,139,250,0.75)','rgba(34,211,238,0.75)','rgba(252,211,77,0.75)','rgba(109,40,217,0.75)'];
-  const barPairs = progLabels.map((l,i) => ({ label:l, value:progBen[i], color:barColors[i] })).sort((a,b)=>b.value-a.value);
-
-  if (chartBar) chartBar.destroy();
-  chartBar = new Chart(document.getElementById('chart-bar').getContext('2d'), {
-    type: 'bar',
-    data: { labels:barPairs.map(p=>p.label), datasets:[{ label:'Beneficiarios', data:barPairs.map(p=>p.value), backgroundColor:barPairs.map(p=>p.color), borderWidth:0, borderRadius:0, barPercentage:0.65, categoryPercentage:0.8 }] },
-    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
-      scales:{ x:{ grid:gridStyle, ticks:tickStyle }, y:{ grid:gridStyle, ticks:tickStyle, beginAtZero:true } },
-      plugins:{ legend:{ display:false }, tooltip:tooltipCfg } }
-  });
-
-  // LINE — actividades por mes
-  const monthMap = {};
-  data.forEach(r => { const key=(r.fecha||r.timestamp.slice(0,10)).slice(0,7); monthMap[key]=(monthMap[key]||0)+1; });
-  const months = Object.keys(monthMap).sort();
-  const mLabels = months.map(m => { const [y,mo]=m.split('-'); return new Date(+y,+mo-1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}); });
-
-  if (chartLine) chartLine.destroy();
-  const lineCtx = document.getElementById('chart-line').getContext('2d');
-  const lineGrad = lineCtx.createLinearGradient(0, 0, 0, 300);
-  lineGrad.addColorStop(0, 'rgba(124,58,237,0.3)');
-  lineGrad.addColorStop(1, 'rgba(124,58,237,0)');
-  chartLine = new Chart(lineCtx, {
-    type: 'line',
-    data: { labels: mLabels.length?mLabels:['—'], datasets:[{ label:'Actividades', data:months.map(m=>monthMap[m]), borderColor:'#7C3AED', borderWidth:2, backgroundColor:lineGrad, fill:true, tension:0.35, pointBackgroundColor:'#7C3AED', pointBorderColor:'#A78BFA', pointBorderWidth:1.5, pointRadius:3, pointHoverRadius:6, pointHitRadius:12 }] },
-    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
-      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle,stepSize:1} },
-      plugins:{legend:{display:false},tooltip:tooltipCfg} }
-  });
-
-  // HORAS por mes
-  const horasMap = {};
-  data.forEach(r => { const key=(r.fecha||r.timestamp.slice(0,10)).slice(0,7); horasMap[key]=(horasMap[key]||0)+(parseInt(r.g_horas_formacion)||0); });
-  const horaMonths = Object.keys(horasMap).sort();
-  const horaLabels = horaMonths.map(m => { const [y,mo]=m.split('-'); return new Date(+y,+mo-1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}); });
-
-  if (window.chartHoras) window.chartHoras.destroy();
-  window.chartHoras = new Chart(document.getElementById('chart-horas').getContext('2d'), {
-    type: 'bar',
-    data: { labels: horaLabels.length?horaLabels:['—'], datasets:[{ label:'Horas', data:horaMonths.map(m=>horasMap[m]), backgroundColor:'rgba(52,211,153,0.8)', borderWidth:0, borderRadius:0, barPercentage:0.65, categoryPercentage:0.8 }] },
-    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
-      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle} },
-      plugins:{legend:{display:false},tooltip:tooltipCfg} }
-  });
-
-  // % MUJERES por actividad (scatter points as bar)
-  const mujLabels = data.filter(r=>r.g_pct_mujeres).map(r=>r.nombre?.slice(0,18)||'—');
-  const mujData   = data.filter(r=>r.g_pct_mujeres).map(r=>parseFloat(r.g_pct_mujeres)||0);
-
-  if (window.chartMujeres) window.chartMujeres.destroy();
-  window.chartMujeres = new Chart(document.getElementById('chart-mujeres').getContext('2d'), {
-    type: 'bar',
-    data: { labels: mujLabels.length?mujLabels:['Sin datos'], datasets:[{ label:'% Mujeres', data:mujData.length?mujData:[0], backgroundColor:'rgba(244,114,182,0.8)', borderWidth:0, borderRadius:0, barPercentage:0.65, categoryPercentage:0.8 }] },
-    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
-      scales:{ x:{grid:gridStyle,ticks:{...tickStyle,maxRotation:35}}, y:{grid:gridStyle,ticks:tickStyle,min:0,max:100} },
-      plugins:{legend:{display:false},tooltip:tooltipCfg} }
-  });
-
-  // PIE — % mujeres participantes
-  let _sumMuj = 0, _cntMuj = 0;
-  data.forEach(r => { if (r.g_pct_mujeres) { _sumMuj += parseFloat(r.g_pct_mujeres); _cntMuj++; } });
-  const pctMuj = _cntMuj ? Math.round(_sumMuj / _cntMuj) : 0;
-  if (window.chartPieMujeres) window.chartPieMujeres.destroy();
-  window.chartPieMujeres = new Chart(document.getElementById('chart-pie-mujeres').getContext('2d'), {
-    type: 'doughnut',
-    plugins: [makeCenterPlugin(pctMuj+'%', 'MUJERES', '#F472B6')],
-    data: { labels:['Mujeres','Resto'], datasets:[{ data:[pctMuj,100-pctMuj], backgroundColor:['rgba(244,114,182,0.8)','rgba(30,41,59,0.8)'], borderWidth:0 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'70%', animation:chartAnim,
-      plugins:{ legend:{ position:'bottom', labels:{ color:'#94A3B8', font:{family:'Plus Jakarta Sans',size:11}, usePointStyle:true, pointStyle:'circle' } }, tooltip:tooltipCfg } }
-  });
-
-  // PIE — % mujeres con autonomía digital
-  let _sumAut = 0, _cntAut = 0;
-  data.forEach(r => { if (r.g_pct_autonomia_mujeres) { _sumAut += parseFloat(r.g_pct_autonomia_mujeres); _cntAut++; } });
-  const pctAut = _cntAut ? Math.round(_sumAut / _cntAut) : 0;
-  if (window.chartPieAutonomia) window.chartPieAutonomia.destroy();
-  window.chartPieAutonomia = new Chart(document.getElementById('chart-pie-autonomia').getContext('2d'), {
-    type: 'doughnut',
-    plugins: [makeCenterPlugin(pctAut+'%', 'AUTONOMIA', '#22D3EE')],
-    data: { labels:['Autonomía digital','Resto'], datasets:[{ data:[pctAut,100-pctAut], backgroundColor:['rgba(34,211,238,0.8)','rgba(30,41,59,0.8)'], borderWidth:0 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'70%', animation:chartAnim,
-      plugins:{ legend:{ position:'bottom', labels:{ color:'#94A3B8', font:{family:'Plus Jakarta Sans',size:11}, usePointStyle:true, pointStyle:'circle' } }, tooltip:tooltipCfg } }
-  });
-
-  // PIE — % becarios en sostenibilidad
-  let _sumBec = 0, _cntBec = 0;
-  data.forEach(r => { if (r.g_pct_becarios_sost) { _sumBec += parseFloat(r.g_pct_becarios_sost); _cntBec++; } });
-  const pctBec = _cntBec ? Math.round(_sumBec / _cntBec) : 0;
-  if (window.chartPieBecarios) window.chartPieBecarios.destroy();
-  window.chartPieBecarios = new Chart(document.getElementById('chart-pie-becarios').getContext('2d'), {
-    type: 'doughnut',
-    plugins: [makeCenterPlugin(pctBec+'%', 'BECARIOS', '#34D399')],
-    data: { labels:['Becarios sost.','Resto'], datasets:[{ data:[pctBec,100-pctBec], backgroundColor:['rgba(52,211,153,0.8)','rgba(30,41,59,0.8)'], borderWidth:0 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'70%', animation:chartAnim,
-      plugins:{ legend:{ position:'bottom', labels:{ color:'#94A3B8', font:{family:'Plus Jakarta Sans',size:11}, usePointStyle:true, pointStyle:'circle' } }, tooltip:tooltipCfg } }
-  });
-
-  // LINE — voluntarios Activación Social por mes
-  const volMap = {};
-  data.filter(r=>r.programa==='activacion_social').forEach(r => {
-    const key=(r.fecha||r.timestamp.slice(0,10)).slice(0,7);
-    volMap[key]=(volMap[key]||0)+(parseInt(r.as_voluntarios)||0);
-  });
-  const volMonths = Object.keys(volMap).sort();
-  const volLabels = volMonths.map(m=>{ const [y,mo]=m.split('-'); return new Date(+y,+mo-1).toLocaleDateString('es-MX',{month:'short',year:'2-digit'}); });
-  if (window.chartVoluntarios) window.chartVoluntarios.destroy();
-  const volCtx = document.getElementById('chart-voluntarios').getContext('2d');
-  const volGrad = volCtx.createLinearGradient(0, 0, 0, 300);
-  volGrad.addColorStop(0, 'rgba(252,211,77,0.3)');
-  volGrad.addColorStop(1, 'rgba(252,211,77,0)');
-  window.chartVoluntarios = new Chart(volCtx, {
-    type: 'line',
-    data: { labels: volLabels.length?volLabels:['Sin datos'], datasets:[{ label:'Voluntarios', data:volMonths.map(m=>volMap[m]), borderColor:'#FCD34D', borderWidth:2, backgroundColor:volGrad, fill:true, tension:0.35, pointBackgroundColor:'#FCD34D', pointBorderColor:'#FDE68A', pointBorderWidth:1.5, pointRadius:3, pointHoverRadius:6, pointHitRadius:12 }] },
-    options: { responsive:true, maintainAspectRatio:false, animation:chartAnim,
-      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{grid:gridStyle,ticks:tickStyle,stepSize:1} },
-      plugins:{legend:{display:false},tooltip:tooltipCfg} }
-  });
-
-  // HORIZONTAL BAR — reconocimiento de CLARIOS
-  const reconMap = {'1':0,'2':0,'3':0,'4':0,'5':0};
-  data.forEach(r => { const n=(r.g_reconocimiento||'').charAt(0); if(reconMap[n]!==undefined) reconMap[n]++; });
-  if (window.chartReconocimiento) window.chartReconocimiento.destroy();
-  window.chartReconocimiento = new Chart(document.getElementById('chart-reconocimiento').getContext('2d'), {
-    type: 'bar',
-    data: { labels:['No conocido','Poco conocido','Comunidad','Referente local','Ref. nacional'],
-      datasets:[{ label:'Registros', data:[reconMap['1'],reconMap['2'],reconMap['3'],reconMap['4'],reconMap['5']], backgroundColor:['rgba(239,68,68,0.75)','rgba(245,158,11,0.75)','rgba(148,163,184,0.75)','rgba(52,211,153,0.75)','rgba(16,185,129,0.75)'], borderWidth:0, borderRadius:0 }] },
-    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', animation:chartAnim,
-      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{ grid:{ display:false }, ticks:tickStyle } },
-      plugins:{legend:{display:false},tooltip:tooltipCfg} }
-  });
-
-  // HORIZONTAL BAR — canal de seguimiento
-  const canalMap = {};
-  data.forEach(r => { const c=r.g_canal_seguimiento; if(c) canalMap[c]=(canalMap[c]||0)+1; });
-  const canalKeys = Object.keys(canalMap);
-  if (window.chartCanal) window.chartCanal.destroy();
-  window.chartCanal = new Chart(document.getElementById('chart-canal').getContext('2d'), {
-    type: 'bar',
-    data: { labels: canalKeys.length?canalKeys:['Sin datos'],
-      datasets:[{ label:'Registros', data:canalKeys.map(k=>canalMap[k]), backgroundColor:'rgba(34,211,238,0.75)', borderWidth:0, borderRadius:0 }] },
-    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', animation:chartAnim,
-      scales:{ x:{grid:gridStyle,ticks:tickStyle}, y:{ grid:{ display:false }, ticks:tickStyle } },
-      plugins:{legend:{display:false},tooltip:tooltipCfg} }
-  });
-}
-
-function renderRecentTable(data) {
-  const el = document.getElementById('table-recent');
-  const recent = (data || records).slice(0, 10);
-  if (!recent.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin registros en este periodo. <a style="color:var(--purple-lt);cursor:pointer" onclick="navigate('nuevo')">Agrega una actividad →</a></p></div>`;
-    return;
-  }
-  el.innerHTML = `<table>
-    <thead><tr>
-      <th>Tipo</th><th>Nombre</th><th>Programa</th><th>Responsable</th><th>Ben. Directos</th><th>Horas Form.</th><th>% Mujeres</th><th>Fecha</th><th></th>
-    </tr></thead>
-    <tbody>${recent.map(r => `
-      <tr>
-        <td><span class="badge badge-${r.type}">${LABELS[r.type]}</span></td>
-        <td class="fw700">${r.nombre}</td>
-        <td style="font-size:11px;color:var(--gray-2)">${({arranca:'Arranca el Futuro',guardianes:'Guardianes',infraestructura:'Infraestructura',activacion_social:'Act. Social',general:'General'})[r.programa]||'—'}</td>
-        <td>${r.responsable}</td>
-        <td style="font-family:var(--mono)">${(parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
-        <td style="font-family:var(--mono)">${parseInt(r.g_horas_formacion)||0}</td>
-        <td style="font-family:var(--mono)">${r.g_pct_mujeres ? r.g_pct_mujeres+'%' : '—'}</td>
-        <td style="font-family:var(--mono);font-size:11px">${formatDate(r.fecha)}</td>
-        <td><button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button></td>
-      </tr>`).join('')}
-    </tbody></table>`;
-}
-
-// ═══════════════════════════════════════════════════
-// LIST VIEWS
-// ═══════════════════════════════════════════════════
-function renderList(type, wrapperId) {
-  const list = records.filter(r => r.type === type);
-  const el = document.getElementById(wrapperId);
-
-  const colsMap = {
-    proyecto:    ['nombre','responsable','ubicacion','beneficiarios','duracion','alineacion','fecha'],
-    evento:      ['nombre','responsable','ubicacion','beneficiarios','tipo_evento','modalidad','fecha'],
-    activacion:  ['nombre','responsable','ubicacion','beneficiarios','tipo_activacion','canal','fecha'],
-  };
-
-  const hdrs = {
-    nombre:'Nombre', responsable:'Responsable', ubicacion:'Ubicación',
-    beneficiarios:'Beneficiarios', duracion:'Duración', alineacion:'Alineación',
-    tipo_evento:'Tipo', modalidad:'Modalidad', tipo_activacion:'Tipo',
-    canal:'Canal', fecha:'Fecha'
-  };
-
-  const cols = colsMap[type];
-
-  if (!list.length) {
-    el.innerHTML = `<div class="table-header"><div class="table-title">${LABELS[type]}s registrados (0)</div></div><div class="empty-state"><div class="empty-icon">◌</div><p>Sin registros de este tipo.</p></div>`;
-    return;
-  }
-
-  el.innerHTML = `
-    <div class="table-header">
-      <div class="table-title">${LABELS[type]}s registrados (${list.length})</div>
-      <button class="btn btn-ghost btn-sm" onclick="exportCSV('${type}')">↓ Exportar</button>
-    </div>
-    <table>
-      <thead><tr>${cols.map(c => `<th>${hdrs[c]||c}</th>`).join('')}<th></th></tr></thead>
-      <tbody>${list.map(r => `
-        <tr>
-          ${cols.map(c => `<td style="${c==='beneficiarios'?'font-family:var(--mono)':c==='fecha'?'font-family:var(--mono);font-size:11px':''}">${
-            c==='beneficiarios' ? (r[c]||0).toLocaleString('es-MX') :
-            c==='fecha' ? formatDate(r[c]) : (r[c]||'—')
-          }</td>`).join('')}
-          <td>
-            <div class="gap-8">
-              <button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button>
-              <button class="btn btn-sm" style="background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.2)" onclick="deleteRecord('${r.id}')">×</button>
-            </div>
-          </td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
-}
-
-// ═══════════════════════════════════════════════════
-// DETAIL MODAL
-// ═══════════════════════════════════════════════════
-function openDetail(id) {
-  const r = records.find(rec => rec.id === id);
-  if (!r) return;
-
-  document.getElementById('modal-badge').innerHTML = `<span class="badge badge-${r.type}">${LABELS[r.type]}</span>`;
-  document.getElementById('modal-title').textContent = r.nombre;
-
-  const ignore = ['id','timestamp','type','nombre'];
-  const labels = {
-    fecha:'Fecha', responsable:'Responsable', ubicacion:'Ubicación',
-    area:'Área', beneficiarios:'Beneficiarios', tipo_beneficiario:'Tipo beneficiario',
-    objetivo:'Objetivo', duracion:'Duración', presupuesto:'Presupuesto (USD)',
-    aliados:'Aliados', indicador:'Indicador', meta:'Meta', alineacion:'Alineación',
-    tipo_evento:'Tipo de evento', asistentes:'Asistentes', modalidad:'Modalidad',
-    media:'Cobertura mediática', logistica:'Logística',
-    tipo_activacion:'Tipo activación', canal:'Canal', alcance:'Alcance estimado',
-    inversion:'Inversión (USD)', mensaje:'Mensaje central', notas:'Notas'
-  };
-
-  const grid = document.getElementById('modal-grid');
-  const entries = Object.entries(r).filter(([k,v]) => !ignore.includes(k) && v !== '' && v !== 0 && v !== undefined);
-  
-  grid.innerHTML = entries.map(([k,v]) => `
-    <div class="detail-item">
-      <div class="detail-key">${labels[k]||k}</div>
-      <div class="detail-val">${k==='fecha'?formatDate(v):k==='presupuesto'||k==='inversion'?'$'+Number(v).toLocaleString('es-MX'):k==='beneficiarios'||k==='alcance'||k==='asistentes'?Number(v).toLocaleString('es-MX'):v}</div>
-    </div>`).join('');
-
-  if (entries.length % 2 !== 0) grid.innerHTML += '<div></div>';
-
-  document.getElementById('modal').classList.add('open');
-}
-
-function closeModal(e) {
-  if (!e || e.target.id === 'modal') {
-    document.getElementById('modal').classList.remove('open');
-  }
-}
-
-// ═══════════════════════════════════════════════════
-// DELETE
-// ═══════════════════════════════════════════════════
-function deleteRecord(id) {
-  if (!confirm('¿Eliminar este registro permanentemente?')) return;
-  // Mark id as deleted so syncFromAPI never restores it
-  const deletedIds = JSON.parse(localStorage.getItem('clarios_deleted_v2') || '[]');
-  if (!deletedIds.includes(id)) {
-    deletedIds.push(id);
-    localStorage.setItem('clarios_deleted_v2', JSON.stringify(deletedIds));
-  }
-  records = records.filter(r => r.id !== id);
-  localStorage.setItem('clarios_is_v2', JSON.stringify(records));
-  filteredRecords = records.filter(r => filteredRecords.some(fr => fr.id === r.id));
-  updateBadges();
-  showToast('Registro eliminado');
-  refreshCurrentView();
-}
-
-// ═══════════════════════════════════════════════════
-// EXPORT CSV
-// ═══════════════════════════════════════════════════
-function exportCSV(filterType) {
-  const data = filterType ? records.filter(r => r.type === filterType) : records;
-  if (!data.length) { showToast('Sin datos para exportar'); return; }
-
-  const allKeys = [...new Set(data.flatMap(r => Object.keys(r)))];
-  const header = allKeys.join(',');
-  const rows = data.map(r => allKeys.map(k => {
-    const v = r[k] ?? '';
-    return typeof v === 'string' && v.includes(',') ? `"${v}"` : v;
-  }).join(','));
-
-  const csv = [header, ...rows].join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `clarios-is-${filterType||'all'}-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('CSV exportado exitosamente');
-}
 
 // ═══════════════════════════════════════════════════
 // UTILS
@@ -4281,95 +3013,6 @@ function formatDate(dateStr) {
   const [y, m, d] = (dateStr + '').slice(0,10).split('-');
   const months = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   return `${parseInt(d)} ${months[parseInt(m)]} ${y}`;
-}
-
-function updateBadges() {
-  const byType = { proyecto: 0, evento: 0, activacion: 0 };
-  records.forEach(r => byType[r.type] = (byType[r.type]||0) + 1);
-  document.getElementById('badge-proyectos').textContent = byType.proyecto;
-  document.getElementById('badge-eventos').textContent = byType.evento;
-  document.getElementById('badge-activaciones').textContent = byType.activacion;
-  const br = document.getElementById('badge-registros');
-  if (br) br.textContent = records.length;
-  // IK pending badge
-  const bf = document.getElementById('badge-folios');
-  if (bf) {
-    const pending = loadIkEvals().filter(e => e.ik_status === 'en-revision').length;
-    bf.textContent = pending;
-    bf.style.display = pending ? '' : 'none';
-  }
-}
-
-// ═══════════════════════════════════════════════════
-// TODOS LOS REGISTROS
-// ═══════════════════════════════════════════════════
-function renderRegistros() {
-  const typeFilter = (document.getElementById('reg-filter-type')||{}).value || '';
-  const progFilter = (document.getElementById('reg-filter-prog')||{}).value || '';
-  const yearFilter = (document.getElementById('reg-filter-year')||{}).value || '';
-
-  const progMap = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura', activacion_social:'Act. Social', general:'General' };
-
-  let data = [...records];
-  if (typeFilter) data = data.filter(r => r.type === typeFilter);
-  if (progFilter) data = data.filter(r => r.programa === progFilter);
-  if (yearFilter) data = data.filter(r => {
-    const d = r.fecha || (r.timestamp||'').slice(0,10);
-    return d.startsWith(yearFilter);
-  });
-
-  const el = document.getElementById('table-registros-wrap');
-
-  if (!data.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin registros con los filtros seleccionados. <a style="color:var(--purple-lt);cursor:pointer" onclick="navigate('nuevo')">Agrega una actividad →</a></p></div>`;
-    return;
-  }
-
-  el.innerHTML = `
-    <div class="table-header">
-      <div class="table-title">${data.length} registro${data.length!==1?'s':''}</div>
-    </div>
-    <table>
-      <thead><tr>
-        <th>Tipo</th>
-        <th>Nombre</th>
-        <th>Programa</th>
-        <th>Responsable</th>
-        <th>Ubicación</th>
-        <th>Ben. directos</th>
-        <th>Horas form.</th>
-        <th>% Mujeres</th>
-        <th>Fecha</th>
-        <th></th>
-      </tr></thead>
-      <tbody>${data.map(r => `
-        <tr>
-          <td><span class="badge badge-${r.type}">${LABELS[r.type]}</span></td>
-          <td class="fw700">${r.nombre||'—'}</td>
-          <td style="font-size:11px;color:var(--gray-2)">${progMap[r.programa]||'—'}</td>
-          <td>${r.responsable||'—'}</td>
-          <td style="font-size:11px">${r.ubicacion||'—'}</td>
-          <td style="font-family:var(--mono)">${(parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0).toLocaleString('es-MX')}</td>
-          <td style="font-family:var(--mono)">${parseInt(r.g_horas_formacion)||0}</td>
-          <td style="font-family:var(--mono)">${r.g_pct_mujeres ? r.g_pct_mujeres+'%' : '—'}</td>
-          <td style="font-family:var(--mono);font-size:11px">${formatDate(r.fecha)}</td>
-          <td>
-            <div class="gap-8">
-              <button class="btn btn-ghost btn-sm" onclick="openDetail('${r.id}')">Ver</button>
-              <button class="btn btn-sm" style="background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.2)" onclick="deleteRecord('${r.id}')">×</button>
-            </div>
-          </td>
-        </tr>`).join('')}
-      </tbody>
-    </table>`;
-}
-
-function clearRegistrosFilters() {
-  ['reg-filter-type','reg-filter-prog','reg-filter-year'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  renderRegistros();
 }
 
 function showToast(msg) {
@@ -4383,10 +3026,8 @@ function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
 }
 
+function updateBadges() { /* stub — no badges in colaboradores portal */ }
 
-// ═══════════════════════════════════════════════════
-// IK EVALUACIONES — STORAGE
-// ═══════════════════════════════════════════════════
 const IK_STORAGE_KEY = 'clarios_ik_evals_v1';
 
 function loadIkEvals() {
@@ -4403,488 +3044,6 @@ function ikGenFolio() {
   const seq = String(evals.length + 1).padStart(4, '0');
   return `IK-${seq}-${new Date().getFullYear()}`;
 }
-
-// ═══════════════════════════════════════════════════
-// EVALUACIONES IMPACT KIT — RENDER
-// ═══════════════════════════════════════════════════
-function renderFolios() {
-  const statusFilter  = document.getElementById('folio-filter-status')?.value  || '';
-  const verdictFilter = document.getElementById('folio-filter-verdict')?.value || '';
-
-  const allEvals = loadIkEvals();
-  setText('fol-total',     allEvals.length);
-  setText('fol-revision',  allEvals.filter(e => e.ik_status === 'en-revision').length);
-  setText('fol-aprobadas', allEvals.filter(e => e.ik_status === 'aprobado').length);
-  setText('fol-rechazadas',allEvals.filter(e => e.ik_status === 'rechazado').length);
-
-  let data = [...allEvals];
-  if (statusFilter)  data = data.filter(e => e.ik_status    === statusFilter);
-  if (verdictFilter) data = data.filter(e => e.ik_veredicto === verdictFilter);
-  // Newest first
-  data.reverse();
-
-  const el = document.getElementById('table-folios-wrap');
-
-  if (!allEvals.length) {
-    el.innerHTML = `<div class="empty-state">
-      <div class="empty-icon">◌</div>
-      <p>Aún no hay evaluaciones. Ve al Impact Kit para comenzar.</p>
-      <button class="btn btn-primary" onclick="navigate('impact-kit')" style="margin-top:16px">Ir al Impact Kit →</button>
-    </div>`;
-    return;
-  }
-  if (!data.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-icon">◌</div><p>Sin evaluaciones con este filtro.</p></div>`;
-    return;
-  }
-
-  const sc = s => s >= 4 ? 'var(--green-lt)' : s >= 3 ? 'var(--amber)' : 'var(--red)';
-
-  const statusBadge = {
-    'en-revision':'<span style="display:inline-flex;padding:2px 8px;background:rgba(245,158,11,0.12);border-left:3px solid var(--amber);color:var(--amber);font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:1px">EN REVISIÓN</span>',
-    'aprobado':   '<span style="display:inline-flex;padding:2px 8px;background:rgba(16,185,129,0.12);border-left:3px solid var(--green);color:var(--green-lt);font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:1px">APROBADO</span>',
-    'rechazado':  '<span style="display:inline-flex;padding:2px 8px;background:rgba(239,68,68,0.12);border-left:3px solid var(--red);color:var(--red);font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:1px">RECHAZADO</span>',
-  };
-  const verdictBadge = {
-    'viable':         '<span class="badge badge-proyecto">VIABLE</span>',
-    'revisar':        '<span class="badge badge-activacion">REVISAR</span>',
-    'no_recomendado': '<span style="display:inline-flex;padding:2px 8px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:var(--red);font-size:9px;font-weight:700;font-family:var(--mono)">NO REC.</span>',
-  };
-
-  el.innerHTML = `
-    <div class="table-header">
-      <span class="table-title">Evaluaciones IK (${data.length})</span>
-    </div>
-    <div style="overflow-x:auto">
-    <table>
-      <thead><tr>
-        <th>Folio</th><th>Nombre</th><th>Score</th>
-        <th>Val.C.</th><th>Lidera.</th><th>Sosten.</th><th>Propós.</th><th>Gestión</th><th>Cocrec.</th><th>Reputa.</th>
-        <th>Resultado IK</th><th>Estado</th><th>Fecha</th><th>Acciones</th>
-      </tr></thead>
-      <tbody>${data.map(e => {
-        const score = parseFloat(e.ik_score) || 0;
-        const dims = ['ik_valor_compartido','ik_liderazgo','ik_sostenibilidad','ik_proposito','ik_gestion','ik_cocreacion','ik_reputacion'];
-        return `<tr>
-          <td style="font-family:var(--mono);font-size:10px;color:var(--purple-lt);white-space:nowrap">${e.folio}</td>
-          <td class="fw700" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.nombre||''}">${e.nombre||'—'}</td>
-          <td style="font-family:var(--mono);font-weight:900;font-size:18px;color:${sc(score)}">${score.toFixed(1)}</td>
-          ${dims.map(k=>`<td style="font-family:var(--mono);font-size:12px;font-weight:700;color:${sc(parseFloat(e[k]))};text-align:center">${e[k]||'—'}</td>`).join('')}
-          <td>${verdictBadge[e.ik_veredicto]||'—'}</td>
-          <td>${statusBadge[e.ik_status]||'—'}</td>
-          <td style="font-family:var(--mono);font-size:11px;color:var(--gray-2);white-space:nowrap">${e.fecha||'—'}</td>
-          <td style="white-space:nowrap">
-            <div style="display:flex;gap:5px">
-              ${e.ik_status !== 'aprobado'   ? `<button class="btn btn-ghost btn-sm" style="color:var(--green-lt);border-color:rgba(16,185,129,0.35)" onclick="ikUpdateStatus('${e.id}','aprobado')">✓ Aprobar</button>` : ''}
-              ${e.ik_status !== 'rechazado'  ? `<button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(239,68,68,0.35)" onclick="ikUpdateStatus('${e.id}','rechazado')">✗ Rechazar</button>` : ''}
-              ${e.ik_status !== 'en-revision'? `<button class="btn btn-ghost btn-sm" onclick="ikUpdateStatus('${e.id}','en-revision')">↺</button>` : ''}
-            </div>
-          </td>
-        </tr>`;
-      }).join('')}
-      </tbody>
-    </table></div>`;
-}
-
-// ═══════════════════════════════════════════════════
-// DASHBOARD TABS — POR REGISTRO / COMPARATIVA
-// ═══════════════════════════════════════════════════
-
-function setDashTab(tab) {
-  document.getElementById('dash-comp').classList.toggle('active', tab === 'comp');
-  document.getElementById('dash-pr').classList.toggle('active',   tab === 'pr');
-  document.getElementById('tab-comp').classList.toggle('active',  tab === 'comp');
-  document.getElementById('tab-pr').classList.toggle('active',    tab === 'pr');
-  if (tab === 'pr') populatePrSelect();
-}
-
-function populatePrSelect() {
-  const sel = document.getElementById('pr-record-select');
-  const current = sel.value;
-  const typeLabel = { proyecto:'Proyecto', evento:'Evento', activacion:'Activación' };
-  const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
-  const groups = { proyecto:[], evento:[], activacion:[] };
-  records.forEach(r => { if (groups[r.type]) groups[r.type].push(r); });
-  let html = '<option value="">☰ Todos los registros — acumulado</option>';
-  Object.entries(groups).forEach(([type, recs]) => {
-    if (!recs.length) return;
-    html += `<optgroup label="${typeLabel[type]}s (${recs.length})">`;
-    recs.forEach(r => {
-      const prog = progLabel[r.programa] ? ` · ${progLabel[r.programa]}` : '';
-      const fecha = r.fecha ? ` (${r.fecha.slice(0,10)})` : '';
-      html += `<option value="${r.id}" ${r.id === current ? 'selected' : ''}>${r.nombre||r.folio||r.id}${prog}${fecha}</option>`;
-    });
-    html += '</optgroup>';
-  });
-  sel.innerHTML = html;
-  renderRecordTablero();
-}
-
-function renderRecordTablero() {
-  const id        = document.getElementById('pr-record-select').value;
-  const aggregate = document.getElementById('pr-aggregate');
-  const individual = document.getElementById('pr-individual');
-  const wrap      = document.getElementById('pr-tablero-wrap');
-
-  // No record selected → show aggregate tablero
-  if (!id) {
-    aggregate.style.display = '';
-    individual.style.display = 'none';
-    renderDashboard(filteredRecords.length ? filteredRecords : records);
-    return;
-  }
-
-  const r = records.find(rec => rec.id === id);
-  if (!r) return;
-
-  // Record selected → show individual tablero
-  aggregate.style.display = 'none';
-  individual.style.display = '';
-
-  const typeLabel = { proyecto:'Proyecto', evento:'Evento', activacion:'Activación' };
-  const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
-
-  wrap.innerHTML = `
-    <div class="pr-header">
-      <span class="badge badge-${r.type}">${typeLabel[r.type]||r.type}</span>
-      <span class="pr-record-name">${r.nombre||'—'}</span>
-      ${r.folio ? `<span class="pr-record-meta" style="font-family:var(--mono);font-size:10px">${r.folio}</span>` : ''}
-      ${r.programa ? `<span style="font-size:11px;font-weight:600;color:var(--purple-lt)">${progLabel[r.programa]||r.programa}</span>` : ''}
-      <span class="pr-record-meta">${formatDate(r.fecha)}</span>
-      ${r.responsable ? `<span class="pr-record-meta">${r.responsable}</span>` : ''}
-      ${r.ubicacion ? `<span class="pr-record-meta">📍 ${r.ubicacion}</span>` : ''}
-    </div>
-    <div class="tablero">
-      <div class="tablero-row">
-        <div class="tablero-label" style="--row-color:#5B21B6"><div class="tablero-label-name">Impacto</div></div>
-        <div class="tablero-cards">
-          <div class="metric-card"><div class="metric-card-label">% Aumento en habilidades</div><div id="pr-mc-habilidades"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Prototipos circulares</div><div id="pr-mc-prototipos"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Grado de satisfacción</div><div id="pr-mc-satisfaccion"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Grado de participación</div><div id="pr-mc-participacion"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Talento canalizado</div><div id="pr-mc-talento"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Alumnos perspectiva género</div><div id="pr-mc-genero"></div></div>
-        </div>
-      </div>
-      <div class="tablero-row">
-        <div class="tablero-label" style="--row-color:#1D4ED8"><div class="tablero-label-name">Reputación</div></div>
-        <div class="tablero-cards">
-          <div class="metric-card"><div class="metric-card-label">Reconocimiento de CLARIOS</div><div id="pr-mc-reconocimiento"></div></div>
-          <div class="metric-card"><div class="metric-card-label">% Empleador deseado</div><div id="pr-mc-empleador"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Narrativas positivas</div><div id="pr-mc-narrativas"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Beneficiarios directos</div><div id="pr-mc-ben-dir-rep"></div></div>
-          <div class="metric-card" ondblclick="showConfianzaPop(event,'individual','${r.id}')" style="cursor:pointer" title="Doble clic para ver desglose"><div class="metric-card-label">Índice de confianza <span style="font-size:8px;opacity:0.5">⊞ dbl-clic</span></div><div id="pr-mc-confianza"></div></div>
-          <div class="metric-card"><div class="metric-card-label">NPS</div><div id="pr-mc-nps"></div></div>
-        </div>
-      </div>
-      <div class="tablero-row">
-        <div class="tablero-label" style="--row-color:#0E7490"><div class="tablero-label-name">Resultado</div></div>
-        <div class="tablero-cards">
-          <div class="metric-card"><div class="metric-card-label">Beneficiarios directos</div><div id="pr-mc-ben-directos"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Horas de formación</div><div id="pr-mc-horas"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Beneficiarios indirectos</div><div id="pr-mc-ben-indirectos"></div></div>
-          <div class="metric-card"><div class="metric-card-label">% Mujeres participantes</div><div id="pr-mc-mujeres"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Escuelas beneficiadas</div><div id="pr-mc-escuelas"></div></div>
-          <div class="metric-card" style="border-left:2px solid rgba(52,211,153,0.4)"><div class="metric-card-label">sROI · costo / beneficiario</div><div id="pr-mc-sroi"></div></div>
-        </div>
-      </div>
-      <div class="tablero-row">
-        <div class="tablero-label" style="--row-color:#0369A1"><div class="tablero-label-name">Proceso social</div></div>
-        <div class="tablero-cards">
-          <div class="metric-card"><div class="metric-card-label">Alianzas activas</div><div id="pr-mc-alianzas"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Rondas de mentoría</div><div id="pr-mc-rondas"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Quejas atend. / recib.</div><div id="pr-mc-quejas"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Voluntarios movilizados</div><div id="pr-mc-voluntarios"></div></div>
-          <div class="metric-card"><div class="metric-card-label">% Becarios sostenibilidad</div><div id="pr-mc-becarios"></div></div>
-        </div>
-      </div>
-    </div>`;
-
-  // ── IMPACTO ──
-  mNum('pr-mc-habilidades',  r.g_pct_habilidades  ? r.g_pct_habilidades+'%' : null,  { color:'#A78BFA', pending: !r.g_pct_habilidades });
-  mNum('pr-mc-prototipos',   parseInt(r.g_prototipos)||null,  { color:'#FCD34D', pending: !parseInt(r.g_prototipos) });
-  mGauge('pr-mc-satisfaccion',  r.g_satisfaccion||'',       'scale5');
-  mGauge('pr-mc-participacion', r.g_grado_participacion||'','scale5');
-  mNum('pr-mc-talento',  parseInt(r.af_talento_canalizado)||null, { color:'#34D399', pending: !parseInt(r.af_talento_canalizado) });
-  mNum('pr-mc-genero',   parseInt(r.g_alumnos_genero)||null,      { color:'#F472B6', pending: !parseInt(r.g_alumnos_genero) });
-
-  // ── REPUTACIÓN ──
-  mGauge('pr-mc-reconocimiento', r.g_reconocimiento||'', 'scale5');
-  mNum('pr-mc-empleador',  r.af_pct_beneficiados_clarios ? r.af_pct_beneficiados_clarios+'%' : null, { color:'#60A5FA', pending: !r.af_pct_beneficiados_clarios });
-  mNum('pr-mc-narrativas', parseInt(r.g_narrativas)||null, { color:'#F59E0B', pending: !parseInt(r.g_narrativas) });
-  const prBenD = parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0;
-  mNum('pr-mc-ben-dir-rep', prBenD ? prBenD.toLocaleString('es-MX') : null, { color:'#34D399', pending: !prBenD });
-  mGauge('pr-mc-confianza', (r.g_indice_confianza != null && r.g_indice_confianza !== '') ? String(r.g_indice_confianza) : '', 'scale5f');
-  mGauge('pr-mc-nps',       (r.g_nps != null && r.g_nps !== '') ? String(r.g_nps) : '', 'nps');
-
-  // ── RESULTADO ──
-  mNum('pr-mc-ben-directos',  prBenD ? prBenD.toLocaleString('es-MX') : '0', { color:'#34D399', large: true });
-  mNum('pr-mc-horas',         parseInt(r.g_horas_formacion)||0, { color:'#A78BFA', large: true });
-  mNum('pr-mc-ben-indirectos', parseInt(r.g_ben_indirectos)||null, { color:'#22D3EE', pending: !parseInt(r.g_ben_indirectos) });
-  mNum('pr-mc-mujeres',  r.g_pct_mujeres ? r.g_pct_mujeres+'%' : null, { color:'#F472B6', pending: !r.g_pct_mujeres });
-  mNum('pr-mc-escuelas', parseInt(r.g_escuelas)||null, { color:'#A78BFA', pending: !parseInt(r.g_escuelas) });
-  const prInv  = parseFloat(r.g_inversion)||parseFloat(r.presupuesto)||parseFloat(r.inversion)||0;
-  const prSroi = prInv > 0 && prBenD > 0 ? (prInv / prBenD) : null;
-  mNum('pr-mc-sroi', prSroi !== null ? '$'+prSroi.toLocaleString('es-MX',{maximumFractionDigits:0}) : null, { color:'#34D399', pending: prSroi === null, sub: 'MXN por beneficiario' });
-
-  // ── PROCESO SOCIAL ──
-  mNum('pr-mc-alianzas',    parseInt(r.g_alianzas)||null,      { color:'#22D3EE', pending: !parseInt(r.g_alianzas) });
-  mNum('pr-mc-rondas',      parseInt(r.g_rondas_mentoria)||null, { color:'#34D399', pending: !parseInt(r.g_rondas_mentoria) });
-  const prQr = parseInt(r.g_quejas_recibidas)||0, prQa = parseInt(r.g_quejas_atendidas)||0;
-  mNum('pr-mc-quejas', (prQr||prQa) ? `${prQa} / ${prQr}` : null, { color:'#FCD34D', pending: !prQr && !prQa, sub: 'Atendidas / Recibidas' });
-  mNum('pr-mc-voluntarios', parseInt(r.as_voluntarios)||null, { color:'#F59E0B', pending: !parseInt(r.as_voluntarios) });
-  mNum('pr-mc-becarios',    r.g_pct_becarios_sost ? r.g_pct_becarios_sost+'%' : null, { color:'#A78BFA', pending: !r.g_pct_becarios_sost });
-}
-
-// ═══════════════════════════════════════════════════
-// REPORT PICKER + REPORT GENERATOR
-// ═══════════════════════════════════════════════════
-
-function openReportPicker() {
-  const sel = document.getElementById('rp-select');
-  const typeIcon = { proyecto: '◉', evento: '◈', activacion: '◆' };
-  const typeLabel = { proyecto: 'Proyecto', evento: 'Evento', activacion: 'Activación' };
-  const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
-
-  // Group records by type
-  const groups = { proyecto: [], evento: [], activacion: [] };
-  records.forEach(r => { if (groups[r.type]) groups[r.type].push(r); });
-
-  let html = '<option value="">— Elige un registro —</option>';
-  Object.entries(groups).forEach(([type, recs]) => {
-    if (!recs.length) return;
-    html += `<optgroup label="${typeIcon[type]} ${typeLabel[type]}s (${recs.length})">`;
-    recs.forEach(r => {
-      const prog = progLabel[r.programa] ? ` · ${progLabel[r.programa]}` : '';
-      const fecha = r.fecha ? ` (${r.fecha.slice(0,10)})` : '';
-      html += `<option value="${r.id}">${r.nombre || r.folio || r.id}${prog}${fecha}</option>`;
-    });
-    html += '</optgroup>';
-  });
-  sel.innerHTML = html;
-  document.getElementById('rp-overlay').classList.add('open');
-}
-
-function closeReportPicker(e) {
-  if (e && e.target !== document.getElementById('rp-overlay')) return;
-  document.getElementById('rp-overlay').classList.remove('open');
-}
-
-function generateReport() {
-  const id = document.getElementById('rp-select').value;
-  if (!id) { showToast('Selecciona un registro primero'); return; }
-  const r = records.find(rec => rec.id === id);
-  if (!r) { showToast('Registro no encontrado'); return; }
-  document.getElementById('rp-overlay').classList.remove('open');
-  renderReportDoc(r);
-  navigate('reporte');
-}
-
-function rField(key, label, val, opts = {}) {
-  const isEmpty = val === undefined || val === null || val === '' || val === '0' || val === 0;
-  if (isEmpty && opts.hideEmpty) return '';
-  const cls = opts.num ? 'report-field-val num' : isEmpty ? 'report-field-val empty' : 'report-field-val';
-  const display = isEmpty ? 'Sin dato' : opts.pct ? val + '%' : opts.currency ? '$' + Number(val).toLocaleString('es-MX') : opts.num ? Number(val).toLocaleString('es-MX') : val;
-  return `<div class="report-field"><div class="report-field-key">${label}</div><div class="${cls}">${display}</div></div>`;
-}
-
-function renderReportDoc(r) {
-  const progLabel = { arranca:'Arranca el Futuro', guardianes:'Guardianes del Planeta', infraestructura:'Infraestructura Resiliente', activacion_social:'Activación Social', general:'General' };
-  const typeColors = { proyecto:'#7C3AED', evento:'#0891B2', activacion:'#D97706' };
-  const typeLabel = { proyecto:'Proyecto', evento:'Evento', activacion:'Activación' };
-  const col = typeColors[r.type] || '#7C3AED';
-
-  // ── HEADER ──
-  let html = `<div class="report-doc">
-    <div class="report-doc-header">
-      <div class="report-folio">
-        <span class="badge badge-${r.type}">${typeLabel[r.type]||r.type}</span>
-        ${r.folio ? `<span>${r.folio}</span>` : ''}
-        <span>${r.fecha_registro ? r.fecha_registro.slice(0,10) : r.timestamp ? r.timestamp.slice(0,10) : ''}</span>
-      </div>
-      <div class="report-name">${r.nombre || 'Sin nombre'}</div>
-      <div class="report-meta-row">
-        <div class="report-meta-item"><div class="report-meta-key">Responsable</div><div class="report-meta-val">${r.responsable||'—'}</div></div>
-        <div class="report-meta-item"><div class="report-meta-key">Ubicación</div><div class="report-meta-val">${r.ubicacion||'—'}</div></div>
-        <div class="report-meta-item"><div class="report-meta-key">Área</div><div class="report-meta-val">${r.area||'—'}</div></div>
-        <div class="report-meta-item"><div class="report-meta-key">Fecha</div><div class="report-meta-val">${formatDate(r.fecha)}</div></div>
-        ${r.programa ? `<div class="report-meta-item"><div class="report-meta-key">Programa</div><div class="report-meta-val"><span class="report-prog-chip">${progLabel[r.programa]||r.programa}</span></div></div>` : ''}
-      </div>
-    </div>`;
-
-  // ── OBJETIVO Y NOTAS ──
-  if (r.objetivo || r.notas) {
-    html += `<div class="report-section">
-      <div class="report-section-title">Descripción</div>`;
-    if (r.objetivo) html += `<div style="margin-bottom:12px"><div class="report-field-key" style="margin-bottom:6px">Objetivo</div><div class="report-obj-block">${r.objetivo}</div></div>`;
-    if (r.notas) html += `<div><div class="report-field-key" style="margin-bottom:6px">Notas</div><div class="report-obj-block">${r.notas}</div></div>`;
-    html += `</div>`;
-  }
-
-  // ── DATOS ESPECÍFICOS POR TIPO ──
-  if (r.type === 'proyecto') {
-    html += `<div class="report-section">
-      <div class="report-section-title">Datos del proyecto</div>
-      <div class="report-fields">
-        ${rField('beneficiarios','Beneficiarios directos',r.beneficiarios,{num:true})}
-        ${rField('tipo_beneficiario','Tipo de beneficiario',r.tipo_beneficiario)}
-        ${rField('duracion','Duración',r.duracion)}
-        ${rField('presupuesto','Presupuesto',r.presupuesto,{currency:true})}
-        ${rField('aliados','Aliados estratégicos',r.aliados)}
-        ${rField('indicador','Indicador clave',r.indicador)}
-        ${rField('meta','Meta',r.meta)}
-      </div></div>`;
-  } else if (r.type === 'evento') {
-    html += `<div class="report-section">
-      <div class="report-section-title">Datos del evento</div>
-      <div class="report-fields">
-        ${rField('beneficiarios','Participantes',r.beneficiarios,{num:true})}
-        ${rField('tipo_beneficiario','Tipo de beneficiario',r.tipo_beneficiario)}
-        ${rField('tipo_evento','Tipo de evento',r.tipo_evento)}
-        ${rField('asistentes','Asistentes confirmados',r.asistentes,{num:true})}
-        ${rField('modalidad','Modalidad',r.modalidad)}
-        ${rField('media','Cobertura mediática',r.media)}
-        ${rField('logistica','Logística',r.logistica)}
-      </div></div>`;
-  } else if (r.type === 'activacion') {
-    html += `<div class="report-section">
-      <div class="report-section-title">Datos de la activación</div>
-      <div class="report-fields">
-        ${rField('beneficiarios','Alcance de personas',r.beneficiarios,{num:true})}
-        ${rField('tipo_beneficiario','Tipo de beneficiario',r.tipo_beneficiario)}
-        ${rField('tipo_activacion','Tipo de activación',r.tipo_activacion)}
-        ${rField('canal','Canal principal',r.canal)}
-        ${rField('alcance','Alcance estimado',r.alcance,{num:true})}
-        ${rField('inversion','Inversión',r.inversion,{currency:true})}
-        ${rField('mensaje','Mensaje central',r.mensaje)}
-      </div></div>`;
-  }
-
-  // ── INDICADORES GENERALES · RESULTADO ──
-  const inv = parseFloat(r.g_inversion) || parseFloat(r.presupuesto) || parseFloat(r.inversion) || 0;
-  const benD = parseInt(r.g_ben_directos) || parseInt(r.beneficiarios) || 0;
-  const sRoi = inv > 0 && benD > 0 ? (inv / benD) : null;
-  html += `<div class="report-section">
-    <div class="report-section-title">Indicadores generales — Resultado</div>
-    <div class="report-fields">
-      ${rField('g_escuelas','Escuelas / instituciones',r.g_escuelas,{num:true})}
-      ${rField('g_horas_formacion','Horas de formación',r.g_horas_formacion,{num:true})}
-      ${rField('g_ben_directos','Beneficiarios directos',r.g_ben_directos,{num:true})}
-      ${rField('g_ben_indirectos','Beneficiarios indirectos',r.g_ben_indirectos,{num:true})}
-      ${rField('g_pct_mujeres','% mujeres participantes',r.g_pct_mujeres,{pct:true})}
-      ${rField('g_alianzas','Alianzas generadas',r.g_alianzas,{num:true})}
-      ${rField('g_prototipos','Proyectos / prototipos',r.g_prototipos,{num:true})}
-      ${rField('g_narrativas','Narrativas de impacto',r.g_narrativas,{num:true})}
-      ${rField('g_alumnos_genero','Alumnos con perspectiva de género',r.g_alumnos_genero,{num:true})}
-      ${rField('g_inversion','Inversión social (MXN)',inv||null,{currency:true})}
-      <div class="report-field">
-        <div class="report-field-key">sROI · costo por beneficiario</div>
-        ${sRoi !== null
-          ? `<div class="report-field-val num" style="color:#34D399">$${sRoi.toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:0})}</div><div class="report-field-key" style="margin-top:2px">MXN por persona impactada</div>`
-          : `<div class="report-field-val empty">Sin datos de inversión o beneficiarios</div>`}
-      </div>
-    </div></div>`;
-
-  // ── INDICADORES GENERALES · IMPACTO ──
-  html += `<div class="report-section">
-    <div class="report-section-title">Indicadores generales — Impacto</div>
-    <div class="report-fields">
-      ${rField('g_pct_habilidades','% con habilidades mejoradas',r.g_pct_habilidades,{pct:true})}
-      ${rField('g_pct_autonomia_mujeres','% autonomía de mujeres',r.g_pct_autonomia_mujeres,{pct:true})}
-      ${rField('g_pct_becarios_sost','% becarios en sostenibilidad',r.g_pct_becarios_sost,{pct:true})}
-      ${rField('g_grado_participacion','Grado de participación (1–5)',r.g_grado_participacion)}
-      ${rField('g_talento_canalizado','Talento canalizado',r.g_talento_canalizado || r.af_talento_canalizado,{num:true})}
-    </div></div>`;
-
-  // ── INDICADORES GENERALES · REPUTACIÓN ──
-  html += `<div class="report-section">
-    <div class="report-section-title">Indicadores generales — Reputación</div>
-    <div class="report-fields">
-      ${rField('g_percepcion_clarios','Percepción de Clarios',r.g_percepcion_clarios)}
-      ${rField('g_reconocimiento','Reconocimiento (1–5)',r.g_reconocimiento)}
-      ${rField('g_satisfaccion','Satisfacción (1–5)',r.g_satisfaccion)}
-      ${rField('g_nps','NPS',r.g_nps)}
-      ${rField('g_indice_confianza','Índice de confianza (promedio)',r.g_indice_confianza)}
-      ${rField('g_ic_q1','Q1 · Empresa innovadora',r.g_ic_q1,{hideEmpty:true})}
-      ${rField('g_ic_q2','Q2 · Líder Economía Circular',r.g_ic_q2,{hideEmpty:true})}
-      ${rField('g_ic_q3','Q3 · Compromiso sostenibilidad',r.g_ic_q3,{hideEmpty:true})}
-      ${rField('g_ic_q4','Q4 · Impacto en comunidad',r.g_ic_q4,{hideEmpty:true})}
-      ${rField('g_pct_empleador_deseado','% empleador deseado',r.g_pct_empleador_deseado || r.af_pct_beneficiados_clarios,{pct:true})}
-    </div></div>`;
-
-  // ── INDICADORES GENERALES · PROCESO SOCIAL ──
-  html += `<div class="report-section">
-    <div class="report-section-title">Indicadores generales — Proceso social</div>
-    <div class="report-fields">
-      ${rField('g_rondas_mentoria','Rondas de mentoría',r.g_rondas_mentoria,{num:true})}
-      ${rField('g_canal_seguimiento','Canal de seguimiento',r.g_canal_seguimiento)}
-      ${rField('g_quejas_recibidas','Quejas recibidas',r.g_quejas_recibidas,{num:true})}
-      ${rField('g_quejas_atendidas','Quejas atendidas',r.g_quejas_atendidas,{num:true})}
-    </div></div>`;
-
-  // ── INDICADORES POR PROGRAMA ──
-  if (r.programa === 'arranca') {
-    html += `<div class="report-section">
-      <div class="report-section-title">Arranca el Futuro — Indicadores específicos</div>
-      <div class="report-fields">
-        ${rField('af_pct_perfiles','% perfiles identificados',r.af_pct_perfiles,{pct:true})}
-        ${rField('af_pct_intervenidos','% intervenidos',r.af_pct_intervenidos,{pct:true})}
-        ${rField('af_gimnasios','Gimnasios de innovación',r.af_gimnasios,{num:true})}
-        ${rField('af_sesiones','Sesiones realizadas',r.af_sesiones,{num:true})}
-        ${rField('af_talento_canalizado','Talento canalizado',r.af_talento_canalizado,{num:true})}
-        ${rField('af_pct_beneficiados_clarios','% beneficiados que ven a Clarios como empleador',r.af_pct_beneficiados_clarios,{pct:true})}
-        ${rField('af_obs','Observaciones',r.af_obs)}
-      </div></div>`;
-  }
-  if (r.programa === 'guardianes') {
-    html += `<div class="report-section">
-      <div class="report-section-title">Guardianes del Planeta — Indicadores específicos</div>
-      <div class="report-fields">
-        ${rField('gp_guardianes','Guardianes activos',r.gp_guardianes,{num:true})}
-        ${rField('gp_residuos_kg','Residuos recolectados (kg)',r.gp_residuos_kg,{num:true})}
-        ${rField('gp_estaciones','Estaciones de acopio',r.gp_estaciones,{num:true})}
-        ${rField('gp_tipo_residuos','Tipo de residuos',r.gp_tipo_residuos)}
-        ${rField('gp_obs','Observaciones',r.gp_obs)}
-      </div></div>`;
-  }
-  if (r.programa === 'infraestructura') {
-    html += `<div class="report-section">
-      <div class="report-section-title">Infraestructura Resiliente — Indicadores específicos</div>
-      <div class="report-fields">
-        ${rField('inf_arboles','Árboles plantados',r.inf_arboles,{num:true})}
-        ${rField('inf_intervenciones','Intervenciones realizadas',r.inf_intervenciones,{num:true})}
-        ${rField('inf_espacios_digitales','Espacios digitales habilitados',r.inf_espacios_digitales,{num:true})}
-        ${rField('inf_tipo','Tipo de infraestructura',r.inf_tipo)}
-        ${rField('inf_obs','Observaciones',r.inf_obs)}
-      </div></div>`;
-  }
-  if (r.programa === 'activacion_social') {
-    html += `<div class="report-section">
-      <div class="report-section-title">Activación Social — Indicadores específicos</div>
-      <div class="report-fields">
-        ${rField('as_voluntarios','Voluntarios participantes',r.as_voluntarios,{num:true})}
-        ${rField('as_num_eventos','Número de eventos',r.as_num_eventos,{num:true})}
-        ${rField('as_tipo','Tipo de activación',r.as_tipo)}
-        ${rField('as_horas_voluntariado','Horas de voluntariado',r.as_horas_voluntariado,{num:true})}
-        ${rField('as_obs','Observaciones',r.as_obs)}
-      </div></div>`;
-  }
-
-  html += `</div>`;
-
-  document.getElementById('report-content').innerHTML = html;
-}
-
-// ═══════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════
-// ── Índice de Confianza live preview ──
-const IC_QUESTIONS = [
-  'CLARIOS es una empresa innovadora en su sector',
-  'CLARIOS es líder en Economía Circular',
-  'CLARIOS está comprometida con la sostenibilidad ambiental',
-  '¿CLARIOS ha generado impacto positivo en tu escuela/comunidad?'
-];
 
 function updateIcPreview() {
   const qAvgs = [];
@@ -4916,119 +3075,6 @@ function updateIcPreview() {
     el.style.color = 'var(--gray-3)';
   }
 }
-
-// ── Confianza popover (dblclick on metric card) ──
-function showConfianzaPop(event, mode, recordId) {
-  event.stopPropagation();
-  const existing = document.getElementById('ic-pop');
-  if (existing) { existing.remove(); return; }
-
-  const levelColors = ['#EF4444','#F59E0B','#94A3B8','#34D399','#10B981'];
-  let qDists, qAvgs, overall;
-
-  if (mode === 'individual' && recordId) {
-    const r = records.find(rec => rec.id === recordId);
-    if (!r) return;
-    qDists = [1,2,3,4].map(q =>
-      [1,2,3,4,5].map(l => parseInt(r[`g_ic_q${q}_l${l}`]) || 0)
-    );
-    qAvgs = qDists.map((dist, qi) => {
-      const sw = dist.reduce((s,n,i) => s+(i+1)*n, 0);
-      const sn = dist.reduce((s,n) => s+n, 0);
-      if (sn > 0) return sw/sn;
-      return parseFloat(r[`g_ic_q${qi+1}`]) || null;
-    });
-    overall = parseFloat(r.g_indice_confianza) || null;
-    if (!overall) {
-      const valid = qAvgs.filter(v => v !== null);
-      if (valid.length) overall = valid.reduce((a,b)=>a+b,0)/valid.length;
-    }
-  } else {
-    const agg = window._icAgg || {};
-    qDists = [agg.q1dist||[0,0,0,0,0], agg.q2dist||[0,0,0,0,0], agg.q3dist||[0,0,0,0,0], agg.q4dist||[0,0,0,0,0]];
-    qAvgs  = [agg.q1||null, agg.q2||null, agg.q3||null, agg.q4||null];
-    overall = agg.avg || null;
-  }
-
-  const barCol = v => v === null ? 'var(--gray-4)' : v >= 4 ? '#10B981' : v >= 3 ? '#F59E0B' : '#EF4444';
-
-  const pop = document.createElement('div');
-  pop.id = 'ic-pop';
-  pop.className = 'ic-pop';
-  pop.onclick = e => e.stopPropagation();
-  pop.innerHTML = `
-    <div class="ic-pop-head">
-      <div class="ic-pop-title">Índice de Confianza · Desglose</div>
-      <button class="ic-pop-close" onclick="document.getElementById('ic-pop').remove()">×</button>
-    </div>
-    <div class="ic-q-list">
-      ${IC_QUESTIONS.map((q, i) => {
-        const dist   = qDists[i];
-        const avg    = qAvgs[i];
-        const totalN = dist.reduce((s,n) => s+n, 0);
-        const maxN   = Math.max(...dist, 1);
-        const bars   = dist.map((cnt, l) => {
-          const h = Math.round((cnt/maxN)*36) + (cnt>0?2:0);
-          return `<div class="ic-dist-col">
-            <div class="ic-dist-cnt">${cnt>0?cnt:''}</div>
-            <div class="ic-dist-bar" style="height:${h}px;background:${levelColors[l]}"></div>
-            <div class="ic-dist-lbl">${l+1}</div>
-          </div>`;
-        }).join('');
-        return `<div class="ic-q-item">
-          <div class="ic-q-label">${q}${totalN>0?` <span style="color:var(--gray-3);font-size:9px">(n=${totalN})</span>`:''}</div>
-          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:4px">
-            <div class="ic-dist-row">${bars}</div>
-            <div style="font-family:var(--cond);font-size:26px;font-weight:900;color:${barCol(avg)};line-height:1;white-space:nowrap">${avg!==null?avg.toFixed(2):'—'}<span style="font-family:var(--sans);font-size:10px;opacity:0.45"> /5</span></div>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>
-    <div class="ic-pop-footer">
-      <div class="ic-pop-footer-label">${mode==='individual'?'Índice este registro':'Promedio general'}</div>
-      <div class="ic-pop-footer-val" style="color:${barCol(overall)}">${overall!==null?overall.toFixed(2):'—'}<span style="font-family:var(--sans);font-size:12px;opacity:0.5"> / 5</span></div>
-    </div>`;
-
-  document.body.appendChild(pop);
-  const rect = event.currentTarget.getBoundingClientRect();
-  let top  = rect.bottom + 8 + window.scrollY;
-  let left = rect.left   + window.scrollX;
-  if (left + 430 > window.innerWidth)  left = window.innerWidth  - 432;
-  if (top  + 480 > window.innerHeight + window.scrollY) top = rect.top + window.scrollY - 488;
-  pop.style.top  = top  + 'px';
-  pop.style.left = left + 'px';
-
-  setTimeout(() => {
-    document.addEventListener('click', function icClose(e) {
-      if (!pop.contains(e.target)) { pop.remove(); document.removeEventListener('click', icClose); }
-    });
-  }, 80);
-}
-
-// ── sROI live preview in form ──
-function updateSroiPreview() {
-  const inv = parseFloat(document.getElementById('g_inversion')?.value) || 0;
-  const ben = parseInt(document.getElementById('g_ben_directos')?.value) || 0;
-  const el  = document.getElementById('sroi-preview');
-  if (!el) return;
-  if (inv > 0 && ben > 0) {
-    const v = (inv / ben).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-    el.textContent = '$' + v + ' / persona';
-    el.style.color = 'var(--green-lt)';
-  } else {
-    el.textContent = '—';
-    el.style.color = 'var(--gray-3)';
-  }
-}
-document.addEventListener('input', e => {
-  if (e.target.id === 'g_inversion' || e.target.id === 'g_ben_directos') updateSroiPreview();
-});
-
-filteredRecords = [...records];
-updateBadges();
-renderDashboard(filteredRecords);
-syncFromAPI();
-setInterval(syncFromAPI, 60000);
 
 // ═══════════════════════════════════════════════════
 // IMPACT KIT
@@ -5261,9 +3307,9 @@ function ikShowResult() {
   if (folioEl) folioEl.textContent = folio;
 
   // Push to API (fire and forget)
-  if (typeof GAS_URL !== 'undefined' && GAS_URL && !GAS_URL.includes('TU_URL')) {
-    fetch(GAS_URL, {
-      method: 'POST', mode: 'no-cors',
+  if (typeof API_URL !== 'undefined' && API_URL && !API_URL.includes('TU_URL')) {
+    fetch(API_URL, {
+      method: 'POST', 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'evaluacion_ik', ...eval_ })
     }).catch(() => {});
@@ -5390,7 +3436,7 @@ function ikUpdateStatus(id, status) {
   evals[idx].ik_status = status;
   evals[idx].status_fecha = new Date().toISOString().split('T')[0];
   saveIkEvals(evals);
-  renderFolios();
+  
   const labels = { aprobado: '✓ Evaluación aprobada', rechazado: '✗ Evaluación rechazada', 'en-revision': '↺ Vuelto a revisión' };
   showToast(labels[status] || 'Estado actualizado');
 }
@@ -5401,18 +3447,10 @@ function ikUpdateStatus(id, status) {
 import { animate, inView, stagger } from "https://cdn.jsdelivr.net/npm/framer-motion@11/+esm";
 
 const EASE_OUT = [0.22, 1, 0.36, 1];
-const EASE_IN_OUT = [0.4, 0, 0.2, 1];
 
-// ─── Selectors that get entrance animations ───────────────────
-const CARD_SEL = [
-  '.stat-card', '.chart-card', '.metric-card', '.type-card',
-  '.table-card', '.form-section', '.tablero-row', '.pr-header',
-  '.likert-group'
-].join(', ');
-
-// ─── Animate a view's cards with stagger ────────────────────
 function animateViewIn(viewEl) {
   if (!viewEl) return;
+  const CARD_SEL = '.stat-card, .chart-card, .type-card, .table-card, .form-section, .likert-group';
   const cards = Array.from(viewEl.querySelectorAll(CARD_SEL));
   if (!cards.length) return;
   cards.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateY(18px)'; });
@@ -5420,55 +3458,14 @@ function animateViewIn(viewEl) {
     { opacity: [0, 1], transform: ['translateY(18px)', 'translateY(0px)'] },
     { duration: 0.45, delay: stagger(0.055, { ease: EASE_OUT }), ease: EASE_OUT }
   );
-
-  // Stagger table rows separately
-  const rows = Array.from(viewEl.querySelectorAll('tbody tr'));
-  if (rows.length) {
-    rows.forEach(el => { el.style.opacity = '0'; el.style.transform = 'translateX(-8px)'; });
-    animate(rows,
-      { opacity: [0, 1], transform: ['translateX(-8px)', 'translateX(0px)'] },
-      { duration: 0.3, delay: stagger(0.04, { startDelay: 0.25 }), ease: EASE_OUT }
-    );
-  }
 }
 
-// ─── Patch navigate to trigger animations ───────────────────
 const _origNavigate = window.navigate;
 window.navigate = function(viewName) {
   _origNavigate(viewName);
-  requestAnimationFrame(() => {
-    const view = document.querySelector('.view.active');
-    animateViewIn(view);
-  });
+  requestAnimationFrame(() => animateViewIn(document.querySelector('.view.active')));
 };
 
-// ─── Patch renderDashboard to re-animate metric cards ───────
-const _origRenderDash = window.renderDashboard;
-if (_origRenderDash) {
-  window.renderDashboard = function(...args) {
-    _origRenderDash(...args);
-    requestAnimationFrame(() => {
-      const mcards = Array.from(document.querySelectorAll('.metric-card'));
-      animate(mcards,
-        { opacity: [0, 1], transform: ['translateY(10px)', 'translateY(0px)'] },
-        { duration: 0.35, delay: stagger(0.03), ease: EASE_OUT }
-      );
-    });
-  };
-}
-
-// ─── Initial page load ───────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  const view = document.querySelector('.view.active');
-  animateViewIn(view);
-});
-// Fallback if DOM already loaded
-if (document.readyState !== 'loading') {
-  const view = document.querySelector('.view.active');
-  animateViewIn(view);
-}
-
-// ─── Hover animations on type-cards ─────────────────────────
 document.querySelectorAll('.type-card').forEach(card => {
   card.addEventListener('mouseenter', () =>
     animate(card, { boxShadow: ['0 0 0 rgba(0,0,0,0)', '0 12px 40px rgba(0,0,0,0.5)'] }, { duration: 0.25 })
@@ -5478,23 +3475,13 @@ document.querySelectorAll('.type-card').forEach(card => {
   );
 });
 
-// ─── Hover animations on buttons ─────────────────────────────
 document.querySelectorAll('.btn-primary').forEach(btn => {
-  btn.addEventListener('mouseenter', () =>
-    animate(btn, { transform: 'translateX(2px)' }, { duration: 0.15 })
-  );
-  btn.addEventListener('mouseleave', () =>
-    animate(btn, { transform: 'translateX(0px)' }, { duration: 0.15 })
-  );
+  btn.addEventListener('mouseenter', () => animate(btn, { transform: 'translateX(2px)' }, { duration: 0.15 }));
+  btn.addEventListener('mouseleave', () => animate(btn, { transform: 'translateX(0px)' }, { duration: 0.15 }));
 });
 
-// ─── Scroll-triggered fades for chart cards in comparativa ──
-inView('.chart-card', ({ target }) => {
-  animate(target,
-    { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0px)'] },
-    { duration: 0.5, ease: EASE_OUT }
-  );
-}, { amount: 0.2 });
+if (document.readyState !== 'loading') {
+  animateViewIn(document.querySelector('.view.active'));
+}
 </script>
 </body>
-</html>
