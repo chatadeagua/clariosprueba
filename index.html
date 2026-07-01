@@ -826,65 +826,66 @@ tbody tr:last-child td { border-bottom: none; }
 /* ── FILTER BAR ───────────────────────────────────────────── */
 .filter-bar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: flex-end;
+  flex-wrap: nowrap;
+  gap: 6px;
+  align-items: center;
   background: var(--bg2);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  padding: 16px 20px;
-  margin-bottom: 24px;
+  border-bottom: 2px solid var(--purple-b);
+  padding: 8px 14px;
+  margin-bottom: 14px;
+  overflow-x: auto;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 130px;
+  gap: 0;
+  flex-shrink: 0;
 }
 
-.filter-label {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  color: var(--gray-2);
-  text-transform: uppercase;
-}
+.filter-label { display: none; }
 
 .filter-select {
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: 0;
-  border-left: 2px solid var(--gray-3);
-  padding: 7px 10px;
+  border-left: 2px solid var(--gray-4);
+  padding: 5px 8px;
   font-family: var(--sans);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--gray-1);
   outline: none;
   cursor: pointer;
   transition: border-color 0.15s;
   appearance: none;
+  height: 30px;
+  min-width: 0;
+  width: 100%;
 }
 
-.filter-select:focus { border-color: var(--purple); }
+.filter-select:focus { border-left-color: var(--purple); }
 .filter-select option { background: var(--bg3); }
 
 .filter-clear {
-  background: rgba(239,68,68,0.1);
+  background: transparent;
   border: 1px solid rgba(239,68,68,0.2);
-  border-left: 3px solid var(--red);
+  border-left: 2px solid var(--red);
   color: var(--red);
-  padding: 7px 14px;
+  padding: 5px 10px;
   border-radius: 0;
-  font-family: var(--sans);
-  font-size: 11px;
+  font-family: var(--mono);
+  font-size: 9px;
   font-weight: 700;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: background 0.15s;
-  align-self: flex-end;
+  white-space: nowrap;
+  height: 30px;
+  flex-shrink: 0;
 }
 
-.filter-clear:hover { background: rgba(239,68,68,0.2); }
+.filter-clear:hover { background: rgba(239,68,68,0.12); }
 
 .active-filter-pill {
   display: inline-flex;
@@ -1812,45 +1813,35 @@ tbody tr:last-child td { border-bottom: none; }
        VIEW: DASHBOARD
   ════════════════════════════ -->
   <div class="view active" id="view-dashboard">
-    <div class="page-header">
-      <div class="page-eyebrow">Panel de control</div>
-      <div class="page-title">Indicadores <span>en tiempo real</span></div>
-      <div class="page-desc">Registros capturados automáticamente. Usa los filtros para segmentar por periodo, año o programa.</div>
-    </div>
 
-    <!-- FILTER BAR -->
+    <!-- FILTER BAR — compact single row -->
     <div class="filter-bar">
-      <div class="filter-group">
-        <div class="filter-label">Año</div>
-        <select class="filter-select" id="fil-year" onchange="applyFilters()">
-          <option value="">Todos</option>
+      <div class="filter-group" style="width:70px">
+        <select class="filter-select" id="fil-year" onchange="applyFilters()" title="Año">
+          <option value="">Año</option>
           <option value="2024">2024</option>
           <option value="2025" selected>2025</option>
           <option value="2026">2026</option>
         </select>
       </div>
-      <div class="filter-group">
-        <div class="filter-label">Periodo</div>
-        <select class="filter-select" id="fil-period" onchange="applyFilters()">
-          <option value="">Todo el año</option>
-          <option value="Q1">Q1 — Ene–Mar</option>
-          <option value="Q2">Q2 — Abr–Jun</option>
-          <option value="Q3">Q3 — Jul–Sep</option>
-          <option value="Q4">Q4 — Oct–Dic</option>
+      <div class="filter-group" style="width:110px">
+        <select class="filter-select" id="fil-period" onchange="applyFilters()" title="Periodo">
+          <option value="">Periodo</option>
+          <option value="Q1">Q1 Ene–Mar</option>
+          <option value="Q2">Q2 Abr–Jun</option>
+          <option value="Q3">Q3 Jul–Sep</option>
+          <option value="Q4">Q4 Oct–Dic</option>
         </select>
       </div>
-      <div class="filter-group">
-        <div class="filter-label">Fecha desde</div>
-        <input type="date" class="filter-select" id="fil-from" onchange="applyFilters()">
+      <div class="filter-group" style="width:130px">
+        <input type="date" class="filter-select" id="fil-from" onchange="applyFilters()" title="Desde">
       </div>
-      <div class="filter-group">
-        <div class="filter-label">Fecha hasta</div>
-        <input type="date" class="filter-select" id="fil-to" onchange="applyFilters()">
+      <div class="filter-group" style="width:130px">
+        <input type="date" class="filter-select" id="fil-to" onchange="applyFilters()" title="Hasta">
       </div>
-      <div class="filter-group">
-        <div class="filter-label">Programa</div>
-        <select class="filter-select" id="fil-programa" onchange="applyFilters()">
-          <option value="">Todos los programas</option>
+      <div class="filter-group" style="width:160px">
+        <select class="filter-select" id="fil-programa" onchange="applyFilters()" title="Programa">
+          <option value="">Programa</option>
           <option value="arranca">Arranca el Futuro</option>
           <option value="guardianes">Guardianes del Planeta</option>
           <option value="infraestructura">Infraestructura Resiliente</option>
@@ -1858,10 +1849,9 @@ tbody tr:last-child td { border-bottom: none; }
           <option value="general">General</option>
         </select>
       </div>
-      <div class="filter-group">
-        <div class="filter-label">Tipo</div>
-        <select class="filter-select" id="fil-type" onchange="applyFilters()">
-          <option value="">Todos los tipos</option>
+      <div class="filter-group" style="width:110px">
+        <select class="filter-select" id="fil-type" onchange="applyFilters()" title="Tipo">
+          <option value="">Tipo</option>
           <option value="proyecto">Proyecto</option>
           <option value="evento">Evento</option>
           <option value="activacion">Activación</option>
