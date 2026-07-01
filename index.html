@@ -1649,6 +1649,28 @@ tbody tr:last-child td { border-bottom: none; }
 .ik-score-btn:hover { border-color: var(--purple); border-left-color: var(--purple); color: var(--white); background: var(--bg2); }
 .ik-score-btn.selected { background: var(--purple); border-color: var(--purple); border-left-color: var(--purple-lt); color: var(--white); }
 .ik-score-lbl { font-size: 10px; color: var(--purple-lt); font-weight: 600; margin-left: 4px; min-width: 80px; }
+.ik-dim-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.ik-dim-score-badge {
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  color: var(--gray-3); background: var(--bg3);
+  border: 1px solid var(--gray-4); padding: 2px 10px;
+  min-width: 36px; text-align: center; transition: color 0.2s, border-color 0.2s;
+}
+.ik-dim-desc { font-size: 10px; color: var(--gray-3); margin-bottom: 10px; line-height: 1.5; }
+.ik-questions-list { display: flex; flex-direction: column; gap: 5px; }
+.ik-question-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px solid rgba(71,85,105,0.12); }
+.ik-question-row:last-child { border-bottom: none; }
+.ik-question-text { font-size: 11px; color: var(--gray-2); line-height: 1.4; flex: 1; }
+.ik-q-btns { display: flex; gap: 3px; flex-shrink: 0; }
+.ik-q-btn {
+  min-width: 34px; height: 26px; padding: 0 10px;
+  background: var(--bg3); border: 1px solid var(--gray-4); border-left: 2px solid var(--gray-4);
+  color: var(--gray-3); font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 1.5px; cursor: pointer; transition: all 0.15s; text-transform: uppercase;
+}
+.ik-q-btn:hover { border-color: var(--purple); border-left-color: var(--purple); color: var(--white); }
+.ik-q-btn.selected-si { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.35); border-left-color: var(--green); color: var(--green); }
+.ik-q-btn.selected-no { background: rgba(239,68,68,0.07); border-color: rgba(239,68,68,0.25); border-left-color: var(--red); color: #F87171; }
 .ik-result-hero {
   display: flex;
   align-items: center;
@@ -2964,7 +2986,7 @@ tbody tr:last-child td { border-bottom: none; }
             <input type="text" id="ik-nombre" placeholder="Ej. Programa de Reciclaje Escolar 2026" oninput="ikUpdateNombreState()">
           </div>
           <p style="font-size:12px;color:var(--gray-2);margin-bottom:22px;line-height:1.6">
-            Califica cada dimensión del 1 (Inicial) al 5 (Referente). El promedio ponderado determina la recomendación de registro.
+            Responde Sí / No a las 4 preguntas de cada dimensión. El score de cada categoría es la mediana de respuestas afirmativas (0 Sí = 1 · 4 Sí = 5). El promedio de las 7 dimensiones determina la recomendación de registro.
           </p>
           <div id="ik-dims-list"><!-- populated by ikInit() --></div>
           <div style="display:flex;align-items:center;justify-content:space-between;padding-top:20px;border-top:1px solid var(--purple-b);margin-top:8px;flex-wrap:wrap;gap:16px">
@@ -5013,16 +5035,59 @@ setInterval(syncFromAPI, 60000);
 // IMPACT KIT
 // ═══════════════════════════════════════════════════
 const IK_DIMS = [
-  { key:'valor_compartido', label:'Valor Compartido',  desc:'La iniciativa genera valor simultáneo para Clarios y la comunidad' },
-  { key:'liderazgo',        label:'Liderazgo',         desc:'Existe compromiso directivo y responsable claro de la iniciativa' },
-  { key:'sostenibilidad',   label:'Sostenibilidad',    desc:'La iniciativa es viable a largo plazo y no depende de presupuesto eventual' },
-  { key:'proposito',        label:'Propósito',         desc:'Refleja la misión y valores de Clarios como empresa responsable' },
-  { key:'gestion',          label:'Gestión',           desc:'Cuenta con procesos, métricas y responsables definidos' },
-  { key:'cocreacion',       label:'Cocreación',        desc:'Involucra activamente a los beneficiarios en el diseño o ejecución' },
-  { key:'reputacion',       label:'Reputación',        desc:'Tiene potencial de fortalecer la imagen de Clarios en comunidades y medios' },
+  { key:'valor_compartido', label:'Valor Compartido', desc:'La iniciativa genera valor simultáneo para Clarios y la comunidad',
+    questions:[
+      '¿El programa puede replicarse o escalar a otras regiones o países?',
+      '¿Genera alianzas sostenibles con actores clave?',
+      '¿Involucra a colaboradores o embajadores internos?',
+      '¿Contribuye al posicionamiento de Clarios en sostenibilidad?',
+    ]},
+  { key:'liderazgo', label:'Liderazgo', desc:'Existe compromiso directivo y responsable claro de la iniciativa',
+    questions:[
+      '¿El programa forma líderes o mentores que inspiran a otros?',
+      '¿Fortalece la autonomía y corresponsabilidad en la comunidad?',
+      '¿Genera redes o círculos de aprendizaje colaborativo?',
+      '¿Conecta con el desarrollo de talento joven o liderazgo interno?',
+    ]},
+  { key:'sostenibilidad', label:'Sostenibilidad', desc:'La iniciativa es viable a largo plazo y no depende de presupuesto eventual',
+    questions:[
+      '¿Contribuye a conservar o disminuir el uso de recursos naturales?',
+      '¿Reduce emisiones, residuos o consumo energético?',
+      '¿Genera conciencia ambiental en colaboradores o comunidades?',
+      '¿Integra prácticas de circularidad ambiental (7Rs)?',
+    ]},
+  { key:'proposito', label:'Propósito', desc:'Refleja la misión y valores de Clarios como empresa responsable',
+    questions:[
+      '¿El proyecto refleja los valores y propósito corporativo?',
+      '¿Contribuye a fortalecer la identidad institucional?',
+      '¿Promueve coherencia entre el discurso y la práctica?',
+      '¿Genera orgullo y sentido de pertenencia en colaboradores y comunidades?',
+    ]},
+  { key:'gestion', label:'Gestión', desc:'Cuenta con procesos, métricas y responsables definidos',
+    questions:[
+      '¿El proyecto tiene un propósito claro y alineado a la estrategia de impacto?',
+      '¿Cuenta con un plan estructurado y mecanismos de seguimiento?',
+      '¿Se documentan los resultados y aprendizajes de manera continua?',
+      '¿Existe retroalimentación que impulse la mejora o escalabilidad?',
+    ]},
+  { key:'cocreacion', label:'Cocreación', desc:'Involucra activamente a los beneficiarios en el diseño o ejecución',
+    questions:[
+      '¿Las necesidades se identificaron con participación comunitaria?',
+      '¿Se fomenta la colaboración activa en la implementación?',
+      '¿El proyecto impulsa corresponsabilidad y liderazgo local?',
+      '¿Evita el asistencialismo, promoviendo autonomía?',
+    ]},
+  { key:'reputacion', label:'Reputación', desc:'Tiene potencial de fortalecer la imagen de Clarios en comunidades y medios',
+    questions:[
+      '¿Fortalece el orgullo y sentido de pertenencia interno?',
+      '¿Genera confianza y reconocimiento en el entorno externo?',
+      '¿Contribuye al posicionamiento reputacional de Clarios?',
+      '¿Refuerza las relaciones con aliados y autoridades clave?',
+    ]},
 ];
 const IK_LEVELS = ['', 'Inicial', 'En desarrollo', 'Establecido', 'Avanzado', 'Referente'];
 let ikScores = {};
+let ikQAnswers = {};
 let ikRadarChart = null;
 let ikResultChart = null;
 let ikInitialized = false;
@@ -5044,11 +5109,20 @@ function ikInit() {
   if (!container) return;
   container.innerHTML = IK_DIMS.map(d => `
     <div class="ik-dim">
-      <div class="ik-dim-name">${d.label}</div>
-      <div style="font-size:10px;color:var(--gray-3);margin-bottom:6px;line-height:1.4">${d.desc}</div>
-      <div class="ik-score-row">
-        ${[1,2,3,4,5].map(n => `<button class="ik-score-btn" data-dim="${d.key}" data-val="${n}" onclick="ikScore('${d.key}',${n})">${n}</button>`).join('')}
-        <span class="ik-score-lbl" id="ik-lbl-${d.key}">selecciona</span>
+      <div class="ik-dim-header">
+        <span class="ik-dim-name">${d.label}</span>
+        <span class="ik-dim-score-badge" id="ik-badge-${d.key}">—</span>
+      </div>
+      <div class="ik-dim-desc">${d.desc}</div>
+      <div class="ik-questions-list">
+        ${d.questions.map((q, qi) => `
+          <div class="ik-question-row">
+            <span class="ik-question-text">${q}</span>
+            <div class="ik-q-btns">
+              <button class="ik-q-btn" data-dim="${d.key}" data-qi="${qi}" data-val="si" onclick="ikAnswer('${d.key}',${qi},true)">Sí</button>
+              <button class="ik-q-btn" data-dim="${d.key}" data-qi="${qi}" data-val="no" onclick="ikAnswer('${d.key}',${qi},false)">No</button>
+            </div>
+          </div>`).join('')}
       </div>
     </div>`).join('');
 
@@ -5095,14 +5169,7 @@ function ikInit() {
 function ikScore(dim, val) {
   ikScores[dim] = val;
 
-  // Button states
-  document.querySelectorAll(`.ik-score-btn[data-dim="${dim}"]`).forEach(btn => {
-    btn.classList.toggle('selected', parseInt(btn.dataset.val) === val);
-  });
-  const lbl = document.getElementById(`ik-lbl-${dim}`);
-  if (lbl) lbl.textContent = IK_LEVELS[val];
-
-  // Update chart
+  // Update radar
   const chartData = IK_DIMS.map(d => ikScores[d.key] || 0);
   if (ikRadarChart) { ikRadarChart.data.datasets[0].data = chartData; ikRadarChart.update('active'); }
 
@@ -5128,6 +5195,32 @@ function ikScore(dim, val) {
       vEl.textContent = `${filled.length} / ${IK_DIMS.length} dimensiones calificadas`;
       vEl.style.color = 'var(--gray-3)';
       btnEl.disabled = true;
+    }
+  }
+}
+
+function ikAnswer(dim, qi, val) {
+  ikQAnswers[dim + '_q' + qi] = val;
+
+  // Button states
+  document.querySelectorAll(`.ik-q-btn[data-dim="${dim}"][data-qi="${qi}"]`).forEach(btn => {
+    btn.classList.remove('selected-si', 'selected-no');
+    if (btn.dataset.val === 'si' && val === true)  btn.classList.add('selected-si');
+    if (btn.dataset.val === 'no' && val === false) btn.classList.add('selected-no');
+  });
+
+  // Compute dim score when all 4 questions answered
+  const dim_ = IK_DIMS.find(d => d.key === dim);
+  const answers = dim_.questions.map((_, i) => ikQAnswers[dim + '_q' + i]);
+  if (answers.every(a => a !== undefined)) {
+    const score = answers.filter(a => a === true).length + 1; // 0 Sí→1 … 4 Sí→5
+    ikScore(dim, score);
+    const badge = document.getElementById('ik-badge-' + dim);
+    if (badge) {
+      const col = score >= 4 ? 'var(--green)' : score >= 3 ? 'var(--amber)' : 'var(--red)';
+      badge.textContent = score + ' / 5';
+      badge.style.color = col;
+      badge.style.borderColor = col;
     }
   }
 }
@@ -5266,11 +5359,12 @@ function ikShowResult() {
 
 function ikReset() {
   ikScores = {};
+  ikQAnswers = {};
   ikCurrentEvalId = null;
-  document.querySelectorAll('.ik-score-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.ik-q-btn').forEach(b => b.classList.remove('selected-si', 'selected-no'));
   IK_DIMS.forEach(d => {
-    const el = document.getElementById(`ik-lbl-${d.key}`);
-    if (el) el.textContent = 'selecciona';
+    const badge = document.getElementById('ik-badge-' + d.key);
+    if (badge) { badge.textContent = '—'; badge.style.color = ''; badge.style.borderColor = ''; }
   });
   const nombreEl = document.getElementById('ik-nombre');
   if (nombreEl) nombreEl.value = '';
