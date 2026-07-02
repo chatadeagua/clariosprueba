@@ -1492,15 +1492,17 @@ tbody tr:last-child td { border-bottom: none; }
 .tooltip-body { display: none; position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 200; background: var(--bg2); border: 1px solid var(--purple-b); border-radius: var(--r-sm); padding: 8px 10px; font-family: var(--sans); font-size: 11px; color: var(--gray-1); line-height: 1.5; width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.55); pointer-events: none; font-weight: 400; letter-spacing: 0; text-transform: none; }
 .tooltip-wrap:hover .tooltip-body, .tooltip-wrap:focus-within .tooltip-body { display: block; }
 
-/* ── IC SÍ/NO TOGGLES ────────────────────────────────────── */
-.ic-si-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--gray-4); }
-.ic-si-row:last-child { border-bottom: none; }
-.ic-si-label { flex: 1; font-size: 11px; color: var(--gray-1); line-height: 1.4; }
-.ic-si-btns { display: flex; gap: 4px; flex-shrink: 0; }
-.ic-si-btn { padding: 4px 14px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--gray-3); font-family: var(--sans); font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.15s; letter-spacing: 0.5px; text-transform: uppercase; }
-.ic-si-btn[data-val="1"].selected { background: rgba(52,211,153,0.12); border-color: #34D399; color: #34D399; }
-.ic-si-btn[data-val="0"].selected { background: rgba(239,68,68,0.1); border-color: var(--red); color: var(--red); }
-.ic-si-btn:hover:not(.selected) { border-color: var(--gray-3); color: var(--gray-1); }
+/* ── IC POR PREGUNTA (Sí / No por fila) ─────────────────── */
+.ic-q-row { padding: 9px 0; border-bottom: 1px solid var(--gray-4); }
+.ic-q-row:last-child { border-bottom: none; }
+.ic-q-label { font-size: 11px; color: var(--gray-1); line-height: 1.4; margin-bottom: 6px; }
+.ic-q-inputs { display: flex; align-items: center; gap: 10px; }
+.ic-q-inp-group { display: flex; align-items: center; gap: 5px; }
+.ic-q-inp-group label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; white-space: nowrap; margin: 0; }
+.ic-q-inp-group label.lbl-si { color: var(--green-lt); }
+.ic-q-inp-group label.lbl-no { color: var(--red); }
+.ic-q-inp-group input[type="number"] { width: 64px; }
+.ic-q-pct { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--gray-3); margin-left: auto; min-width: 42px; text-align: right; }
 
 /* ── ORDINAL COUNT INPUTS ────────────────────────────────── */
 .level-count-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 8px 0 4px; }
@@ -2445,18 +2447,40 @@ tbody tr:last-child td { border-bottom: none; }
           </div>
         </div>
 
-        <!-- ÍNDICE DE CONFIANZA — totales Sí / No -->
+        <!-- ÍNDICE DE CONFIANZA — Sí/No por pregunta -->
         <div class="likert-group">
-          <div class="likert-group-title">Índice de Confianza — Totales Sí / No</div>
-          <div style="font-size:11px;color:var(--gray-3);margin-bottom:12px">Ingresa el total de participantes que respondieron Sí y No al conjunto de afirmaciones sobre CLARIOS.</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-            <div class="field">
-              <label style="color:var(--green-lt)">Respondieron Sí</label>
-              <input type="number" id="g_ic_si_total" min="0" placeholder="0" oninput="updateIcPreview()">
+          <div class="likert-group-title">Índice de Confianza — Sí / No por afirmación</div>
+          <div style="font-size:11px;color:var(--gray-3);margin-bottom:12px">Ingresa cuántos respondieron Sí y No en cada afirmación. El índice es el promedio de los 4 porcentajes.</div>
+          <div class="ic-q-row">
+            <div class="ic-q-label">CLARIOS es una empresa innovadora en su sector</div>
+            <div class="ic-q-inputs">
+              <div class="ic-q-inp-group"><label class="lbl-si">Sí</label><input type="number" id="g_ic_q1_si" min="0" placeholder="0" oninput="updateIcPreview()"></div>
+              <div class="ic-q-inp-group"><label class="lbl-no">No</label><input type="number" id="g_ic_q1_no" min="0" placeholder="0" oninput="updateIcPreview()"></div>
+              <span class="ic-q-pct" id="ic-q1-pct">—</span>
             </div>
-            <div class="field">
-              <label style="color:var(--red)">Respondieron No</label>
-              <input type="number" id="g_ic_no_total" min="0" placeholder="0" oninput="updateIcPreview()">
+          </div>
+          <div class="ic-q-row">
+            <div class="ic-q-label">CLARIOS es una empresa líder en Economía Circular</div>
+            <div class="ic-q-inputs">
+              <div class="ic-q-inp-group"><label class="lbl-si">Sí</label><input type="number" id="g_ic_q2_si" min="0" placeholder="0" oninput="updateIcPreview()"></div>
+              <div class="ic-q-inp-group"><label class="lbl-no">No</label><input type="number" id="g_ic_q2_no" min="0" placeholder="0" oninput="updateIcPreview()"></div>
+              <span class="ic-q-pct" id="ic-q2-pct">—</span>
+            </div>
+          </div>
+          <div class="ic-q-row">
+            <div class="ic-q-label">CLARIOS está comprometida con la sostenibilidad ambiental</div>
+            <div class="ic-q-inputs">
+              <div class="ic-q-inp-group"><label class="lbl-si">Sí</label><input type="number" id="g_ic_q3_si" min="0" placeholder="0" oninput="updateIcPreview()"></div>
+              <div class="ic-q-inp-group"><label class="lbl-no">No</label><input type="number" id="g_ic_q3_no" min="0" placeholder="0" oninput="updateIcPreview()"></div>
+              <span class="ic-q-pct" id="ic-q3-pct">—</span>
+            </div>
+          </div>
+          <div class="ic-q-row">
+            <div class="ic-q-label">CLARIOS ha generado impacto positivo en esta escuela/comunidad</div>
+            <div class="ic-q-inputs">
+              <div class="ic-q-inp-group"><label class="lbl-si">Sí</label><input type="number" id="g_ic_q4_si" min="0" placeholder="0" oninput="updateIcPreview()"></div>
+              <div class="ic-q-inp-group"><label class="lbl-no">No</label><input type="number" id="g_ic_q4_no" min="0" placeholder="0" oninput="updateIcPreview()"></div>
+              <span class="ic-q-pct" id="ic-q4-pct">—</span>
             </div>
           </div>
         </div>
@@ -3212,8 +3236,6 @@ function resetIndicToggles() {
     if (body) body.classList.remove('open');
     if (btn)  { btn.setAttribute('aria-pressed','false'); btn.querySelector('span:last-child').textContent = 'NO APLICA'; }
   });
-  const icSiEl = document.getElementById('g_ic_si_total'); if (icSiEl) icSiEl.value = '';
-  const icNoEl = document.getElementById('g_ic_no_total'); if (icNoEl) icNoEl.value = '';
   updateIcPreview();
 }
 
@@ -3314,8 +3336,9 @@ function startForm(type) {
   document.getElementById('f_beneficiarios').value = '';
 
   // Reset general indicator fields
-  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_sat_l1','g_sat_l2','g_sat_l3','g_sat_l4','g_sat_l5','g_perc_l1','g_perc_l2','g_perc_l3','g_perc_l4','g_perc_l5','g_ic_si_total','g_ic_no_total','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
+  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_sat_l1','g_sat_l2','g_sat_l3','g_sat_l4','g_sat_l5','g_perc_l1','g_perc_l2','g_perc_l3','g_perc_l4','g_perc_l5','g_ic_q1_si','g_ic_q1_no','g_ic_q2_si','g_ic_q2_no','g_ic_q3_si','g_ic_q3_no','g_ic_q4_si','g_ic_q4_no','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
   numFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  [1,2,3,4].forEach(q => { const el = document.getElementById(`ic-q${q}-pct`); if (el) { el.textContent = '—'; el.style.color = ''; } });
   const icPreviewEl = document.getElementById('ic-preview');
   if (icPreviewEl) { icPreviewEl.textContent = '—'; icPreviewEl.style.color = ''; }
   const satPreviewEl = document.getElementById('sat-preview');
@@ -3495,13 +3518,22 @@ function saveRecord() {
     g_narrativas:            _irep ? (parseInt(document.getElementById('g_narrativas').value) || 0) : null,
     g_reconocimiento:        _irep ? document.getElementById('g_reconocimiento').value : null,
     g_nps:                   _irep ? (parseFloat(document.getElementById('g_nps').value) || null) : null,
-    g_ic_si_total: _irep ? (parseInt(document.getElementById('g_ic_si_total')?.value) || 0) : null,
-    g_ic_no_total: _irep ? (parseInt(document.getElementById('g_ic_no_total')?.value) || 0) : null,
+    g_ic_q1_si: _irep ? (parseInt(document.getElementById('g_ic_q1_si')?.value) || 0) : null,
+    g_ic_q1_no: _irep ? (parseInt(document.getElementById('g_ic_q1_no')?.value) || 0) : null,
+    g_ic_q2_si: _irep ? (parseInt(document.getElementById('g_ic_q2_si')?.value) || 0) : null,
+    g_ic_q2_no: _irep ? (parseInt(document.getElementById('g_ic_q2_no')?.value) || 0) : null,
+    g_ic_q3_si: _irep ? (parseInt(document.getElementById('g_ic_q3_si')?.value) || 0) : null,
+    g_ic_q3_no: _irep ? (parseInt(document.getElementById('g_ic_q3_no')?.value) || 0) : null,
+    g_ic_q4_si: _irep ? (parseInt(document.getElementById('g_ic_q4_si')?.value) || 0) : null,
+    g_ic_q4_no: _irep ? (parseInt(document.getElementById('g_ic_q4_no')?.value) || 0) : null,
     get g_indice_confianza() {
       if (!_irep) return null;
-      const si = this.g_ic_si_total || 0, no = this.g_ic_no_total || 0;
-      const total = si + no;
-      return total > 0 ? Math.round(si / total * 100) : null;
+      const pcts = [1,2,3,4].map(q => {
+        const si = this[`g_ic_q${q}_si`] || 0, no = this[`g_ic_q${q}_no`] || 0;
+        const total = si + no;
+        return total > 0 ? Math.round(si / total * 100) : null;
+      }).filter(v => v !== null);
+      return pcts.length > 0 ? Math.round(pcts.reduce((a,b) => a+b, 0) / pcts.length) : null;
     },
     // ── Proceso Social ─────────────────────────────────────
     g_alianzas:              _ips ? (parseInt(document.getElementById('g_alianzas').value) || 0) : null,
@@ -4886,15 +4918,26 @@ function updateSatisfaccionPreview() {
 }
 
 function updateIcPreview() {
-  const si = parseInt(document.getElementById('g_ic_si_total')?.value) || 0;
-  const no = parseInt(document.getElementById('g_ic_no_total')?.value) || 0;
-  const total = si + no;
+  const pcts = [];
+  [1,2,3,4].forEach(q => {
+    const si = parseInt(document.getElementById(`g_ic_q${q}_si`)?.value) || 0;
+    const no = parseInt(document.getElementById(`g_ic_q${q}_no`)?.value) || 0;
+    const total = si + no;
+    const pctEl = document.getElementById(`ic-q${q}-pct`);
+    if (total > 0) {
+      const pct = Math.round(si / total * 100);
+      pcts.push(pct);
+      if (pctEl) { pctEl.textContent = pct + '%'; pctEl.style.color = pct >= 75 ? 'var(--green-lt)' : pct >= 50 ? 'var(--amber)' : 'var(--red)'; }
+    } else {
+      if (pctEl) { pctEl.textContent = '—'; pctEl.style.color = 'var(--gray-3)'; }
+    }
+  });
   const el = document.getElementById('ic-preview');
   if (!el) return;
-  if (total > 0) {
-    const pct = Math.round(si / total * 100);
-    el.textContent = pct + '%';
-    el.style.color = pct >= 75 ? 'var(--green-lt)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+  if (pcts.length > 0) {
+    const avg = Math.round(pcts.reduce((a,b) => a+b, 0) / pcts.length);
+    el.textContent = avg + '%';
+    el.style.color = avg >= 75 ? 'var(--green-lt)' : avg >= 50 ? 'var(--amber)' : 'var(--red)';
   } else {
     el.textContent = '—';
     el.style.color = 'var(--gray-3)';
