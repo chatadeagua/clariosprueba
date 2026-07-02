@@ -264,7 +264,7 @@ body::before {
 .btn-sm { padding: 6px 12px; font-size: 11px; }
 
 /* ── VIEWS ────────────────────────────────────────────────── */
-.view { display: none; padding: 32px; animation: fadeUp 0.35s ease; }
+.view { display: none; padding: 24px 16px; animation: fadeUp 0.35s ease; }
 .view.active { display: block; }
 
 @keyframes fadeUp {
@@ -1945,12 +1945,16 @@ tbody tr:last-child td { border-bottom: none; }
           <div class="tablero-row">
             <div class="tablero-label" style="--row-color:#5B21B6">
               <div class="tablero-label-name">Impacto</div>
-              <div class="tablero-label-count">6 indicadores</div>
+              <div class="tablero-label-count">7 indicadores</div>
             </div>
             <div class="tablero-cards">
               <div class="metric-card">
-                <div class="metric-card-label">Grado de satisfacción</div>
+                <div class="metric-card-label">Nivel de Satisfacción</div>
                 <div id="mc-satisfaccion"></div>
+              </div>
+              <div class="metric-card">
+                <div class="metric-card-label">Grado de percepción de CLARIOS</div>
+                <div id="mc-percepcion"></div>
               </div>
               <div class="metric-card">
                 <div class="metric-card-label">% Aumento en habilidades técnicas / digitales / liderazgo</div>
@@ -3779,9 +3783,10 @@ function renderDashboard(data) {
   let sumAutonomia = 0, cntAutonomia = 0;
   let sumBecarios = 0, cntBecarios = 0;
   let sumEmpleador = 0, cntEmpleador = 0;
-  let avgRecon = '', avgSat = '', avgConf = '', avgNps = '';
+
   let sumReconNum = 0, cntRecon = 0;
   let sumSatNum = 0, cntSat = 0;
+  let sumPercNum = 0, cntPerc = 0;
   let sumConfianza = 0, cntConfianza = 0;
   // icDist removed — IC now uses Sí/No format accumulated in window._icSiAgg
   let sumNps = 0, cntNps = 0;
@@ -3821,8 +3826,10 @@ function renderDashboard(data) {
     }
     // satNum: new format uses g_sat_mediana (integer 1-5); old format parsed from g_satisfaccion string
     const satNum   = r.g_sat_mediana != null ? r.g_sat_mediana : parseInt((r.g_satisfaccion||'').charAt(0));
+    const percNum  = r.g_perc_mediana != null ? r.g_perc_mediana : parseInt((r.g_percepcion_clarios||'').charAt(0));
     const partNum  = parseInt((r.g_grado_participacion||'').charAt(0));
     if (satNum)   { sumSatNum   += satNum;   cntSat++; }
+    if (percNum)  { sumPercNum  += percNum;  cntPerc++; }
     if (partNum)  { sumParticipacion += partNum; cntParticipacion++; }
 
     const conf = parseFloat(r.g_indice_confianza);
@@ -3849,12 +3856,15 @@ function renderDashboard(data) {
 
   // reconocimiento now shown as average %
   const avgReconPct = cntRecon ? Math.round(sumReconNum / cntRecon) : null;
-  const satLabels = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
-  if (cntSat) avgSat = String(Math.round(sumSatNum/cntSat)) + ' — ' + (satLabels[Math.round(sumSatNum/cntSat)]||'');
   let avgPart = cntParticipacion ? String(Math.round(sumParticipacion/cntParticipacion)) + ' — ...' : '';
 
   // ── IMPACTO ──
-  mGauge('mc-satisfaccion', cntSat ? avgSat : '', 'scale5');
+  const satAvg = cntSat ? Math.round(sumSatNum / cntSat) : null;
+  const satLbls = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
+  mNum('mc-satisfaccion', satAvg ? satAvg + ' — ' + satLbls[satAvg] : null, { color: satAvg >= 4 ? '#34D399' : satAvg >= 3 ? '#F59E0B' : '#EF4444', pending: !satAvg });
+  const percAvg = cntPerc ? Math.round(sumPercNum / cntPerc) : null;
+  const percLbls = ['','Muy bajo','Bajo','Medio','Alto','Muy alto'];
+  mNum('mc-percepcion', percAvg ? percAvg + ' — ' + percLbls[percAvg] : null, { color: percAvg >= 4 ? '#34D399' : percAvg >= 3 ? '#F59E0B' : '#EF4444', pending: !percAvg });
   mNum('mc-habilidades', cntHabilidades ? Math.round(sumHabilidades/cntHabilidades)+'%' : null, { color:'#A78BFA', pending: !cntHabilidades });
   mNum('mc-autonomia',   cntAutonomia  ? Math.round(sumAutonomia/cntAutonomia)+'%'   : null, { color:'#C084FC', pending: !cntAutonomia });
   mNum('mc-becarios',    cntBecarios   ? Math.round(sumBecarios/cntBecarios)+'%'     : null, { color:'#34D399', pending: !cntBecarios });
@@ -4600,7 +4610,8 @@ function renderRecordTablero() {
         <div class="tablero-cards">
           <div class="metric-card"><div class="metric-card-label">% Aumento en habilidades</div><div id="pr-mc-habilidades"></div></div>
           <div class="metric-card"><div class="metric-card-label">Prototipos circulares</div><div id="pr-mc-prototipos"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Grado de satisfacción</div><div id="pr-mc-satisfaccion"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Nivel de Satisfacción</div><div id="pr-mc-satisfaccion"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Grado de percepción</div><div id="pr-mc-percepcion"></div></div>
           <div class="metric-card"><div class="metric-card-label">Grado de participación</div><div id="pr-mc-participacion"></div></div>
           <div class="metric-card"><div class="metric-card-label">Talento canalizado</div><div id="pr-mc-talento"></div></div>
           <div class="metric-card"><div class="metric-card-label">Alumnos perspectiva género</div><div id="pr-mc-genero"></div></div>
@@ -4644,7 +4655,10 @@ function renderRecordTablero() {
   mNum('pr-mc-prototipos',   parseInt(r.g_prototipos)||null,  { color:'#FCD34D', pending: !parseInt(r.g_prototipos) });
   const prSatMed = r.g_sat_mediana != null ? r.g_sat_mediana : parseInt((r.g_satisfaccion||'').charAt(0));
   const prSatLabels = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
-  mGauge('pr-mc-satisfaccion', prSatMed ? String(prSatMed) + ' — ' + (prSatLabels[prSatMed]||'') : '', 'scale5');
+  mNum('pr-mc-satisfaccion', prSatMed ? prSatMed + ' — ' + (prSatLabels[prSatMed]||'') : null, { color: prSatMed >= 4 ? '#34D399' : prSatMed >= 3 ? '#F59E0B' : '#EF4444', pending: !prSatMed });
+  const prPercMed = r.g_perc_mediana != null ? r.g_perc_mediana : parseInt((r.g_percepcion_clarios||'').charAt(0));
+  const prPercLabels = ['','Muy bajo','Bajo','Medio','Alto','Muy alto'];
+  mNum('pr-mc-percepcion', prPercMed ? prPercMed + ' — ' + (prPercLabels[prPercMed]||'') : null, { color: prPercMed >= 4 ? '#34D399' : prPercMed >= 3 ? '#F59E0B' : '#EF4444', pending: !prPercMed });
   mGauge('pr-mc-participacion', r.g_grado_participacion||'','scale5');
   mNum('pr-mc-talento',  parseInt(r.af_talento_canalizado)||null, { color:'#34D399', pending: !parseInt(r.af_talento_canalizado) });
   mNum('pr-mc-genero',   parseInt(r.g_alumnos_genero)||null,      { color:'#F472B6', pending: !parseInt(r.g_alumnos_genero) });
