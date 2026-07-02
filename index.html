@@ -1486,6 +1486,31 @@ tbody tr:last-child td { border-bottom: none; }
   line-height: 1;
 }
 /* Likert form */
+/* ── TOOLTIP ─────────────────────────────────────────────── */
+.tooltip-wrap { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+.tooltip-icon { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 50%; background: var(--purple-b); color: var(--gray-1); font-size: 9px; font-weight: 700; cursor: help; flex-shrink: 0; border: 1px solid var(--border); }
+.tooltip-body { display: none; position: absolute; bottom: calc(100% + 6px); left: 0; z-index: 200; background: var(--bg2); border: 1px solid var(--purple-b); border-radius: var(--r-sm); padding: 8px 10px; font-family: var(--sans); font-size: 11px; color: var(--gray-1); line-height: 1.5; width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.55); pointer-events: none; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.tooltip-wrap:hover .tooltip-body, .tooltip-wrap:focus-within .tooltip-body { display: block; }
+
+/* ── IC SÍ/NO TOGGLES ────────────────────────────────────── */
+.ic-si-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--gray-4); }
+.ic-si-row:last-child { border-bottom: none; }
+.ic-si-label { flex: 1; font-size: 11px; color: var(--gray-1); line-height: 1.4; }
+.ic-si-btns { display: flex; gap: 4px; flex-shrink: 0; }
+.ic-si-btn { padding: 4px 14px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--gray-3); font-family: var(--sans); font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.15s; letter-spacing: 0.5px; text-transform: uppercase; }
+.ic-si-btn[data-val="1"].selected { background: rgba(52,211,153,0.12); border-color: #34D399; color: #34D399; }
+.ic-si-btn[data-val="0"].selected { background: rgba(239,68,68,0.1); border-color: var(--red); color: var(--red); }
+.ic-si-btn:hover:not(.selected) { border-color: var(--gray-3); color: var(--gray-1); }
+
+/* ── ORDINAL COUNT INPUTS ────────────────────────────────── */
+.level-count-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 8px 0 4px; }
+.level-count-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.level-count-lbl { font-size: 8px; color: var(--gray-3); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; line-height: 1.2; }
+.level-count-num { font-size: 9px; color: var(--purple-lt); font-weight: 700; letter-spacing: 1px; }
+.level-count-inp { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--gray-1); padding: 5px 4px; font-family: var(--mono); font-size: 13px; font-weight: 700; text-align: center; outline: none; transition: border-color 0.15s; }
+.level-count-inp:focus { border-color: var(--purple); }
+.median-preview { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--white); line-height: 1; }
+
 .likert-group {
   background: var(--bg3);
   border: 1px solid var(--purple-b);
@@ -1950,13 +1975,9 @@ tbody tr:last-child td { border-bottom: none; }
           <div class="tablero-row">
             <div class="tablero-label" style="--row-color:#1D4ED8">
               <div class="tablero-label-name">Reputación</div>
-              <div class="tablero-label-count">6 indicadores</div>
+              <div class="tablero-label-count">5 indicadores</div>
             </div>
             <div class="tablero-cards">
-              <div class="metric-card">
-                <div class="metric-card-label">Beneficiarios directos</div>
-                <div id="mc-ben-dir"></div>
-              </div>
               <div class="metric-card">
                 <div class="metric-card-label">Reconocimiento de CLARIOS</div>
                 <div id="mc-reconocimiento"></div>
@@ -1965,8 +1986,8 @@ tbody tr:last-child td { border-bottom: none; }
                 <div class="metric-card-label">Narrativas positivas en medios</div>
                 <div id="mc-narrativas"></div>
               </div>
-              <div class="metric-card" ondblclick="showConfianzaPop(event,'aggregate')" style="cursor:pointer" title="Doble clic para ver desglose por pregunta">
-                <div class="metric-card-label">Índice de confianza <span style="font-size:8px;opacity:0.5">⊞ dbl-clic</span></div>
+              <div class="metric-card" title="Clic para ver desglose">
+                <div class="metric-card-label">Índice de confianza</div>
                 <div id="mc-confianza"></div>
               </div>
               <div class="metric-card">
@@ -1984,9 +2005,13 @@ tbody tr:last-child td { border-bottom: none; }
           <div class="tablero-row">
             <div class="tablero-label" style="--row-color:#0E7490">
               <div class="tablero-label-name">Resultado</div>
-              <div class="tablero-label-count">6 indicadores</div>
+              <div class="tablero-label-count">7 indicadores</div>
             </div>
             <div class="tablero-cards">
+              <div class="metric-card">
+                <div class="metric-card-label">Beneficiarios directos</div>
+                <div id="mc-ben-dir"></div>
+              </div>
               <div class="metric-card">
                 <div class="metric-card-label">Horas de formación impartidas</div>
                 <div id="mc-horas"></div>
@@ -2241,13 +2266,11 @@ tbody tr:last-child td { border-bottom: none; }
 
       <!-- INDICADORES GENERALES -->
       <div class="form-section">
-        <div class="form-section-title indic-toggle-header" onclick="toggleIndic('resultado')">
+        <div class="form-section-title">
           Indicadores — Resultado
-          <button class="indic-toggle-btn" id="indic-btn-resultado" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('resultado')">
-            <span class="indic-toggle-dot"></span><span>NO APLICA</span>
-          </button>
+          <span style="font-size:9px;color:var(--red);letter-spacing:1.5px;font-weight:700;margin-left:8px;font-family:var(--mono)">● OBLIGATORIO</span>
         </div>
-        <div class="indic-section-body" id="indic-body-resultado">
+        <div class="indic-section-body open" id="indic-body-resultado">
         <div class="field-row cols-2">
           <div class="field">
             <label>Escuelas beneficiadas</label>
@@ -2266,10 +2289,11 @@ tbody tr:last-child td { border-bottom: none; }
             <input type="number" id="g_ben_indirectos" placeholder="0" min="0">
             <div class="helper">Meta 2026: 32,000</div>
           </div>
-          <div class="field">
+          <div class="field" id="f-inversion">
             <label>Inversión social total (MXN) <span class="req">*</span></label>
             <input type="number" id="g_inversion" placeholder="0.00" min="0" step="0.01">
             <div class="helper">Base para el cálculo del sROI · presupuesto o inversión comprometida</div>
+            <div class="err-msg">Campo requerido</div>
           </div>
         </div>
         <div class="field-row cols-2">
@@ -2279,7 +2303,9 @@ tbody tr:last-child td { border-bottom: none; }
             <div class="helper">Porcentaje del total de participantes</div>
           </div>
           <div class="field">
-            <label>Grado de participación comunitaria (1–5)</label>
+            <label>
+              <span class="tooltip-wrap">Grado de participación comunitaria (1–5)<span class="tooltip-icon" tabindex="0">?</span><span class="tooltip-body">Se refiere a si se incluyó a la institución, socio o beneficiarios en la creación del programa.</span></span>
+            </label>
             <select id="g_grado_participacion">
               <option value="">Selecciona...</option>
               <option>1 — Sin participación</option>
@@ -2298,6 +2324,13 @@ tbody tr:last-child td { border-bottom: none; }
           <div class="field">
             <label>Quejas atendidas</label>
             <input type="number" id="g_quejas_atendidas" placeholder="0" min="0">
+          </div>
+        </div>
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Beneficiarios directos estimados</label>
+            <input type="number" id="g_ben_directos" placeholder="0" min="0">
+            <div class="helper">Participantes directos impactados por la actividad</div>
           </div>
         </div>
         </div><!-- /indic-body-resultado -->
@@ -2327,15 +2360,19 @@ tbody tr:last-child td { border-bottom: none; }
             <input type="number" id="g_pct_becarios_sost" placeholder="0" min="0" max="100">
           </div>
           <div class="field">
-            <label>Grado de percepción de CLARIOS (encuesta confianza)</label>
-            <select id="g_percepcion_clarios">
-              <option value="">Selecciona...</option>
-              <option>1 — Muy bajo</option>
-              <option>2 — Bajo</option>
-              <option>3 — Medio</option>
-              <option>4 — Alto</option>
-              <option>5 — Muy alto / Líder reconocido</option>
-            </select>
+            <label>Grado de percepción de CLARIOS</label>
+            <div class="helper">N.° de respondientes por nivel (mediana ordinal)</div>
+            <div class="level-count-row">
+              <div class="level-count-item"><div class="level-count-lbl">Muy bajo</div><div class="level-count-num">N1</div><input type="number" id="g_perc_l1" class="level-count-inp" min="0" placeholder="0" oninput="updatePercepcionPreview()"></div>
+              <div class="level-count-item"><div class="level-count-lbl">Bajo</div><div class="level-count-num">N2</div><input type="number" id="g_perc_l2" class="level-count-inp" min="0" placeholder="0" oninput="updatePercepcionPreview()"></div>
+              <div class="level-count-item"><div class="level-count-lbl">Medio</div><div class="level-count-num">N3</div><input type="number" id="g_perc_l3" class="level-count-inp" min="0" placeholder="0" oninput="updatePercepcionPreview()"></div>
+              <div class="level-count-item"><div class="level-count-lbl">Alto</div><div class="level-count-num">N4</div><input type="number" id="g_perc_l4" class="level-count-inp" min="0" placeholder="0" oninput="updatePercepcionPreview()"></div>
+              <div class="level-count-item"><div class="level-count-lbl">Muy alto</div><div class="level-count-num">N5</div><input type="number" id="g_perc_l5" class="level-count-inp" min="0" placeholder="0" oninput="updatePercepcionPreview()"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+              <span style="font-size:9px;color:var(--gray-3);letter-spacing:1px;text-transform:uppercase">Nivel mediano:</span>
+              <span id="perc-preview" class="median-preview">—</span>
+            </div>
           </div>
         </div>
         <div class="field-row cols-2">
@@ -2352,14 +2389,18 @@ tbody tr:last-child td { border-bottom: none; }
         <div class="field-row cols-2">
           <div class="field">
             <label>Nivel de satisfacción de estudiantes y docentes</label>
-            <select id="g_satisfaccion">
-              <option value="">Selecciona...</option>
-              <option>1 — Muy insatisfecho</option>
-              <option>2 — Insatisfecho</option>
-              <option>3 — Neutral</option>
-              <option>4 — Satisfecho</option>
-              <option>5 — Muy satisfecho</option>
-            </select>
+            <div class="helper">N.° de respondientes por nivel (mediana ordinal)</div>
+            <div class="level-count-row">
+              <div class="level-count-item"><div class="level-count-lbl">Muy insatisfecho</div><div class="level-count-num">N1</div><input type="number" id="g_sat_l1" class="level-count-inp" min="0" placeholder="0" oninput="updateSatisfaccionPreview()"></div>
+              <div class="level-count-item"><div class="level-count-lbl">Insatisfecho</div><div class="level-count-num">N2</div><input type="number" id="g_sat_l2" class="level-count-inp" min="0" placeholder="0" oninput="updateSatisfaccionPreview()"></div>
+              <div class="level-count-item"><div class="level-count-lbl">Neutral</div><div class="level-count-num">N3</div><input type="number" id="g_sat_l3" class="level-count-inp" min="0" placeholder="0" oninput="updateSatisfaccionPreview()"></div>
+              <div class="level-count-item"><div class="level-count-lbl">Satisfecho</div><div class="level-count-num">N4</div><input type="number" id="g_sat_l4" class="level-count-inp" min="0" placeholder="0" oninput="updateSatisfaccionPreview()"></div>
+              <div class="level-count-item"><div class="level-count-lbl">Muy satisfecho</div><div class="level-count-num">N5</div><input type="number" id="g_sat_l5" class="level-count-inp" min="0" placeholder="0" oninput="updateSatisfaccionPreview()"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+              <span style="font-size:9px;color:var(--gray-3);letter-spacing:1px;text-transform:uppercase">Nivel mediano:</span>
+              <span id="sat-preview" class="median-preview">—</span>
+            </div>
           </div>
         </div>
         </div><!-- /indic-body-impacto -->
@@ -2375,13 +2416,14 @@ tbody tr:last-child td { border-bottom: none; }
         <div class="indic-section-body" id="indic-body-reputacion">
         <div class="field-row cols-2">
           <div class="field">
-            <label>Beneficiarios directos estimados</label>
-            <input type="number" id="g_ben_directos" placeholder="0" min="0">
-          </div>
-          <div class="field">
             <label>Narrativas positivas en medios o plataformas</label>
             <input type="number" id="g_narrativas" placeholder="0" min="0">
             <div class="helper">Notas de prensa, publicaciones, menciones</div>
+          </div>
+          <div class="field">
+            <label>NPS — Net Promoter Score</label>
+            <input type="number" id="g_nps" placeholder="0" min="-100" max="100">
+            <div class="helper">Escala de -100 a 100</div>
           </div>
         </div>
         <div class="field-row cols-2">
@@ -2396,84 +2438,45 @@ tbody tr:last-child td { border-bottom: none; }
               <option>5 — Referente regional / nacional</option>
             </select>
           </div>
-          <div class="field">
-            <label>NPS — Net Promoter Score</label>
-            <input type="number" id="g_nps" placeholder="0" min="-100" max="100">
-            <div class="helper">Escala de -100 a 100</div>
-          </div>
-        </div>
-        <div class="field-row cols-2">
           <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:6px">
             <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple-lt)">Índice de confianza (calculado)</div>
             <div id="ic-preview" style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white)">—</div>
-            <div class="helper">Promedio de las 4 dimensiones Likert · escala 1–5</div>
+            <div class="helper">% de afirmaciones marcadas como "Sí"</div>
           </div>
         </div>
 
-        <!-- ÍNDICE DE CONFIANZA — distribución Likert por pregunta -->
+        <!-- ÍNDICE DE CONFIANZA — Sí/No por elemento -->
         <div class="likert-group">
-          <div class="likert-group-title">Índice de Confianza — 4 dimensiones (escala 1 al 5)</div>
-          <div style="font-size:11px;color:var(--gray-3);margin-bottom:10px">Ingresa cuántos alumnos respondieron en cada nivel por pregunta (TD = totalmente en desacuerdo · TA = totalmente de acuerdo)</div>
-          <table class="likert-table">
-            <thead>
-              <tr>
-                <th class="lt-q-col" rowspan="2">Pregunta</th>
-                <th colspan="5" style="text-align:center;font-size:9px;letter-spacing:2px">N.° ALUMNOS POR NIVEL</th>
-                <th rowspan="2" style="text-align:center">Prom.</th>
-              </tr>
-              <tr>
-                <th><div class="lt-level-header"><div class="lt-level-num">1</div><div class="lt-level-lbl">TD</div></div></th>
-                <th><div class="lt-level-header"><div class="lt-level-num">2</div><div class="lt-level-lbl">ED</div></div></th>
-                <th><div class="lt-level-header"><div class="lt-level-num">3</div><div class="lt-level-lbl">N</div></div></th>
-                <th><div class="lt-level-header"><div class="lt-level-num">4</div><div class="lt-level-lbl">DA</div></div></th>
-                <th><div class="lt-level-header"><div class="lt-level-num">5</div><div class="lt-level-lbl">TA</div></div></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="lt-q-cell">CLARIOS es una empresa innovadora en su sector</td>
-                <td><input type="number" id="g_ic_q1_l1" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q1_l2" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q1_l3" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q1_l4" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q1_l5" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td style="text-align:center"><span class="lt-avg" id="ic-q1-avg">—</span></td>
-              </tr>
-              <tr>
-                <td class="lt-q-cell">CLARIOS es una empresa líder en Economía Circular</td>
-                <td><input type="number" id="g_ic_q2_l1" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q2_l2" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q2_l3" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q2_l4" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q2_l5" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td style="text-align:center"><span class="lt-avg" id="ic-q2-avg">—</span></td>
-              </tr>
-              <tr>
-                <td class="lt-q-cell">CLARIOS está comprometida con la sostenibilidad ambiental</td>
-                <td><input type="number" id="g_ic_q3_l1" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q3_l2" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q3_l3" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q3_l4" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q3_l5" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td style="text-align:center"><span class="lt-avg" id="ic-q3-avg">—</span></td>
-              </tr>
-              <tr>
-                <td class="lt-q-cell">¿CLARIOS ha generado impacto positivo en tu escuela/comunidad?</td>
-                <td><input type="number" id="g_ic_q4_l1" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q4_l2" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q4_l3" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q4_l4" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td><input type="number" id="g_ic_q4_l5" min="0" placeholder="0" oninput="updateIcPreview()"></td>
-                <td style="text-align:center"><span class="lt-avg" id="ic-q4-avg">—</span></td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colspan="6" style="text-align:right;padding:10px 8px">Índice de Confianza (promedio de las 4 preguntas)</td>
-                <td style="text-align:center"><span id="ic-preview" style="font-family:var(--cond);font-size:20px;font-weight:900;color:var(--white)">—</span></td>
-              </tr>
-            </tfoot>
-          </table>
+          <div class="likert-group-title">Índice de Confianza — 4 elementos (Sí / No)</div>
+          <div style="font-size:11px;color:var(--gray-3);margin-bottom:12px">Marca Sí o No para cada afirmación. Los no respondidos se excluyen del cálculo.</div>
+          <div class="ic-si-row">
+            <span class="ic-si-label">CLARIOS es una empresa innovadora en su sector</span>
+            <div class="ic-si-btns">
+              <button type="button" class="ic-si-btn" data-q="1" data-val="1" onclick="setIcSi(1,1)">Sí</button>
+              <button type="button" class="ic-si-btn" data-q="1" data-val="0" onclick="setIcSi(1,0)">No</button>
+            </div>
+          </div>
+          <div class="ic-si-row">
+            <span class="ic-si-label">CLARIOS es una empresa líder en Economía Circular</span>
+            <div class="ic-si-btns">
+              <button type="button" class="ic-si-btn" data-q="2" data-val="1" onclick="setIcSi(2,1)">Sí</button>
+              <button type="button" class="ic-si-btn" data-q="2" data-val="0" onclick="setIcSi(2,0)">No</button>
+            </div>
+          </div>
+          <div class="ic-si-row">
+            <span class="ic-si-label">CLARIOS está comprometida con la sostenibilidad ambiental</span>
+            <div class="ic-si-btns">
+              <button type="button" class="ic-si-btn" data-q="3" data-val="1" onclick="setIcSi(3,1)">Sí</button>
+              <button type="button" class="ic-si-btn" data-q="3" data-val="0" onclick="setIcSi(3,0)">No</button>
+            </div>
+          </div>
+          <div class="ic-si-row">
+            <span class="ic-si-label">CLARIOS ha generado impacto positivo en esta escuela/comunidad</span>
+            <div class="ic-si-btns">
+              <button type="button" class="ic-si-btn" data-q="4" data-val="1" onclick="setIcSi(4,1)">Sí</button>
+              <button type="button" class="ic-si-btn" data-q="4" data-val="0" onclick="setIcSi(4,0)">No</button>
+            </div>
+          </div>
         </div>
 
         </div><!-- /indic-body-reputacion -->
@@ -3204,9 +3207,10 @@ let chartDonut, chartBar, chartLine;
 let currentView = 'dashboard';
 
 // Indicator section opt-in toggles (default: all off)
-const _indicActivos = { resultado: false, impacto: false, reputacion: false, proceso_social: false };
+const _indicActivos = { resultado: true, impacto: false, reputacion: false, proceso_social: false };
 
 function toggleIndic(key) {
+  if (key === 'resultado') return; // always active — mandatory
   _indicActivos[key] = !_indicActivos[key];
   const on = _indicActivos[key];
   const body = document.getElementById('indic-body-' + key);
@@ -3219,13 +3223,15 @@ function toggleIndic(key) {
 }
 
 function resetIndicToggles() {
-  ['resultado','impacto','reputacion','proceso_social'].forEach(k => {
+  ['impacto','reputacion','proceso_social'].forEach(k => {
     _indicActivos[k] = false;
     const body = document.getElementById('indic-body-' + k);
     const btn  = document.getElementById('indic-btn-' + k);
     if (body) body.classList.remove('open');
     if (btn)  { btn.setAttribute('aria-pressed','false'); btn.querySelector('span:last-child').textContent = 'NO APLICA'; }
   });
+  // Clear Sí/No IC buttons
+  document.querySelectorAll('.ic-si-btn').forEach(b => b.classList.remove('selected'));
 }
 
 const COLORS = {
@@ -3325,11 +3331,11 @@ function startForm(type) {
   document.getElementById('f_beneficiarios').value = '';
 
   // Reset general indicator fields
-  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_ic_q1_l1','g_ic_q1_l2','g_ic_q1_l3','g_ic_q1_l4','g_ic_q1_l5','g_ic_q2_l1','g_ic_q2_l2','g_ic_q2_l3','g_ic_q2_l4','g_ic_q2_l5','g_ic_q3_l1','g_ic_q3_l2','g_ic_q3_l3','g_ic_q3_l4','g_ic_q3_l5','g_ic_q4_l1','g_ic_q4_l2','g_ic_q4_l3','g_ic_q4_l4','g_ic_q4_l5','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
+  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_sat_l1','g_sat_l2','g_sat_l3','g_sat_l4','g_sat_l5','g_perc_l1','g_perc_l2','g_perc_l3','g_perc_l4','g_perc_l5','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
   numFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('ic-preview').textContent = '—';
   [1,2,3,4].forEach(q => { const el = document.getElementById(`ic-q${q}-avg`); if (el) { el.textContent = '—'; el.style.color = ''; } });
-  const selFields = ['g_percepcion_clarios','g_reconocimiento','g_satisfaccion','g_canal_seguimiento','g_grado_participacion','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
+  const selFields = ['g_reconocimiento','g_canal_seguimiento','g_grado_participacion','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
   selFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   // Hide all program sections
   ['arranca','guardianes','infraestructura','activacion_social'].forEach(p => {
@@ -3372,6 +3378,7 @@ function goToStep2() {
     { el: 'f_area', field: 'f-area' },
     { el: 'f_beneficiarios', field: 'f-beneficiarios' },
     { el: 'f_objetivo', field: 'f-objetivo' },
+    { el: 'g_inversion', field: 'f-inversion' }, // Resultado obligatorio
   ];
 
   let valid = true;
@@ -3379,7 +3386,7 @@ function goToStep2() {
     const el = document.getElementById(r.el);
     const field = document.getElementById(r.field);
     const val = el.value.trim();
-    const isEmpty = !val || (r.el === 'f_beneficiarios' && parseInt(val) < 0);
+    const isEmpty = !val || (r.el === 'f_beneficiarios' && parseInt(val) < 0) || (r.el === 'g_inversion' && !(parseFloat(val) > 0));
     if (isEmpty) {
       field.classList.add('error');
       valid = false;
@@ -3478,47 +3485,39 @@ function saveRecord() {
     g_grado_participacion:   _ir ? document.getElementById('g_grado_participacion').value : null,
     g_quejas_recibidas:      _ir ? (parseInt(document.getElementById('g_quejas_recibidas').value) || 0) : null,
     g_quejas_atendidas:      _ir ? (parseInt(document.getElementById('g_quejas_atendidas').value) || 0) : null,
+    g_ben_directos:          _ir ? (parseInt(document.getElementById('g_ben_directos').value) || 0) : null,
     // ── Impacto ────────────────────────────────────────────
     g_pct_habilidades:       _ii ? (parseFloat(document.getElementById('g_pct_habilidades').value) || 0) : null,
     g_pct_autonomia_mujeres: _ii ? (parseFloat(document.getElementById('g_pct_autonomia_mujeres').value) || 0) : null,
     g_pct_becarios_sost:     _ii ? (parseFloat(document.getElementById('g_pct_becarios_sost').value) || 0) : null,
-    g_percepcion_clarios:    _ii ? document.getElementById('g_percepcion_clarios').value : null,
+    g_perc_l1: _ii ? (parseInt(document.getElementById('g_perc_l1')?.value) || 0) : null,
+    g_perc_l2: _ii ? (parseInt(document.getElementById('g_perc_l2')?.value) || 0) : null,
+    g_perc_l3: _ii ? (parseInt(document.getElementById('g_perc_l3')?.value) || 0) : null,
+    g_perc_l4: _ii ? (parseInt(document.getElementById('g_perc_l4')?.value) || 0) : null,
+    g_perc_l5: _ii ? (parseInt(document.getElementById('g_perc_l5')?.value) || 0) : null,
+    get g_perc_mediana() { if (!_ii) return null; return calcOrdinalMedian([this.g_perc_l1,this.g_perc_l2,this.g_perc_l3,this.g_perc_l4,this.g_perc_l5]); },
     g_prototipos:            _ii ? (parseInt(document.getElementById('g_prototipos').value) || 0) : null,
     g_alumnos_genero:        _ii ? (parseInt(document.getElementById('g_alumnos_genero').value) || 0) : null,
-    g_satisfaccion:          _ii ? document.getElementById('g_satisfaccion').value : null,
+    g_sat_l1: _ii ? (parseInt(document.getElementById('g_sat_l1')?.value) || 0) : null,
+    g_sat_l2: _ii ? (parseInt(document.getElementById('g_sat_l2')?.value) || 0) : null,
+    g_sat_l3: _ii ? (parseInt(document.getElementById('g_sat_l3')?.value) || 0) : null,
+    g_sat_l4: _ii ? (parseInt(document.getElementById('g_sat_l4')?.value) || 0) : null,
+    g_sat_l5: _ii ? (parseInt(document.getElementById('g_sat_l5')?.value) || 0) : null,
+    get g_sat_mediana() { if (!_ii) return null; return calcOrdinalMedian([this.g_sat_l1,this.g_sat_l2,this.g_sat_l3,this.g_sat_l4,this.g_sat_l5]); },
     // ── Reputación ─────────────────────────────────────────
-    g_ben_directos:          _irep ? (parseInt(document.getElementById('g_ben_directos').value) || 0) : null,
     g_narrativas:            _irep ? (parseInt(document.getElementById('g_narrativas').value) || 0) : null,
     g_reconocimiento:        _irep ? document.getElementById('g_reconocimiento').value : null,
     g_nps:                   _irep ? (parseFloat(document.getElementById('g_nps').value) || null) : null,
-    g_ic_q1_l1: _irep ? (parseInt(document.getElementById('g_ic_q1_l1')?.value) || 0) : null,
-    g_ic_q1_l2: _irep ? (parseInt(document.getElementById('g_ic_q1_l2')?.value) || 0) : null,
-    g_ic_q1_l3: _irep ? (parseInt(document.getElementById('g_ic_q1_l3')?.value) || 0) : null,
-    g_ic_q1_l4: _irep ? (parseInt(document.getElementById('g_ic_q1_l4')?.value) || 0) : null,
-    g_ic_q1_l5: _irep ? (parseInt(document.getElementById('g_ic_q1_l5')?.value) || 0) : null,
-    g_ic_q2_l1: _irep ? (parseInt(document.getElementById('g_ic_q2_l1')?.value) || 0) : null,
-    g_ic_q2_l2: _irep ? (parseInt(document.getElementById('g_ic_q2_l2')?.value) || 0) : null,
-    g_ic_q2_l3: _irep ? (parseInt(document.getElementById('g_ic_q2_l3')?.value) || 0) : null,
-    g_ic_q2_l4: _irep ? (parseInt(document.getElementById('g_ic_q2_l4')?.value) || 0) : null,
-    g_ic_q2_l5: _irep ? (parseInt(document.getElementById('g_ic_q2_l5')?.value) || 0) : null,
-    g_ic_q3_l1: _irep ? (parseInt(document.getElementById('g_ic_q3_l1')?.value) || 0) : null,
-    g_ic_q3_l2: _irep ? (parseInt(document.getElementById('g_ic_q3_l2')?.value) || 0) : null,
-    g_ic_q3_l3: _irep ? (parseInt(document.getElementById('g_ic_q3_l3')?.value) || 0) : null,
-    g_ic_q3_l4: _irep ? (parseInt(document.getElementById('g_ic_q3_l4')?.value) || 0) : null,
-    g_ic_q3_l5: _irep ? (parseInt(document.getElementById('g_ic_q3_l5')?.value) || 0) : null,
-    g_ic_q4_l1: _irep ? (parseInt(document.getElementById('g_ic_q4_l1')?.value) || 0) : null,
-    g_ic_q4_l2: _irep ? (parseInt(document.getElementById('g_ic_q4_l2')?.value) || 0) : null,
-    g_ic_q4_l3: _irep ? (parseInt(document.getElementById('g_ic_q4_l3')?.value) || 0) : null,
-    g_ic_q4_l4: _irep ? (parseInt(document.getElementById('g_ic_q4_l4')?.value) || 0) : null,
-    g_ic_q4_l5: _irep ? (parseInt(document.getElementById('g_ic_q4_l5')?.value) || 0) : null,
-    get g_ic_q1() { if (!_irep) return null; const c=[this.g_ic_q1_l1,this.g_ic_q1_l2,this.g_ic_q1_l3,this.g_ic_q1_l4,this.g_ic_q1_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
-    get g_ic_q2() { if (!_irep) return null; const c=[this.g_ic_q2_l1,this.g_ic_q2_l2,this.g_ic_q2_l3,this.g_ic_q2_l4,this.g_ic_q2_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
-    get g_ic_q3() { if (!_irep) return null; const c=[this.g_ic_q3_l1,this.g_ic_q3_l2,this.g_ic_q3_l3,this.g_ic_q3_l4,this.g_ic_q3_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
-    get g_ic_q4() { if (!_irep) return null; const c=[this.g_ic_q4_l1,this.g_ic_q4_l2,this.g_ic_q4_l3,this.g_ic_q4_l4,this.g_ic_q4_l5]; const sw=c.reduce((s,n,i)=>s+(i+1)*(n||0),0),sn=c.reduce((s,n)=>s+(n||0),0); return sn>0?parseFloat((sw/sn).toFixed(2)):null; },
+    g_ic_si_q1: _irep ? (() => { const s = document.querySelector('.ic-si-btn[data-q="1"].selected'); return s ? parseInt(s.dataset.val) : null; })() : null,
+    g_ic_si_q2: _irep ? (() => { const s = document.querySelector('.ic-si-btn[data-q="2"].selected'); return s ? parseInt(s.dataset.val) : null; })() : null,
+    g_ic_si_q3: _irep ? (() => { const s = document.querySelector('.ic-si-btn[data-q="3"].selected'); return s ? parseInt(s.dataset.val) : null; })() : null,
+    g_ic_si_q4: _irep ? (() => { const s = document.querySelector('.ic-si-btn[data-q="4"].selected'); return s ? parseInt(s.dataset.val) : null; })() : null,
     get g_indice_confianza() {
       if (!_irep) return null;
-      const avgs = [this.g_ic_q1, this.g_ic_q2, this.g_ic_q3, this.g_ic_q4].filter(v => v != null);
-      return avgs.length ? parseFloat((avgs.reduce((a,b) => a+b, 0) / avgs.length).toFixed(2)) : null;
+      const vals = [this.g_ic_si_q1, this.g_ic_si_q2, this.g_ic_si_q3, this.g_ic_si_q4];
+      const answered = vals.filter(v => v !== null);
+      if (!answered.length) return null;
+      return Math.round(answered.filter(v => v === 1).length / answered.length * 100);
     },
     // ── Proceso Social ─────────────────────────────────────
     g_alianzas:              _ips ? (parseInt(document.getElementById('g_alianzas').value) || 0) : null,
@@ -3714,6 +3713,7 @@ function mGauge(id, rawVal, type = 'scale5') {
 // ═══════════════════════════════════════════════════
 function renderDashboard(data) {
   if (!data) data = filteredRecords.length || document.getElementById('fil-year').value ? filteredRecords : records;
+  window._icSiAgg = { q1si:0, q1no:0, q2si:0, q2no:0, q3si:0, q3no:0, q4si:0, q4no:0, count:0 };
 
   const byType = { proyecto:0, evento:0, activacion:0 };
   let totalBenDir = 0, totalBenInd = 0, totalEscuelas = 0, totalHoras = 0, totalInversion = 0;
@@ -3728,7 +3728,7 @@ function renderDashboard(data) {
   let sumReconNum = 0, cntRecon = 0;
   let sumSatNum = 0, cntSat = 0;
   let sumConfianza = 0, cntConfianza = 0;
-  const icDist = [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]];
+  // icDist removed — IC now uses Sí/No format accumulated in window._icSiAgg
   let sumNps = 0, cntNps = 0;
   let sumParticipacion = 0, cntParticipacion = 0;
   let totalVoluntarios = 0;
@@ -3759,7 +3759,8 @@ function renderDashboard(data) {
     if (r.af_pct_beneficiados_clarios) { sumEmpleador   += parseFloat(r.af_pct_beneficiados_clarios); cntEmpleador++; }
 
     const reconNum = parseInt((r.g_reconocimiento||'').charAt(0));
-    const satNum   = parseInt((r.g_satisfaccion||'').charAt(0));
+    // satNum: new format uses g_sat_mediana (integer 1-5); old format parsed from g_satisfaccion string
+    const satNum   = r.g_sat_mediana != null ? r.g_sat_mediana : parseInt((r.g_satisfaccion||'').charAt(0));
     const partNum  = parseInt((r.g_grado_participacion||'').charAt(0));
     if (reconNum) { sumReconNum += reconNum; cntRecon++; }
     if (satNum)   { sumSatNum   += satNum;   cntSat++; }
@@ -3767,13 +3768,18 @@ function renderDashboard(data) {
 
     const conf = parseFloat(r.g_indice_confianza);
     const nps  = parseFloat(r.g_nps);
-    if (!isNaN(conf) && conf > 0) { sumConfianza += conf; cntConfianza++; }
-    if (!isNaN(nps)  && r.g_nps != null && r.g_nps !== '') { sumNps += nps; cntNps++; }
-    for (let q = 0; q < 4; q++) {
-      for (let l = 0; l < 5; l++) {
-        icDist[q][l] += parseInt(r[`g_ic_q${q+1}_l${l+1}`]) || 0;
-      }
+    // g_indice_confianza: new format = % (0-100); old format = weighted avg (1-5). Convert old → %
+    if (!isNaN(conf) && r.g_indice_confianza !== null) {
+      sumConfianza += (conf > 5 ? conf : conf * 20); cntConfianza++;
     }
+    if (!isNaN(nps)  && r.g_nps != null && r.g_nps !== '') { sumNps += nps; cntNps++; }
+    // Accumulate new Sí/No IC data for popover (keyed by record)
+    window._icSiAgg = window._icSiAgg || { q1si:0, q1no:0, q2si:0, q2no:0, q3si:0, q3no:0, q4si:0, q4no:0, count:0 };
+    if (r.g_ic_si_q1 !== undefined && r.g_ic_si_q1 !== null) { r.g_ic_si_q1 === 1 ? window._icSiAgg.q1si++ : window._icSiAgg.q1no++; }
+    if (r.g_ic_si_q2 !== undefined && r.g_ic_si_q2 !== null) { r.g_ic_si_q2 === 1 ? window._icSiAgg.q2si++ : window._icSiAgg.q2no++; }
+    if (r.g_ic_si_q3 !== undefined && r.g_ic_si_q3 !== null) { r.g_ic_si_q3 === 1 ? window._icSiAgg.q3si++ : window._icSiAgg.q3no++; }
+    if (r.g_ic_si_q4 !== undefined && r.g_ic_si_q4 !== null) { r.g_ic_si_q4 === 1 ? window._icSiAgg.q4si++ : window._icSiAgg.q4no++; }
+    if (r.g_indice_confianza !== null && r.g_indice_confianza !== undefined) window._icSiAgg.count++;
 
     if (r.programa === 'guardianes')       { prog.guardianes.guardianes += parseInt(r.gp_guardianes)||0; prog.guardianes.residuos += parseFloat(r.gp_residuos_kg)||0; prog.guardianes.estaciones += parseInt(r.gp_estaciones)||0; }
     if (r.programa === 'arranca')          { prog.arranca.perfiles += parseFloat(r.af_pct_perfiles)||0; prog.arranca.intervenidos += parseFloat(r.af_pct_intervenidos)||0; prog.arranca.gimnasios += parseInt(r.af_gimnasios)||0; prog.arranca.sesiones += parseInt(r.af_sesiones)||0; }
@@ -3788,8 +3794,9 @@ function renderDashboard(data) {
   setText('stat-activaciones', byType.activacion);
 
   // Average scale-5 raw strings for gauge
-  if (cntRecon)        avgRecon = String(Math.round(sumReconNum/cntRecon)) + ' — ' + (['','Muy bajo','Bajo','Medio','Alto','Muy alto'][Math.round(sumReconNum/cntRecon)]||'');
-  if (cntSat)          avgSat   = String(Math.round(sumSatNum/cntSat))   + ' — ' + (['','Muy bajo','Bajo','Medio','Alto','Muy alto'][Math.round(sumSatNum/cntSat)]||'');
+  if (cntRecon) avgRecon = String(Math.round(sumReconNum/cntRecon)) + ' — ' + (['','No conocido','Poco conocido','Conocido','Referente local','Referente regional'][Math.round(sumReconNum/cntRecon)]||'');
+  const satLabels = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
+  if (cntSat) avgSat = String(Math.round(sumSatNum/cntSat)) + ' — ' + (satLabels[Math.round(sumSatNum/cntSat)]||'');
   let avgPart = cntParticipacion ? String(Math.round(sumParticipacion/cntParticipacion)) + ' — ...' : '';
 
   // ── IMPACTO ──
@@ -3801,26 +3808,15 @@ function renderDashboard(data) {
   mNum('mc-genero',  totalAlumnosGenero || null, { color:'#F472B6', pending: !totalAlumnosGenero });
 
   // ── REPUTACIÓN ──
-  mNum('mc-ben-dir', totalBenDir ? totalBenDir.toLocaleString('es-MX') : null, { color:'#34D399', pending: !totalBenDir });
   mGauge('mc-reconocimiento', cntRecon ? avgRecon : '', 'scale5');
   mNum('mc-narrativas', totalNarrativas || null, { color:'#F59E0B', pending: !totalNarrativas });
-  // Store per-question aggregates (distribution-based) for popover
-  const icDistAvg = icDist.map(dist => {
-    const sw = dist.reduce((s,n,i) => s + (i+1)*n, 0);
-    const sn = dist.reduce((s,n) => s + n, 0);
-    return sn > 0 ? sw/sn : null;
-  });
-  window._icAgg = {
-    q1: icDistAvg[0], q2: icDistAvg[1], q3: icDistAvg[2], q4: icDistAvg[3],
-    q1dist: icDist[0], q2dist: icDist[1], q3dist: icDist[2], q4dist: icDist[3],
-    avg: cntConfianza ? sumConfianza/cntConfianza : null
-  };
-  const icAvgStr = cntConfianza ? (sumConfianza/cntConfianza).toFixed(2) : '';
-  mGauge('mc-confianza', icAvgStr, 'scale5f');
+  const icPct = cntConfianza ? Math.round(sumConfianza/cntConfianza) : null;
+  mNum('mc-confianza', icPct !== null ? icPct+'%' : null, { color: icPct >= 75 ? '#34D399' : icPct >= 50 ? '#F59E0B' : '#EF4444', pending: icPct === null });
   mGauge('mc-nps', cntNps ? (sumNps/cntNps).toFixed(0) : '', 'nps');
   mNum('mc-empleador',  cntEmpleador ? Math.round(sumEmpleador/cntEmpleador)+'%' : null, { color:'#60A5FA', pending: !cntEmpleador });
 
   // ── RESULTADO ──
+  mNum('mc-ben-dir', totalBenDir ? totalBenDir.toLocaleString('es-MX') : null, { color:'#34D399', pending: !totalBenDir });
   mNum('mc-horas',         totalHoras.toLocaleString('es-MX'),  { color:'#A78BFA', large: true, sub: 'Meta 2026: 900 hrs' });
   mNum('mc-ben-indirectos', totalBenInd ? totalBenInd.toLocaleString('es-MX') : null, { color:'#22D3EE', pending: !totalBenInd, sub: 'Meta 2026: 32,000' });
   mNum('mc-mujeres', cntMujeres ? Math.round(sumMujeres/cntMujeres)+'%' : null, { color:'#F472B6', pending: !cntMujeres });
@@ -4562,8 +4558,7 @@ function renderRecordTablero() {
           <div class="metric-card"><div class="metric-card-label">Reconocimiento de CLARIOS</div><div id="pr-mc-reconocimiento"></div></div>
           <div class="metric-card"><div class="metric-card-label">% Empleador deseado</div><div id="pr-mc-empleador"></div></div>
           <div class="metric-card"><div class="metric-card-label">Narrativas positivas</div><div id="pr-mc-narrativas"></div></div>
-          <div class="metric-card"><div class="metric-card-label">Beneficiarios directos</div><div id="pr-mc-ben-dir-rep"></div></div>
-          <div class="metric-card" ondblclick="showConfianzaPop(event,'individual','${r.id}')" style="cursor:pointer" title="Doble clic para ver desglose"><div class="metric-card-label">Índice de confianza <span style="font-size:8px;opacity:0.5">⊞ dbl-clic</span></div><div id="pr-mc-confianza"></div></div>
+          <div class="metric-card"><div class="metric-card-label">Índice de confianza</div><div id="pr-mc-confianza"></div></div>
           <div class="metric-card"><div class="metric-card-label">NPS</div><div id="pr-mc-nps"></div></div>
         </div>
       </div>
@@ -4593,7 +4588,9 @@ function renderRecordTablero() {
   // ── IMPACTO ──
   mNum('pr-mc-habilidades',  r.g_pct_habilidades  ? r.g_pct_habilidades+'%' : null,  { color:'#A78BFA', pending: !r.g_pct_habilidades });
   mNum('pr-mc-prototipos',   parseInt(r.g_prototipos)||null,  { color:'#FCD34D', pending: !parseInt(r.g_prototipos) });
-  mGauge('pr-mc-satisfaccion',  r.g_satisfaccion||'',       'scale5');
+  const prSatMed = r.g_sat_mediana != null ? r.g_sat_mediana : parseInt((r.g_satisfaccion||'').charAt(0));
+  const prSatLabels = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
+  mGauge('pr-mc-satisfaccion', prSatMed ? String(prSatMed) + ' — ' + (prSatLabels[prSatMed]||'') : '', 'scale5');
   mGauge('pr-mc-participacion', r.g_grado_participacion||'','scale5');
   mNum('pr-mc-talento',  parseInt(r.af_talento_canalizado)||null, { color:'#34D399', pending: !parseInt(r.af_talento_canalizado) });
   mNum('pr-mc-genero',   parseInt(r.g_alumnos_genero)||null,      { color:'#F472B6', pending: !parseInt(r.g_alumnos_genero) });
@@ -4603,9 +4600,10 @@ function renderRecordTablero() {
   mNum('pr-mc-empleador',  r.af_pct_beneficiados_clarios ? r.af_pct_beneficiados_clarios+'%' : null, { color:'#60A5FA', pending: !r.af_pct_beneficiados_clarios });
   mNum('pr-mc-narrativas', parseInt(r.g_narrativas)||null, { color:'#F59E0B', pending: !parseInt(r.g_narrativas) });
   const prBenD = parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0;
-  mNum('pr-mc-ben-dir-rep', prBenD ? prBenD.toLocaleString('es-MX') : null, { color:'#34D399', pending: !prBenD });
-  mGauge('pr-mc-confianza', (r.g_indice_confianza != null && r.g_indice_confianza !== '') ? String(r.g_indice_confianza) : '', 'scale5f');
-  mGauge('pr-mc-nps',       (r.g_nps != null && r.g_nps !== '') ? String(r.g_nps) : '', 'nps');
+  const prIcVal = r.g_indice_confianza != null ? r.g_indice_confianza : null;
+  const prIcPct = prIcVal !== null ? (prIcVal > 5 ? prIcVal : prIcVal * 20) : null; // normalize old 1-5 to %
+  mNum('pr-mc-confianza', prIcPct !== null ? Math.round(prIcPct)+'%' : null, { color: prIcPct >= 75 ? '#34D399' : prIcPct >= 50 ? '#F59E0B' : '#EF4444', pending: prIcPct === null });
+  mGauge('pr-mc-nps', (r.g_nps != null && r.g_nps !== '') ? String(r.g_nps) : '', 'nps');
 
   // ── RESULTADO ──
   mNum('pr-mc-ben-directos',  prBenD ? prBenD.toLocaleString('es-MX') : '0', { color:'#34D399', large: true });
@@ -4876,31 +4874,57 @@ const IC_QUESTIONS = [
   '¿CLARIOS ha generado impacto positivo en tu escuela/comunidad?'
 ];
 
-function updateIcPreview() {
-  const qAvgs = [];
-  for (let q = 1; q <= 4; q++) {
-    const counts = [1,2,3,4,5].map(l => parseInt(document.getElementById(`g_ic_q${q}_l${l}`)?.value) || 0);
-    const sumN = counts.reduce((a,b) => a+b, 0);
-    const sumW = counts.reduce((s,n,i) => s + (i+1)*n, 0);
-    const avg = sumN > 0 ? sumW / sumN : null;
-    const el = document.getElementById(`ic-q${q}-avg`);
-    if (el) {
-      if (avg !== null) {
-        el.textContent = avg.toFixed(2);
-        el.style.color = avg >= 4 ? 'var(--green-lt)' : avg >= 3 ? 'var(--amber)' : 'var(--red)';
-      } else {
-        el.textContent = '—';
-        el.style.color = 'var(--gray-3)';
-      }
-    }
-    if (avg !== null) qAvgs.push(avg);
+function calcOrdinalMedian(counts) {
+  const N = (counts || []).reduce((a, b) => a + (b || 0), 0);
+  if (N === 0) return null;
+  const half = N / 2;
+  let cum = 0;
+  for (let i = 0; i < counts.length; i++) {
+    cum += counts[i] || 0;
+    if (cum >= half) return i + 1;
   }
+  return counts.length;
+}
+
+function updatePercepcionPreview() {
+  const counts = [1,2,3,4,5].map(l => parseInt(document.getElementById('g_perc_l' + l)?.value) || 0);
+  const med = calcOrdinalMedian(counts);
+  const el = document.getElementById('perc-preview');
+  if (!el) return;
+  const labels = ['','Muy bajo','Bajo','Medio','Alto','Muy alto'];
+  el.textContent = med !== null ? med + ' — ' + (labels[med] || '') : '—';
+  el.style.color = med !== null ? (med >= 4 ? 'var(--green-lt)' : med >= 3 ? 'var(--amber)' : 'var(--red)') : 'var(--gray-3)';
+}
+
+function updateSatisfaccionPreview() {
+  const counts = [1,2,3,4,5].map(l => parseInt(document.getElementById('g_sat_l' + l)?.value) || 0);
+  const med = calcOrdinalMedian(counts);
+  const el = document.getElementById('sat-preview');
+  if (!el) return;
+  const labels = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
+  el.textContent = med !== null ? med + ' — ' + (labels[med] || '') : '—';
+  el.style.color = med !== null ? (med >= 4 ? 'var(--green-lt)' : med >= 3 ? 'var(--amber)' : 'var(--red)') : 'var(--gray-3)';
+}
+
+function setIcSi(q, val) {
+  document.querySelectorAll(`.ic-si-btn[data-q="${q}"]`).forEach(btn => {
+    btn.classList.toggle('selected', parseInt(btn.dataset.val) === val);
+  });
+  updateIcPreview();
+}
+
+function updateIcPreview() {
+  const answers = [1,2,3,4].map(q => {
+    const sel = document.querySelector(`.ic-si-btn[data-q="${q}"].selected`);
+    return sel ? parseInt(sel.dataset.val) : null;
+  });
+  const answered = answers.filter(v => v !== null);
+  const pct = answered.length > 0 ? Math.round(answered.filter(v => v === 1).length / answered.length * 100) : null;
   const el = document.getElementById('ic-preview');
   if (!el) return;
-  if (qAvgs.length > 0) {
-    const overall = qAvgs.reduce((a,b) => a+b, 0) / qAvgs.length;
-    el.textContent = overall.toFixed(2) + ' / 5';
-    el.style.color = overall >= 4 ? 'var(--green-lt)' : overall >= 3 ? 'var(--amber)' : 'var(--red)';
+  if (pct !== null) {
+    el.textContent = pct + '%';
+    el.style.color = pct >= 75 ? 'var(--green-lt)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
   } else {
     el.textContent = '—';
     el.style.color = 'var(--gray-3)';
