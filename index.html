@@ -2441,40 +2441,22 @@ tbody tr:last-child td { border-bottom: none; }
           <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:6px">
             <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple-lt)">Índice de confianza (calculado)</div>
             <div id="ic-preview" style="font-family:var(--mono);font-size:22px;font-weight:700;color:var(--white)">—</div>
-            <div class="helper">% de afirmaciones marcadas como "Sí"</div>
+            <div class="helper">Sí ÷ (Sí + No) × 100</div>
           </div>
         </div>
 
-        <!-- ÍNDICE DE CONFIANZA — Sí/No por elemento -->
+        <!-- ÍNDICE DE CONFIANZA — totales Sí / No -->
         <div class="likert-group">
-          <div class="likert-group-title">Índice de Confianza — 4 elementos (Sí / No)</div>
-          <div style="font-size:11px;color:var(--gray-3);margin-bottom:12px">Marca Sí o No para cada afirmación. Los no respondidos se excluyen del cálculo.</div>
-          <div class="ic-si-row">
-            <span class="ic-si-label">CLARIOS es una empresa innovadora en su sector</span>
-            <div class="ic-si-btns">
-              <button type="button" class="ic-si-btn" data-q="1" data-val="1" onclick="setIcSi(1,1)">Sí</button>
-              <button type="button" class="ic-si-btn" data-q="1" data-val="0" onclick="setIcSi(1,0)">No</button>
+          <div class="likert-group-title">Índice de Confianza — Totales Sí / No</div>
+          <div style="font-size:11px;color:var(--gray-3);margin-bottom:12px">Ingresa el total de participantes que respondieron Sí y No al conjunto de afirmaciones sobre CLARIOS.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field">
+              <label style="color:var(--green-lt)">Respondieron Sí</label>
+              <input type="number" id="g_ic_si_total" min="0" placeholder="0" oninput="updateIcPreview()">
             </div>
-          </div>
-          <div class="ic-si-row">
-            <span class="ic-si-label">CLARIOS es una empresa líder en Economía Circular</span>
-            <div class="ic-si-btns">
-              <button type="button" class="ic-si-btn" data-q="2" data-val="1" onclick="setIcSi(2,1)">Sí</button>
-              <button type="button" class="ic-si-btn" data-q="2" data-val="0" onclick="setIcSi(2,0)">No</button>
-            </div>
-          </div>
-          <div class="ic-si-row">
-            <span class="ic-si-label">CLARIOS está comprometida con la sostenibilidad ambiental</span>
-            <div class="ic-si-btns">
-              <button type="button" class="ic-si-btn" data-q="3" data-val="1" onclick="setIcSi(3,1)">Sí</button>
-              <button type="button" class="ic-si-btn" data-q="3" data-val="0" onclick="setIcSi(3,0)">No</button>
-            </div>
-          </div>
-          <div class="ic-si-row">
-            <span class="ic-si-label">CLARIOS ha generado impacto positivo en esta escuela/comunidad</span>
-            <div class="ic-si-btns">
-              <button type="button" class="ic-si-btn" data-q="4" data-val="1" onclick="setIcSi(4,1)">Sí</button>
-              <button type="button" class="ic-si-btn" data-q="4" data-val="0" onclick="setIcSi(4,0)">No</button>
+            <div class="field">
+              <label style="color:var(--red)">Respondieron No</label>
+              <input type="number" id="g_ic_no_total" min="0" placeholder="0" oninput="updateIcPreview()">
             </div>
           </div>
         </div>
@@ -3230,8 +3212,9 @@ function resetIndicToggles() {
     if (body) body.classList.remove('open');
     if (btn)  { btn.setAttribute('aria-pressed','false'); btn.querySelector('span:last-child').textContent = 'NO APLICA'; }
   });
-  // Clear Sí/No IC buttons
-  document.querySelectorAll('.ic-si-btn').forEach(b => b.classList.remove('selected'));
+  const icSiEl = document.getElementById('g_ic_si_total'); if (icSiEl) icSiEl.value = '';
+  const icNoEl = document.getElementById('g_ic_no_total'); if (icNoEl) icNoEl.value = '';
+  updateIcPreview();
 }
 
 const COLORS = {
@@ -3331,10 +3314,14 @@ function startForm(type) {
   document.getElementById('f_beneficiarios').value = '';
 
   // Reset general indicator fields
-  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_sat_l1','g_sat_l2','g_sat_l3','g_sat_l4','g_sat_l5','g_perc_l1','g_perc_l2','g_perc_l3','g_perc_l4','g_perc_l5','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
+  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_sat_l1','g_sat_l2','g_sat_l3','g_sat_l4','g_sat_l5','g_perc_l1','g_perc_l2','g_perc_l3','g_perc_l4','g_perc_l5','g_ic_si_total','g_ic_no_total','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
   numFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-  document.getElementById('ic-preview').textContent = '—';
-  [1,2,3,4].forEach(q => { const el = document.getElementById(`ic-q${q}-avg`); if (el) { el.textContent = '—'; el.style.color = ''; } });
+  const icPreviewEl = document.getElementById('ic-preview');
+  if (icPreviewEl) { icPreviewEl.textContent = '—'; icPreviewEl.style.color = ''; }
+  const satPreviewEl = document.getElementById('sat-preview');
+  if (satPreviewEl) { satPreviewEl.textContent = '—'; satPreviewEl.style.color = ''; }
+  const percPreviewEl = document.getElementById('perc-preview');
+  if (percPreviewEl) { percPreviewEl.textContent = '—'; percPreviewEl.style.color = ''; }
   const selFields = ['g_reconocimiento','g_canal_seguimiento','g_grado_participacion','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
   selFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   // Hide all program sections
@@ -3508,16 +3495,13 @@ function saveRecord() {
     g_narrativas:            _irep ? (parseInt(document.getElementById('g_narrativas').value) || 0) : null,
     g_reconocimiento:        _irep ? document.getElementById('g_reconocimiento').value : null,
     g_nps:                   _irep ? (parseFloat(document.getElementById('g_nps').value) || null) : null,
-    g_ic_si_q1: _irep ? (() => { const s = document.querySelector('.ic-si-btn[data-q="1"].selected'); return s ? parseInt(s.dataset.val) : null; })() : null,
-    g_ic_si_q2: _irep ? (() => { const s = document.querySelector('.ic-si-btn[data-q="2"].selected'); return s ? parseInt(s.dataset.val) : null; })() : null,
-    g_ic_si_q3: _irep ? (() => { const s = document.querySelector('.ic-si-btn[data-q="3"].selected'); return s ? parseInt(s.dataset.val) : null; })() : null,
-    g_ic_si_q4: _irep ? (() => { const s = document.querySelector('.ic-si-btn[data-q="4"].selected'); return s ? parseInt(s.dataset.val) : null; })() : null,
+    g_ic_si_total: _irep ? (parseInt(document.getElementById('g_ic_si_total')?.value) || 0) : null,
+    g_ic_no_total: _irep ? (parseInt(document.getElementById('g_ic_no_total')?.value) || 0) : null,
     get g_indice_confianza() {
       if (!_irep) return null;
-      const vals = [this.g_ic_si_q1, this.g_ic_si_q2, this.g_ic_si_q3, this.g_ic_si_q4];
-      const answered = vals.filter(v => v !== null);
-      if (!answered.length) return null;
-      return Math.round(answered.filter(v => v === 1).length / answered.length * 100);
+      const si = this.g_ic_si_total || 0, no = this.g_ic_no_total || 0;
+      const total = si + no;
+      return total > 0 ? Math.round(si / total * 100) : null;
     },
     // ── Proceso Social ─────────────────────────────────────
     g_alianzas:              _ips ? (parseInt(document.getElementById('g_alianzas').value) || 0) : null,
@@ -3774,11 +3758,6 @@ function renderDashboard(data) {
     }
     if (!isNaN(nps)  && r.g_nps != null && r.g_nps !== '') { sumNps += nps; cntNps++; }
     // Accumulate new Sí/No IC data for popover (keyed by record)
-    window._icSiAgg = window._icSiAgg || { q1si:0, q1no:0, q2si:0, q2no:0, q3si:0, q3no:0, q4si:0, q4no:0, count:0 };
-    if (r.g_ic_si_q1 !== undefined && r.g_ic_si_q1 !== null) { r.g_ic_si_q1 === 1 ? window._icSiAgg.q1si++ : window._icSiAgg.q1no++; }
-    if (r.g_ic_si_q2 !== undefined && r.g_ic_si_q2 !== null) { r.g_ic_si_q2 === 1 ? window._icSiAgg.q2si++ : window._icSiAgg.q2no++; }
-    if (r.g_ic_si_q3 !== undefined && r.g_ic_si_q3 !== null) { r.g_ic_si_q3 === 1 ? window._icSiAgg.q3si++ : window._icSiAgg.q3no++; }
-    if (r.g_ic_si_q4 !== undefined && r.g_ic_si_q4 !== null) { r.g_ic_si_q4 === 1 ? window._icSiAgg.q4si++ : window._icSiAgg.q4no++; }
     if (r.g_indice_confianza !== null && r.g_indice_confianza !== undefined) window._icSiAgg.count++;
 
     if (r.programa === 'guardianes')       { prog.guardianes.guardianes += parseInt(r.gp_guardianes)||0; prog.guardianes.residuos += parseFloat(r.gp_residuos_kg)||0; prog.guardianes.estaciones += parseInt(r.gp_estaciones)||0; }
@@ -4906,23 +4885,14 @@ function updateSatisfaccionPreview() {
   el.style.color = med !== null ? (med >= 4 ? 'var(--green-lt)' : med >= 3 ? 'var(--amber)' : 'var(--red)') : 'var(--gray-3)';
 }
 
-function setIcSi(q, val) {
-  document.querySelectorAll(`.ic-si-btn[data-q="${q}"]`).forEach(btn => {
-    btn.classList.toggle('selected', parseInt(btn.dataset.val) === val);
-  });
-  updateIcPreview();
-}
-
 function updateIcPreview() {
-  const answers = [1,2,3,4].map(q => {
-    const sel = document.querySelector(`.ic-si-btn[data-q="${q}"].selected`);
-    return sel ? parseInt(sel.dataset.val) : null;
-  });
-  const answered = answers.filter(v => v !== null);
-  const pct = answered.length > 0 ? Math.round(answered.filter(v => v === 1).length / answered.length * 100) : null;
+  const si = parseInt(document.getElementById('g_ic_si_total')?.value) || 0;
+  const no = parseInt(document.getElementById('g_ic_no_total')?.value) || 0;
+  const total = si + no;
   const el = document.getElementById('ic-preview');
   if (!el) return;
-  if (pct !== null) {
+  if (total > 0) {
+    const pct = Math.round(si / total * 100);
     el.textContent = pct + '%';
     el.style.color = pct >= 75 ? 'var(--green-lt)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
   } else {
