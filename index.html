@@ -995,34 +995,36 @@ tbody tr:last-child td { border-bottom: none; }
 
 .tablero-row {
   display: grid;
-  grid-template-columns: 90px 1fr;
+  grid-template-columns: 130px 1fr;
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   overflow: hidden;
-  min-height: 72px;
+  min-height: 88px;
 }
 
 .tablero-label {
   background: var(--row-color, var(--purple));
-  padding: 10px 10px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 .tablero-label-name {
   font-family: var(--cond);
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 900;
   color: rgba(255,255,255,0.95);
   line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .tablero-label-count {
-  font-size: 8px;
-  color: rgba(255,255,255,0.45);
+  font-size: 9px;
+  color: rgba(255,255,255,0.5);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -2372,7 +2374,7 @@ tbody tr:last-child td { border-bottom: none; }
               <div class="level-count-item"><div class="level-count-lbl">Muy alto</div><div class="level-count-num">N5</div><input type="number" id="g_perc_l5" class="level-count-inp" min="0" placeholder="0" oninput="updatePercepcionPreview()"></div>
             </div>
             <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
-              <span style="font-size:9px;color:var(--gray-3);letter-spacing:1px;text-transform:uppercase">Nivel mediano:</span>
+              <span style="font-size:9px;color:var(--gray-3);letter-spacing:1px;text-transform:uppercase">Nivel:</span>
               <span id="perc-preview" class="median-preview">—</span>
             </div>
           </div>
@@ -2390,7 +2392,7 @@ tbody tr:last-child td { border-bottom: none; }
         </div>
         <div class="field-row cols-2">
           <div class="field">
-            <label>Nivel de satisfacción de estudiantes y docentes</label>
+            <label>Nivel de Satisfacción</label>
             <div class="helper">N.° de respondientes por nivel (mediana ordinal)</div>
             <div class="level-count-row">
               <div class="level-count-item"><div class="level-count-lbl">Muy insatisfecho</div><div class="level-count-num">N1</div><input type="number" id="g_sat_l1" class="level-count-inp" min="0" placeholder="0" oninput="updateSatisfaccionPreview()"></div>
@@ -2400,7 +2402,7 @@ tbody tr:last-child td { border-bottom: none; }
               <div class="level-count-item"><div class="level-count-lbl">Muy satisfecho</div><div class="level-count-num">N5</div><input type="number" id="g_sat_l5" class="level-count-inp" min="0" placeholder="0" oninput="updateSatisfaccionPreview()"></div>
             </div>
             <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
-              <span style="font-size:9px;color:var(--gray-3);letter-spacing:1px;text-transform:uppercase">Nivel mediano:</span>
+              <span style="font-size:9px;color:var(--gray-3);letter-spacing:1px;text-transform:uppercase">Nivel:</span>
               <span id="sat-preview" class="median-preview">—</span>
             </div>
           </div>
@@ -2424,21 +2426,45 @@ tbody tr:last-child td { border-bottom: none; }
           </div>
           <div class="field">
             <label>NPS — Net Promoter Score</label>
-            <input type="number" id="g_nps" placeholder="0" min="-100" max="100">
-            <div class="helper">Escala de -100 a 100</div>
+            <div class="helper" style="margin-bottom:8px">¿Considerarías a CLARIOS como una empresa buena para trabajar?</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px">
+              <div class="field" style="margin:0">
+                <label style="color:var(--green-lt)">Sí (promotores)</label>
+                <input type="number" id="g_nps_pos" min="0" placeholder="0" oninput="updateNpsPreview()">
+              </div>
+              <div class="field" style="margin:0">
+                <label style="color:var(--amber)">Neutral (pasivos)</label>
+                <input type="number" id="g_nps_neu" min="0" placeholder="0" oninput="updateNpsPreview()">
+              </div>
+              <div class="field" style="margin:0">
+                <label style="color:var(--red)">No (detractores)</label>
+                <input type="number" id="g_nps_neg" min="0" placeholder="0" oninput="updateNpsPreview()">
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:9px;color:var(--gray-3);letter-spacing:1px;text-transform:uppercase">NPS:</span>
+              <span id="nps-preview" style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--white)">—</span>
+            </div>
           </div>
         </div>
         <div class="field-row cols-2">
           <div class="field">
-            <label>Grado de reconocimiento de CLARIOS</label>
-            <select id="g_reconocimiento">
-              <option value="">Selecciona...</option>
-              <option>1 — No conocido</option>
-              <option>2 — Poco conocido</option>
-              <option>3 — Conocido en la comunidad</option>
-              <option>4 — Referente local</option>
-              <option>5 — Referente regional / nacional</option>
-            </select>
+            <label>Reconocimiento de CLARIOS</label>
+            <div class="helper" style="margin-bottom:8px">¿Conoces a la empresa CLARIOS? Sus objetivos, servicios y/o productos así como su impacto en el mundo.</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px">
+              <div class="field" style="margin:0">
+                <label style="color:var(--green-lt)">Respondieron Sí</label>
+                <input type="number" id="g_rec_si" min="0" placeholder="0" oninput="updateReconocimientoPreview()">
+              </div>
+              <div class="field" style="margin:0">
+                <label style="color:var(--red)">Respondieron No</label>
+                <input type="number" id="g_rec_no" min="0" placeholder="0" oninput="updateReconocimientoPreview()">
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:9px;color:var(--gray-3);letter-spacing:1px;text-transform:uppercase">Reconocimiento:</span>
+              <span id="rec-preview" style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--white)">—</span>
+            </div>
           </div>
           <div class="field" style="display:flex;flex-direction:column;justify-content:flex-end;gap:6px">
             <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple-lt)">Índice de confianza (calculado)</div>
@@ -3336,16 +3362,14 @@ function startForm(type) {
   document.getElementById('f_beneficiarios').value = '';
 
   // Reset general indicator fields
-  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_sat_l1','g_sat_l2','g_sat_l3','g_sat_l4','g_sat_l5','g_perc_l1','g_perc_l2','g_perc_l3','g_perc_l4','g_perc_l5','g_ic_q1_si','g_ic_q1_no','g_ic_q2_si','g_ic_q2_no','g_ic_q3_si','g_ic_q3_no','g_ic_q4_si','g_ic_q4_no','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
+  const numFields = ['g_escuelas','g_horas_formacion','g_ben_directos','g_ben_indirectos','g_pct_mujeres','g_alianzas','g_prototipos','g_narrativas','g_pct_habilidades','g_pct_autonomia_mujeres','g_pct_becarios_sost','g_rondas_mentoria','g_alumnos_genero','g_nps_pos','g_nps_neu','g_nps_neg','g_rec_si','g_rec_no','g_quejas_recibidas','g_quejas_atendidas','g_inversion','g_sat_l1','g_sat_l2','g_sat_l3','g_sat_l4','g_sat_l5','g_perc_l1','g_perc_l2','g_perc_l3','g_perc_l4','g_perc_l5','g_ic_q1_si','g_ic_q1_no','g_ic_q2_si','g_ic_q2_no','g_ic_q3_si','g_ic_q3_no','g_ic_q4_si','g_ic_q4_no','af_pct_perfiles','af_pct_intervenidos','af_gimnasios','af_sesiones','af_talento_canalizado','af_pct_beneficiados_clarios','gp_guardianes','gp_residuos_kg','gp_estaciones','inf_arboles','inf_intervenciones','inf_espacios_digitales','as_voluntarios','as_num_eventos','as_horas_voluntariado'];
   numFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   [1,2,3,4].forEach(q => { const el = document.getElementById(`ic-q${q}-pct`); if (el) { el.textContent = '—'; el.style.color = ''; } });
-  const icPreviewEl = document.getElementById('ic-preview');
-  if (icPreviewEl) { icPreviewEl.textContent = '—'; icPreviewEl.style.color = ''; }
-  const satPreviewEl = document.getElementById('sat-preview');
-  if (satPreviewEl) { satPreviewEl.textContent = '—'; satPreviewEl.style.color = ''; }
-  const percPreviewEl = document.getElementById('perc-preview');
-  if (percPreviewEl) { percPreviewEl.textContent = '—'; percPreviewEl.style.color = ''; }
-  const selFields = ['g_reconocimiento','g_canal_seguimiento','g_grado_participacion','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
+  ['ic-preview','sat-preview','perc-preview','nps-preview','rec-preview'].forEach(id => {
+    const el = document.getElementById(id); if (el) { el.textContent = '—'; el.style.color = ''; }
+  });
+  [1,2,3,4].forEach(q => { const el = document.getElementById(`ic-q${q}-pct`); if (el) { el.textContent = '—'; el.style.color = ''; } });
+  const selFields = ['g_canal_seguimiento','g_grado_participacion','f_programa','gp_tipo_residuos','inf_tipo','as_tipo','af_obs','gp_obs','inf_obs','as_obs'];
   selFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   // Hide all program sections
   ['arranca','guardianes','infraestructura','activacion_social'].forEach(p => {
@@ -3516,8 +3540,23 @@ function saveRecord() {
     get g_sat_mediana() { if (!_ii) return null; return calcOrdinalMedian([this.g_sat_l1,this.g_sat_l2,this.g_sat_l3,this.g_sat_l4,this.g_sat_l5]); },
     // ── Reputación ─────────────────────────────────────────
     g_narrativas:            _irep ? (parseInt(document.getElementById('g_narrativas').value) || 0) : null,
-    g_reconocimiento:        _irep ? document.getElementById('g_reconocimiento').value : null,
-    g_nps:                   _irep ? (parseFloat(document.getElementById('g_nps').value) || null) : null,
+    g_rec_si:  _irep ? (parseInt(document.getElementById('g_rec_si')?.value) || 0) : null,
+    g_rec_no:  _irep ? (parseInt(document.getElementById('g_rec_no')?.value) || 0) : null,
+    get g_reconocimiento() {
+      if (!_irep) return null;
+      const si = this.g_rec_si || 0, no = this.g_rec_no || 0;
+      const total = si + no;
+      return total > 0 ? Math.round(si / total * 100) : null;
+    },
+    g_nps_pos: _irep ? (parseInt(document.getElementById('g_nps_pos')?.value) || 0) : null,
+    g_nps_neu: _irep ? (parseInt(document.getElementById('g_nps_neu')?.value) || 0) : null,
+    g_nps_neg: _irep ? (parseInt(document.getElementById('g_nps_neg')?.value) || 0) : null,
+    get g_nps() {
+      if (!_irep) return null;
+      const pos = this.g_nps_pos || 0, neu = this.g_nps_neu || 0, neg = this.g_nps_neg || 0;
+      const total = pos + neu + neg;
+      return total > 0 ? Math.round((pos - neg) / total * 100) : null;
+    },
     g_ic_q1_si: _irep ? (parseInt(document.getElementById('g_ic_q1_si')?.value) || 0) : null,
     g_ic_q1_no: _irep ? (parseInt(document.getElementById('g_ic_q1_no')?.value) || 0) : null,
     g_ic_q2_si: _irep ? (parseInt(document.getElementById('g_ic_q2_si')?.value) || 0) : null,
@@ -3774,11 +3813,15 @@ function renderDashboard(data) {
     if (r.g_pct_becarios_sost)         { sumBecarios    += parseFloat(r.g_pct_becarios_sost);    cntBecarios++; }
     if (r.af_pct_beneficiados_clarios) { sumEmpleador   += parseFloat(r.af_pct_beneficiados_clarios); cntEmpleador++; }
 
-    const reconNum = parseInt((r.g_reconocimiento||'').charAt(0));
+    // reconocimiento: new format = % (0-100); old format = "1 — No conocido" string → convert ×20
+    const reconRaw = r.g_reconocimiento;
+    if (reconRaw !== null && reconRaw !== undefined && reconRaw !== '') {
+      const reconNum = typeof reconRaw === 'number' ? reconRaw : parseInt(reconRaw);
+      if (!isNaN(reconNum)) { sumReconNum += (reconNum <= 5 ? reconNum * 20 : reconNum); cntRecon++; }
+    }
     // satNum: new format uses g_sat_mediana (integer 1-5); old format parsed from g_satisfaccion string
     const satNum   = r.g_sat_mediana != null ? r.g_sat_mediana : parseInt((r.g_satisfaccion||'').charAt(0));
     const partNum  = parseInt((r.g_grado_participacion||'').charAt(0));
-    if (reconNum) { sumReconNum += reconNum; cntRecon++; }
     if (satNum)   { sumSatNum   += satNum;   cntSat++; }
     if (partNum)  { sumParticipacion += partNum; cntParticipacion++; }
 
@@ -3804,8 +3847,8 @@ function renderDashboard(data) {
   setText('stat-eventos', byType.evento);
   setText('stat-activaciones', byType.activacion);
 
-  // Average scale-5 raw strings for gauge
-  if (cntRecon) avgRecon = String(Math.round(sumReconNum/cntRecon)) + ' — ' + (['','No conocido','Poco conocido','Conocido','Referente local','Referente regional'][Math.round(sumReconNum/cntRecon)]||'');
+  // reconocimiento now shown as average %
+  const avgReconPct = cntRecon ? Math.round(sumReconNum / cntRecon) : null;
   const satLabels = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
   if (cntSat) avgSat = String(Math.round(sumSatNum/cntSat)) + ' — ' + (satLabels[Math.round(sumSatNum/cntSat)]||'');
   let avgPart = cntParticipacion ? String(Math.round(sumParticipacion/cntParticipacion)) + ' — ...' : '';
@@ -3819,7 +3862,7 @@ function renderDashboard(data) {
   mNum('mc-genero',  totalAlumnosGenero || null, { color:'#F472B6', pending: !totalAlumnosGenero });
 
   // ── REPUTACIÓN ──
-  mGauge('mc-reconocimiento', cntRecon ? avgRecon : '', 'scale5');
+  mNum('mc-reconocimiento', avgReconPct !== null ? avgReconPct+'%' : null, { color: avgReconPct >= 75 ? '#34D399' : avgReconPct >= 50 ? '#F59E0B' : '#EF4444', pending: avgReconPct === null });
   mNum('mc-narrativas', totalNarrativas || null, { color:'#F59E0B', pending: !totalNarrativas });
   const icPct = cntConfianza ? Math.round(sumConfianza/cntConfianza) : null;
   mNum('mc-confianza', icPct !== null ? icPct+'%' : null, { color: icPct >= 75 ? '#34D399' : icPct >= 50 ? '#F59E0B' : '#EF4444', pending: icPct === null });
@@ -4607,14 +4650,17 @@ function renderRecordTablero() {
   mNum('pr-mc-genero',   parseInt(r.g_alumnos_genero)||null,      { color:'#F472B6', pending: !parseInt(r.g_alumnos_genero) });
 
   // ── REPUTACIÓN ──
-  mGauge('pr-mc-reconocimiento', r.g_reconocimiento||'', 'scale5');
+  const prReconRaw = r.g_reconocimiento;
+  const prReconPct = prReconRaw != null && prReconRaw !== '' ? (typeof prReconRaw === 'number' ? (prReconRaw <= 5 ? prReconRaw * 20 : prReconRaw) : parseInt(prReconRaw) * 20) : null;
+  mNum('pr-mc-reconocimiento', prReconPct !== null ? prReconPct+'%' : null, { color: prReconPct >= 75 ? '#34D399' : prReconPct >= 50 ? '#F59E0B' : '#EF4444', pending: prReconPct === null });
   mNum('pr-mc-empleador',  r.af_pct_beneficiados_clarios ? r.af_pct_beneficiados_clarios+'%' : null, { color:'#60A5FA', pending: !r.af_pct_beneficiados_clarios });
   mNum('pr-mc-narrativas', parseInt(r.g_narrativas)||null, { color:'#F59E0B', pending: !parseInt(r.g_narrativas) });
   const prBenD = parseInt(r.g_ben_directos)||parseInt(r.beneficiarios)||0;
   const prIcVal = r.g_indice_confianza != null ? r.g_indice_confianza : null;
   const prIcPct = prIcVal !== null ? (prIcVal > 5 ? prIcVal : prIcVal * 20) : null; // normalize old 1-5 to %
   mNum('pr-mc-confianza', prIcPct !== null ? Math.round(prIcPct)+'%' : null, { color: prIcPct >= 75 ? '#34D399' : prIcPct >= 50 ? '#F59E0B' : '#EF4444', pending: prIcPct === null });
-  mGauge('pr-mc-nps', (r.g_nps != null && r.g_nps !== '') ? String(r.g_nps) : '', 'nps');
+  const prNps = r.g_nps != null && r.g_nps !== '' ? parseFloat(r.g_nps) : null;
+  mNum('pr-mc-nps', prNps !== null ? (prNps > 0 ? '+' : '') + Math.round(prNps) : null, { color: prNps >= 50 ? '#34D399' : prNps >= 0 ? '#F59E0B' : '#EF4444', pending: prNps === null });
 
   // ── RESULTADO ──
   mNum('pr-mc-ben-directos',  prBenD ? prBenD.toLocaleString('es-MX') : '0', { color:'#34D399', large: true });
@@ -4915,6 +4961,33 @@ function updateSatisfaccionPreview() {
   const labels = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
   el.textContent = med !== null ? med + ' — ' + (labels[med] || '') : '—';
   el.style.color = med !== null ? (med >= 4 ? 'var(--green-lt)' : med >= 3 ? 'var(--amber)' : 'var(--red)') : 'var(--gray-3)';
+}
+
+function updateNpsPreview() {
+  const pos = parseInt(document.getElementById('g_nps_pos')?.value) || 0;
+  const neu = parseInt(document.getElementById('g_nps_neu')?.value) || 0;
+  const neg = parseInt(document.getElementById('g_nps_neg')?.value) || 0;
+  const total = pos + neu + neg;
+  const el = document.getElementById('nps-preview');
+  if (!el) return;
+  if (total > 0) {
+    const nps = Math.round((pos - neg) / total * 100);
+    el.textContent = (nps > 0 ? '+' : '') + nps;
+    el.style.color = nps >= 50 ? 'var(--green-lt)' : nps >= 0 ? 'var(--amber)' : 'var(--red)';
+  } else { el.textContent = '—'; el.style.color = 'var(--gray-3)'; }
+}
+
+function updateReconocimientoPreview() {
+  const si = parseInt(document.getElementById('g_rec_si')?.value) || 0;
+  const no = parseInt(document.getElementById('g_rec_no')?.value) || 0;
+  const total = si + no;
+  const el = document.getElementById('rec-preview');
+  if (!el) return;
+  if (total > 0) {
+    const pct = Math.round(si / total * 100);
+    el.textContent = pct + '%';
+    el.style.color = pct >= 75 ? 'var(--green-lt)' : pct >= 50 ? 'var(--amber)' : 'var(--red)';
+  } else { el.textContent = '—'; el.style.color = 'var(--gray-3)'; }
 }
 
 function updateIcPreview() {
