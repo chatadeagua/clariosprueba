@@ -17,19 +17,30 @@ const INDICADORES_HEADERS = [
   // Resultado
   'g_escuelas', 'g_horas_formacion', 'g_ben_directos', 'g_ben_indirectos',
   'g_pct_mujeres', 'g_alianzas', 'g_prototipos', 'g_narrativas', 'g_inversion',
-  // Impacto
+  'g_quejas_recibidas', 'g_quejas_atendidas', 'g_grado_participacion',
+  // Impacto — porcentajes
   'g_pct_habilidades', 'g_pct_autonomia_mujeres', 'g_pct_becarios_sost',
-  // Reputación y proceso
-  'g_percepcion_clarios', 'g_reconocimiento', 'g_satisfaccion',
+  'g_alumnos_genero',
+  // Impacto — Satisfacción (nivel-count + mediana)
+  'g_sat_l1', 'g_sat_l2', 'g_sat_l3', 'g_sat_l4', 'g_sat_l5', 'g_sat_mediana',
+  // Impacto — Percepción de CLARIOS (nivel-count + mediana)
+  'g_perc_l1', 'g_perc_l2', 'g_perc_l3', 'g_perc_l4', 'g_perc_l5', 'g_perc_mediana',
+  // Reputación — Reconocimiento (Sí/No + %)
+  'g_rec_si', 'g_rec_no', 'g_reconocimiento',
+  // Reputación — NPS (conteos + score calculado)
+  'g_nps_pos', 'g_nps_neu', 'g_nps_neg', 'g_nps',
+  // Reputación — Narrativas
+  'g_narrativas',
+  // Reputación — Índice de Confianza (Sí/No por pregunta + índice calculado)
+  'g_ic_q1_si', 'g_ic_q1_no',
+  'g_ic_q2_si', 'g_ic_q2_no',
+  'g_ic_q3_si', 'g_ic_q3_no',
+  'g_ic_q4_si', 'g_ic_q4_no',
+  'g_indice_confianza',
+  // Proceso Social
   'g_rondas_mentoria', 'g_canal_seguimiento',
-  // Nuevos — Resultado y Reputación
-  'g_alumnos_genero', 'g_grado_participacion', 'g_nps',
-  'g_ic_q1_l1', 'g_ic_q1_l2', 'g_ic_q1_l3', 'g_ic_q1_l4', 'g_ic_q1_l5',
-  'g_ic_q2_l1', 'g_ic_q2_l2', 'g_ic_q2_l3', 'g_ic_q2_l4', 'g_ic_q2_l5',
-  'g_ic_q3_l1', 'g_ic_q3_l2', 'g_ic_q3_l3', 'g_ic_q3_l4', 'g_ic_q3_l5',
-  'g_ic_q4_l1', 'g_ic_q4_l2', 'g_ic_q4_l3', 'g_ic_q4_l4', 'g_ic_q4_l5',
-  'g_ic_q1', 'g_ic_q2', 'g_ic_q3', 'g_ic_q4', 'g_indice_confianza',
-  'g_quejas_recibidas', 'g_quejas_atendidas', 'indic_activos',
+  // Metadatos de secciones activas
+  'indic_activos',
   // Programa: Arranca el Futuro
   'af_pct_perfiles', 'af_pct_intervenidos', 'af_gimnasios', 'af_sesiones', 'af_obs',
   'af_talento_canalizado', 'af_pct_beneficiados_clarios',

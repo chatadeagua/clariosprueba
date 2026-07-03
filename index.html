@@ -3825,9 +3825,12 @@ function renderDashboard(data) {
       if (!isNaN(reconNum)) { sumReconNum += (reconNum <= 5 ? reconNum * 20 : reconNum); cntRecon++; }
     }
     // satNum: new format uses g_sat_mediana (integer 1-5); old format parsed from g_satisfaccion string
-    const satNum   = r.g_sat_mediana != null ? r.g_sat_mediana : parseInt((r.g_satisfaccion||'').charAt(0));
-    const percNum  = r.g_perc_mediana != null ? r.g_perc_mediana : parseInt((r.g_percepcion_clarios||'').charAt(0));
-    const partNum  = parseInt((r.g_grado_participacion||'').charAt(0));
+    // GAS returns all values as strings, so parseInt is required in all branches
+    const satRaw  = r.g_sat_mediana != null && r.g_sat_mediana !== '' ? r.g_sat_mediana : (r.g_satisfaccion||'').charAt(0);
+    const satNum  = parseInt(satRaw) || 0;
+    const percRaw = r.g_perc_mediana != null && r.g_perc_mediana !== '' ? r.g_perc_mediana : (r.g_percepcion_clarios||'').charAt(0);
+    const percNum = parseInt(percRaw) || 0;
+    const partNum = parseInt((r.g_grado_participacion||'').charAt(0));
     if (satNum)   { sumSatNum   += satNum;   cntSat++; }
     if (percNum)  { sumPercNum  += percNum;  cntPerc++; }
     if (partNum)  { sumParticipacion += partNum; cntParticipacion++; }
@@ -4653,10 +4656,10 @@ function renderRecordTablero() {
   // ── IMPACTO ──
   mNum('pr-mc-habilidades',  r.g_pct_habilidades  ? r.g_pct_habilidades+'%' : null,  { color:'#A78BFA', pending: !r.g_pct_habilidades });
   mNum('pr-mc-prototipos',   parseInt(r.g_prototipos)||null,  { color:'#FCD34D', pending: !parseInt(r.g_prototipos) });
-  const prSatMed = r.g_sat_mediana != null ? r.g_sat_mediana : parseInt((r.g_satisfaccion||'').charAt(0));
+  const prSatMed = parseInt(r.g_sat_mediana != null && r.g_sat_mediana !== '' ? r.g_sat_mediana : (r.g_satisfaccion||'').charAt(0)) || 0;
   const prSatLabels = ['','Muy insatisfecho','Insatisfecho','Neutral','Satisfecho','Muy satisfecho'];
   mNum('pr-mc-satisfaccion', prSatMed ? prSatMed + ' — ' + (prSatLabels[prSatMed]||'') : null, { color: prSatMed >= 4 ? '#34D399' : prSatMed >= 3 ? '#F59E0B' : '#EF4444', pending: !prSatMed });
-  const prPercMed = r.g_perc_mediana != null ? r.g_perc_mediana : parseInt((r.g_percepcion_clarios||'').charAt(0));
+  const prPercMed = parseInt(r.g_perc_mediana != null && r.g_perc_mediana !== '' ? r.g_perc_mediana : (r.g_percepcion_clarios||'').charAt(0)) || 0;
   const prPercLabels = ['','Muy bajo','Bajo','Medio','Alto','Muy alto'];
   mNum('pr-mc-percepcion', prPercMed ? prPercMed + ' — ' + (prPercLabels[prPercMed]||'') : null, { color: prPercMed >= 4 ? '#34D399' : prPercMed >= 3 ? '#F59E0B' : '#EF4444', pending: !prPercMed });
   mGauge('pr-mc-participacion', r.g_grado_participacion||'','scale5');
