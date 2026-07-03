@@ -3242,11 +3242,10 @@ let ikInitialized = false;
 let ikCurrentEvalId = null;
 
 function ikUpdateNombreState() {
-  const nombre = document.getElementById('ik-nombre')?.value?.trim();
-  const btnEl  = document.getElementById('ik-btn-result');
+  const btnEl = document.getElementById('ik-btn-result');
   if (!btnEl) return;
   const filled = IK_DIMS.map(d => ikScores[d.key]).filter(v => v != null);
-  btnEl.disabled = !(filled.length === IK_DIMS.length && nombre);
+  btnEl.disabled = !(filled.length === IK_DIMS.length);
 }
 
 function ikInit() {
@@ -3334,8 +3333,7 @@ function ikScore(dim, val) {
     avgEl.textContent = avg.toFixed(2);
     avgEl.style.color = col;
     if (allDone) {
-      const nombre = document.getElementById('ik-nombre')?.value?.trim();
-      btnEl.disabled = !nombre;
+      btnEl.disabled = false;
       vEl.textContent = avg >= 4 ? '✓ Viable · Recomendado para registro' : avg >= 3 ? '⚠ Revisar · Fortalecer antes de registrar' : '✗ No recomendado · Replantear iniciativa';
       vEl.style.color = col;
     } else {
@@ -3441,6 +3439,8 @@ function ikShowResult() {
   document.getElementById('ik-dim-table').innerHTML = IK_DIMS.map(d => {
     const v = ikScores[d.key];
     const c = v >= 4 ? '#34D399' : v >= 3 ? '#F59E0B' : '#EF4444';
+    const levelIdx = Math.round(v);
+    const levelLabel = IK_LEVELS[levelIdx] || IK_LEVELS[Math.floor(v)] || '';
     const statusHtml = v >= 4
       ? '<span class="badge badge-proyecto">Sólido</span>'
       : v >= 3
@@ -3448,8 +3448,8 @@ function ikShowResult() {
       : '<span style="display:inline-flex;padding:2px 8px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#EF4444;font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:1px">Débil</span>';
     return `<tr>
       <td style="font-weight:600">${d.label}</td>
-      <td style="font-family:var(--mono);font-weight:700;font-size:16px;color:${c}">${v}</td>
-      <td>${IK_LEVELS[v]}</td>
+      <td style="font-family:var(--mono);font-weight:700;font-size:16px;color:${c}">${v.toFixed(1)}</td>
+      <td>${levelLabel}</td>
       <td>${statusHtml}</td>
     </tr>`;
   }).join('');
