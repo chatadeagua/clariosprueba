@@ -1960,11 +1960,11 @@ tbody tr:last-child td { border-bottom: none; }
       <div class="form-section">
         <div class="form-section-title indic-toggle-header" onclick="toggleIndic('impacto')">
           Indicadores — Impacto
-          <button class="indic-toggle-btn" id="indic-btn-impacto" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('impacto')">
-            <span class="indic-toggle-dot"></span><span>NO APLICA</span>
+          <button class="indic-toggle-btn" id="indic-btn-impacto" aria-pressed="true" onclick="event.stopPropagation();toggleIndic('impacto')">
+            <span class="indic-toggle-dot"></span><span>ACTIVO</span>
           </button>
         </div>
-        <div class="indic-section-body" id="indic-body-impacto">
+        <div class="indic-section-body open" id="indic-body-impacto">
         <div class="field-row cols-2">
           <div class="field">
             <label>% participantes con mejora en habilidades técnicas / digitales / liderazgo</label>
@@ -2030,11 +2030,11 @@ tbody tr:last-child td { border-bottom: none; }
       <div class="form-section">
         <div class="form-section-title indic-toggle-header" onclick="toggleIndic('reputacion')">
           Indicadores — Reputación
-          <button class="indic-toggle-btn" id="indic-btn-reputacion" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('reputacion')">
-            <span class="indic-toggle-dot"></span><span>NO APLICA</span>
+          <button class="indic-toggle-btn" id="indic-btn-reputacion" aria-pressed="true" onclick="event.stopPropagation();toggleIndic('reputacion')">
+            <span class="indic-toggle-dot"></span><span>ACTIVO</span>
           </button>
         </div>
-        <div class="indic-section-body" id="indic-body-reputacion">
+        <div class="indic-section-body open" id="indic-body-reputacion">
         <div class="field-row cols-2">
           <div class="field">
             <label>Narrativas positivas en medios o plataformas</label>
@@ -2134,11 +2134,11 @@ tbody tr:last-child td { border-bottom: none; }
       <div class="form-section">
         <div class="form-section-title indic-toggle-header" onclick="toggleIndic('proceso_social')">
           Indicadores — Proceso Social
-          <button class="indic-toggle-btn" id="indic-btn-proceso_social" aria-pressed="false" onclick="event.stopPropagation();toggleIndic('proceso_social')">
-            <span class="indic-toggle-dot"></span><span>NO APLICA</span>
+          <button class="indic-toggle-btn" id="indic-btn-proceso_social" aria-pressed="true" onclick="event.stopPropagation();toggleIndic('proceso_social')">
+            <span class="indic-toggle-dot"></span><span>ACTIVO</span>
           </button>
         </div>
-        <div class="indic-section-body" id="indic-body-proceso_social">
+        <div class="indic-section-body open" id="indic-body-proceso_social">
         <div class="field-row cols-2">
           <div class="field">
             <label>Alianzas activas (universidades, ONGs, gobierno, centros)</label>
@@ -2697,7 +2697,7 @@ let currentType = '';
 let formData1 = {};
 let currentView = 'nuevo';
 
-const _indicActivos = { resultado: true, impacto: false, reputacion: false, proceso_social: false };
+const _indicActivos = { resultado: true, impacto: true, reputacion: true, proceso_social: true };
 
 function toggleIndic(key) {
   if (key === 'resultado') return; // always active — mandatory
@@ -2714,11 +2714,11 @@ function toggleIndic(key) {
 
 function resetIndicToggles() {
   ['impacto','reputacion','proceso_social'].forEach(k => {
-    _indicActivos[k] = false;
+    _indicActivos[k] = true;
     const body = document.getElementById('indic-body-' + k);
     const btn  = document.getElementById('indic-btn-' + k);
-    if (body) body.classList.remove('open');
-    if (btn)  { btn.setAttribute('aria-pressed','false'); btn.querySelector('span:last-child').textContent = 'NO APLICA'; }
+    if (body) body.classList.add('open');
+    if (btn)  { btn.setAttribute('aria-pressed','true'); btn.querySelector('span:last-child').textContent = 'ACTIVO'; }
   });
   [1,2,3,4].forEach(q => { const el = document.getElementById(`ic-q${q}-pct`); if (el) { el.textContent = '—'; el.style.color = ''; } });
   updateIcPreview();
