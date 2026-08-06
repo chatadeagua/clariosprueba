@@ -467,6 +467,81 @@ function getGroup(id){
   return null;
 }
 
+/* =========================================================
+   COHORTES
+   ========================================================= */
+var COHORTES = [
+  {id:"c1", nombre:"Cohorte 1 · Avanzados", facilitador:"Sarape Org. + ASICA", aliado:"Inst. Tec. de Tlajomulco", ventana:"Ago 2026 a Feb 2027",
+   integrantes:["Cajeta de Sayula","La Pitaya","Equipales de Zacoalco"]},
+  {id:"c2", nombre:"Cohorte 2 · Agroalimento y barro", facilitador:"Por asignar", aliado:"CIATEJ, CUT Tonalá", ventana:"Oct 2026 a Abr 2027",
+   integrantes:["Birote Salado","Tejido de Etzatlán","Tejuino","Barro Canelo","Barro Bruñido"]},
+  {id:"c3", nombre:"Cohorte 3 · Artesanía dispersa", facilitador:"Por asignar", aliado:"UDG, Fomento Artesanal", ventana:"Ene a Jul 2027",
+   integrantes:["Arte en Chaquira","Dulce de Guayaba","Chilte de Talpa","Nacimientos de Barro","Cerámica Mayólica","Labrado de Cantera","Fajo Piteado","Sarapes de Teocaltiche"]},
+  {id:"c4", nombre:"Cohorte 4 · Requiere validación previa", facilitador:"Sin facilitador", aliado:"IMPI, CRT", ventana:"Por definir",
+   integrantes:["Figuras de Tipos Mexicanos","Destilado Tonayán","Ponche de Granada"]}
+];
+
+GROUPS.forEach(function(g){
+  var coh = COHORTES.filter(function(c){ return c.integrantes.indexOf(g.producto) !== -1; })[0];
+  g.coh = coh ? coh.id : null;
+});
+
+function getCohorte(id){
+  for(var i=0;i<COHORTES.length;i++){ if(COHORTES[i].id===id) return COHORTES[i]; }
+  return null;
+}
+
+/* =========================================================
+   MESAS REGIONALES
+   ========================================================= */
+var MESAS = [
+  {region:"Sur", sede:"Sayula", fecha:"2026-08-12", convocadas:14, asistencia:11, estado:"Realizada"},
+  {region:"Centro", sede:"Tonalá", fecha:"2026-08-19", convocadas:22, asistencia:18, estado:"Realizada"},
+  {region:"Lagunas", sede:"Zacoalco de Torres", fecha:"2026-08-26", convocadas:9, asistencia:0, estado:"Convocada"},
+  {region:"Valles", sede:"Etzatlán", fecha:"2026-09-02", convocadas:11, asistencia:0, estado:"Convocada"},
+  {region:"Norte", sede:"Colotlán", fecha:"2026-09-09", convocadas:13, asistencia:0, estado:"Por convocar"},
+  {region:"Sierra Occidental", sede:"Talpa de Allende", fecha:"2026-09-16", convocadas:8, asistencia:0, estado:"Por convocar"},
+  {region:"Altos Norte", sede:"Teocaltiche", fecha:"2026-09-23", convocadas:7, asistencia:0, estado:"Por convocar"},
+  {region:"Ciénega", sede:"Degollado", fecha:"2026-09-30", convocadas:6, asistencia:0, estado:"Por convocar"}
+];
+
+/* =========================================================
+   RUTA DE PARTICIPACIÓN MUNICIPAL
+   ========================================================= */
+var RUTA_MUNICIPAL_PASOS = [
+  {n:1, nombre:"Firma de participación", detalle:"Acuerdo formal del municipio, compromiso de director y regidor como enlace territorial."},
+  {n:2, nombre:"Sesión regional de arranque", detalle:"Convocatoria de grupos productivos locales."},
+  {n:3, nombre:"Taller colaborativo de adaptación", detalle:"Co-diseño de ruta territorial e identificación de grupos prioritarios."},
+  {n:4, nombre:"Cofinanciamiento en cabildo", detalle:"Aprobación e inserción en POA municipal."},
+  {n:5, nombre:"Comunicación pública municipal", detalle:"Anuncio como socio territorial."}
+];
+
+var AVANCE_MUNICIPAL = {
+  "Sayula":5, "Guadalajara":4, "Tonalá":3, "Zacoalco":2, "Tlaquepaque":2,
+  "Techaluta":2, "Etzatlán":1, "Mascota":1, "Talpa":1, "Zapotlán el Grande":1
+};
+
+function avanceDeMunicipio(municipio){
+  if(AVANCE_MUNICIPAL.hasOwnProperty(municipio)) return AVANCE_MUNICIPAL[municipio];
+  var keys = Object.keys(AVANCE_MUNICIPAL);
+  for(var i=0;i<keys.length;i++){
+    if(municipio.indexOf(keys[i]) === 0 || keys[i].indexOf(municipio) === 0) return AVANCE_MUNICIPAL[keys[i]];
+  }
+  return 0;
+}
+
+/* =========================================================
+   PLANTILLAS MAESTRAS
+   ========================================================= */
+var PLANTILLAS = [
+  {titulo:"Plantilla maestra agroalimentaria", version:"1.0", estado:"Validada con IMPI", usos:5},
+  {titulo:"Plantilla maestra artesanal", version:"0.9", estado:"En validación", usos:11},
+  {titulo:"Plantilla maestra bebida alcohólica", version:"0.4", estado:"Borrador", usos:2},
+  {titulo:"Ficha de captura de laboratorio comunitario", version:"1.0", estado:"Validada", usos:2},
+  {titulo:"Guía de delimitación georreferenciada", version:"1.0", estado:"Validada", usos:3},
+  {titulo:"Modelo de reglas de uso", version:"0.6", estado:"Borrador", usos:1}
+];
+
 var ALERTAS = [
   {sev:"alta", grupo:"Birote Salado", texto:"riesgo de que el nombre se considere de uso común."},
   {sev:"alta", grupo:"Arte en Chaquira", texto:"producto de comunidades wixaritari, requiere consulta y consentimiento comunitario previo."},
