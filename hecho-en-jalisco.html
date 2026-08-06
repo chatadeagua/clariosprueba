@@ -347,21 +347,66 @@
   .liberada-msg{color:var(--verde);font-weight:700;}
   .solo-lectura{color:var(--gris);}
 
+  /* ---------- filtro de viabilidad territorial (paso 0) ---------- */
+  .filtro-territorial{
+    margin-top:26px;border:4px solid var(--negro);padding:18px 20px;background:var(--blanco);color:var(--negro);
+  }
+  .filtro-territorial.rechazo{background:var(--terracota);color:var(--blanco);border-color:var(--terracota);}
+  .filtro-territorial > .mono{display:block;margin-bottom:10px;color:var(--gris);}
+  .filtro-territorial.rechazo > .mono{color:var(--rosa);}
+  .filtro-pregunta{
+    display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+    padding:8px 0;border-top:1px solid var(--gris-claro);
+  }
+  .filtro-pregunta:first-of-type{border-top:none;}
+  .filtro-territorial.rechazo .filtro-pregunta{border-top-color:rgba(255,255,255,.3);}
+  .alt-si-no{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    border:1px solid currentColor;padding:3px 8px;flex:0 0 auto;
+  }
+  .veredicto-linea{margin-top:12px;padding-top:12px;border-top:2px solid var(--negro);}
+  .filtro-territorial.rechazo .veredicto-linea{border-top-color:rgba(255,255,255,.5);}
+  .veredicto-tag{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:11px;letter-spacing:.08em;
+    padding:6px 10px;border:2px solid currentColor;font-weight:600;
+  }
+  .filtro-alterna{margin-top:10px;max-width:60ch;}
+
   /* ---------- diagnostico ---------- */
   .diagnostico{
-    margin-top:26px;background:var(--naranja);color:var(--negro);padding:20px;
+    margin-top:20px;background:var(--naranja);color:var(--negro);padding:20px;
   }
   .diagnostico .mono{display:block;margin-bottom:10px;font-weight:600;}
   .diagnostico h3{font-size:20px;margin-bottom:6px;}
   .diagnostico .aviso{margin-bottom:18px;max-width:60ch;}
-  .ejes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  @media (max-width:680px){.ejes{grid-template-columns:1fr;}}
-  .eje-cab{display:flex;justify-content:space-between;margin-bottom:6px;}
-  .eje-nombre{font-weight:700;}
-  .eje-valor{font-family:'IBM Plex Mono',monospace;font-size:12px;}
-  .meter{display:flex;gap:3px;}
-  .meter span{flex:1;height:10px;background:rgba(10,10,10,.15);border:1px solid var(--negro);}
-  .meter span.lleno{background:var(--negro);}
+  .ejes-cards{display:flex;flex-direction:column;gap:14px;}
+  .eje-card{background:var(--blanco);color:var(--negro);border:2px solid var(--negro);padding:16px;}
+  .eje-card-cab{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+  .eje-card-cab h4{font-size:16px;}
+  .eje-nivel-tag{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    border:1px solid var(--negro);padding:3px 8px;flex:0 0 auto;white-space:nowrap;
+  }
+  .eje-proposito{color:var(--gris);max-width:64ch;margin-bottom:12px;}
+  .eje-advertencia{border:2px dashed var(--negro);padding:8px 10px;margin-bottom:12px;font-weight:700;}
+  .dimensiones{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media (max-width:760px){.dimensiones{grid-template-columns:1fr;}}
+  .dimension details{border:1px solid var(--gris-claro);}
+  .dimension summary{
+    list-style:none;cursor:pointer;padding:8px 10px;display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px;
+  }
+  .dimension summary::-webkit-details-marker{display:none;}
+  .dimension-body{padding:0 10px 10px;}
+  .dimension-pregunta{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid var(--gris-claro);font-size:12.5px;}
+  .dimension-pregunta:first-child{border-top:none;}
+  .dimension-resp{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--gris);flex:0 0 auto;}
+  .indice-prioridad{margin-top:10px;padding-top:10px;border-top:1px dashed var(--negro);font-size:13px;font-weight:700;}
+  .indice-prioridad .mono{color:var(--gris);display:block;font-weight:400;margin-bottom:3px;}
+
+  .plan-fortalecimiento{margin-top:18px;border-top:2px solid var(--negro);padding-top:14px;}
+  .plan-fortalecimiento h4{font-size:15px;margin-bottom:8px;}
+  .plan-fortalecimiento li{padding:6px 0;border-top:1px solid rgba(10,10,10,.15);}
+  .plan-fortalecimiento li:first-child{border-top:none;}
 
   .footer{max-width:1180px;margin:0 auto;padding:20px;color:var(--gris);}
 </style>
@@ -1024,37 +1069,254 @@ function renderPanelNegro(group){
   return '<aside class="panel-negro"><h3>Datos de la agrupación</h3><dl>' + filas + '</dl></aside>';
 }
 
-function scoreFromPotencial(p){ return p==="ALTO" ? 5 : p==="MEDIO" ? 3 : 2; }
-function computeDiagnostico(group){
-  var rMadurez = mulberry32(hashStr(group.id + "-madurez"))();
-  var madurez = Math.max(1, Math.min(5, Math.round(1 + (group.etapaActual/9)*4 + (rMadurez-0.5))));
-  var rViab = mulberry32(hashStr(group.id + "-viab"))();
-  var viabilidad = Math.max(1, Math.min(5, Math.round(2 + rViab*3)));
-  var potencial = scoreFromPotencial(group.potencial);
-  return {madurez:madurez, viabilidad:viabilidad, potencial:potencial};
+/* =========================================================
+   DIAGNÓSTICO — MODELO DE DOS NIVELES
+   ========================================================= */
+var ESCALA_LABELS = ["No","Apenas","Parcial","Casi","Sí"];
+
+var FILTRO_TERRITORIAL_PREGUNTAS = [
+  {id:"a", texto:"¿Existe una característica del territorio (clima, suelo, agua, materia prima) que el producto necesite y que no se replique en otros estados?"},
+  {id:"b", texto:"¿La técnica de elaboración es propia de esta zona y está viva hoy?"},
+  {id:"c", texto:"¿Se descarta que exista producción equivalente en otro estado con el mismo nombre?"}
+];
+
+var EJES_DIAGNOSTICO = [
+  {id:"madurez", nombre:"Madurez", proposito:"Qué tan lista está la agrupación hoy. Define el paquete de fortalecimiento.",
+   dimensiones:[
+     {id:"organizativa", nombre:"Organizativa", preguntas:[
+        "¿Existe una agrupación formal constituida?",
+        "¿Hay liderazgo y representación clara?",
+        "¿Toman decisiones colectivas con alguna regla acordada?"]},
+     {id:"tecnica", nombre:"Técnica", preguntas:[
+        "¿Está documentado el proceso productivo?",
+        "¿Hay evidencia del vínculo producto-territorio?",
+        "¿Existe algún control de calidad o trazabilidad?"]},
+     {id:"comercial", nombre:"Comercial", preguntas:[
+        "¿Tiene canales de venta activos?",
+        "¿Hay mercado identificado que valore el origen?",
+        "¿Puede escalar producción sin perder la técnica?"]}
+   ]},
+  {id:"viabilidad", nombre:"Viabilidad IG", proposito:"Probabilidad de que el IMPI conceda. Es el eje que ordena la prioridad.",
+   dimensiones:[
+     {id:"vinculo", nombre:"Vínculo geográfico", preguntas:[
+        "¿El vínculo es defendible con datos y no solo con tradición?",
+        "¿La zona se puede delimitar con precisión?",
+        "¿Hay institución dispuesta a firmar el estudio técnico?"]},
+     {id:"evidencia", nombre:"Evidencia documental", preguntas:[
+        "¿Existen registros históricos o publicaciones?",
+        "¿Hay evidencia de antigüedad verificable?",
+        "¿Se puede levantar testimonio de productores de más de una generación?"]},
+     {id:"distintividad", nombre:"Distintividad del nombre", preguntas:[
+        "¿El nombre está libre de conflicto con marcas o DO existentes?",
+        "¿No es un término genérico de uso común?",
+        "¿Ya se asocia públicamente a esta zona?"]}
+   ]},
+  {id:"cooperativo", nombre:"Potencial cooperativo", proposito:"Información para diseñar el acompañamiento. No se usa como criterio de filtro ni de prioridad.",
+   dimensiones:[
+     {id:"cohesion", nombre:"Cohesión grupal", preguntas:[
+        "¿Se reúnen con regularidad?",
+        "¿Resuelven diferencias sin romperse?",
+        "¿Hay confianza para compartir información entre talleres?"]},
+     {id:"voluntad", nombre:"Voluntad asociativa", preguntas:[
+        "¿Hay interés explícito en figura cooperativa?",
+        "¿Compartirían reglas de uso con otros grupos?",
+        "¿Aceptarían una certificadora común?"]},
+     {id:"gestion", nombre:"Capacidad de gestión", preguntas:[
+        "¿Alguien puede dar seguimiento administrativo?",
+        "¿Manejan cuentas o registros básicos?",
+        "¿Han gestionado antes algún apoyo o trámite?"]}
+   ]}
+];
+
+// Overrides explícitos pedidos por el cliente (sesgo central 0-4 por dimensión)
+var SESGO_OVERRIDES = {
+  "cajeta-de-sayula": {organizativa:4, tecnica:4, comercial:4, vinculo:4, evidencia:4, distintividad:4},
+  "birote-salado": {distintividad:0.3},
+  "chilte-de-talpa": {organizativa:0.3},
+  "ceramica-mayolica": {organizativa:0.3}
+};
+
+// Overrides del veredicto del Paso 0, atados a alertas ya existentes en ALERTAS
+var FILTRO_OVERRIDES = {
+  "destilado-tonayan": {c:false},           // alerta: traslape con DO Tequila y el CRT
+  "ponche-de-granada": {a:false, c:false}   // alerta: va por marca colectiva, es otra ruta
+};
+
+function generarSesgos(group){
+  var potNum = group.potencial === "ALTO" ? 3.3 : group.potencial === "MEDIO" ? 2.2 : 1.2;
+  var etapaNum = Math.min(4, 0.5 + group.etapaActual * 0.4);
+  var tieneProductores = typeof group.productores === "number";
+  var alertaTexto = ALERTAS.filter(function(a){ return a.grupo === group.producto; }).map(function(a){ return a.texto; }).join(" ");
+  var distintividadBase = potNum;
+  if(/uso común|dos formas distintas|traslape/.test(alertaTexto)) distintividadBase = 0.6;
+  var sesgos = {
+    organizativa: etapaNum,
+    tecnica: Math.max(potNum, etapaNum - 0.5),
+    comercial: potNum + (tieneProductores ? 0.3 : -0.3),
+    vinculo: potNum,
+    evidencia: potNum - 0.2,
+    distintividad: distintividadBase,
+    cohesion: 2.0,
+    voluntad: 2.0,
+    gestion: tieneProductores ? 2.3 : 1.6
+  };
+  var over = SESGO_OVERRIDES[group.id];
+  if(over){ Object.keys(over).forEach(function(k){ sesgos[k] = over[k]; }); }
+  return sesgos;
 }
 
-function renderEje(nombre, valor){
-  var bloques = [1,2,3,4,5].map(function(i){ return '<span class="' + (i<=valor?"lleno":"") + '"></span>'; }).join("");
+function preguntasDeDimension(seedBase, centro){
+  var out = [];
+  for(var i=0;i<3;i++){
+    var r = mulberry32(hashStr(seedBase + "-" + i))();
+    var val = Math.round(centro + (r - 0.5) * 1.6);
+    out.push(Math.max(0, Math.min(4, val)));
+  }
+  return out;
+}
+
+function respuestasPaso0(group){
+  var potNum = group.potencial === "ALTO" ? 0.75 : group.potencial === "MEDIO" ? 0.55 : 0.35;
+  var out = {};
+  FILTRO_TERRITORIAL_PREGUNTAS.forEach(function(p){
+    var r = mulberry32(hashStr(group.id + "-filtro-" + p.id))();
+    out[p.id] = r < potNum;
+  });
+  var over = FILTRO_OVERRIDES[group.id];
+  if(over){ Object.keys(over).forEach(function(k){ out[k] = over[k]; }); }
+  return out;
+}
+
+function parseDuracionMeses(d){ return parseInt(d, 10) || 0; }
+
+function nivelDe(score){ return score <= 33 ? "Básica" : score <= 66 ? "Intermedia" : "Avanzada"; }
+
+function computeDiagnostico(group){
+  var sesgos = generarSesgos(group);
+  var respuestas = {}, dimScores = {};
+  EJES_DIAGNOSTICO.forEach(function(eje){
+    eje.dimensiones.forEach(function(dim){
+      var arr = preguntasDeDimension(group.id + "-" + dim.id, sesgos[dim.id]);
+      respuestas[dim.id] = arr;
+      dimScores[dim.id] = Math.round(((arr[0] + arr[1] + arr[2]) / 3) / 4 * 100);
+    });
+  });
+  var ejeScores = {};
+  EJES_DIAGNOSTICO.forEach(function(eje){
+    var ds = eje.dimensiones.map(function(dim){ return dimScores[dim.id]; });
+    ejeScores[eje.id] = Math.round((ds[0] + ds[1] + ds[2]) / 3);
+  });
+
+  var paso0 = respuestasPaso0(group);
+  var siCount = (paso0.a?1:0) + (paso0.b?1:0) + (paso0.c?1:0);
+  var veredicto = siCount === 3 ? "procede" : siCount === 2 ? "validacion" : "noprocede";
+
+  // TODO: "brecha cerrable en 12 meses" no tiene fórmula definida por el cliente.
+  // Proxy provisional: meses restantes de la ruta crítica desde la etapa actual
+  // hasta la 9 (sumando ETAPAS.duracion). <=12 meses restantes = 100. Confirmar con SEDECO.
+  var mesesRestantes = 0;
+  for(var n=group.etapaActual; n<=9; n++){
+    if(group.noAplica.indexOf(n) !== -1) continue;
+    mesesRestantes += parseDuracionMeses(ETAPAS[n-1].duracion);
+  }
+  var brechaCerrable = Math.round(Math.min(1, 12/Math.max(1,mesesRestantes)) * 100);
+  var prioridad = Math.round(ejeScores.viabilidad * 0.6 + brechaCerrable * 0.4);
+
+  var plan = [];
+  if(dimScores.organizativa <= 33) plan.push("Apoyo para constituir legalmente la agrupación y definir estructura de representación y gobernanza interna.");
+  else if(dimScores.organizativa <= 66) plan.push("Taller de gobernanza: reglamento interno mínimo y reglas de decisión colectiva.");
+  if(dimScores.tecnica <= 66) plan.push("Laboratorio comunitario guiado de 3 horas en territorio: línea de tiempo colectiva, recorrido grabado y mapa participativo.");
+  if(dimScores.evidencia < 60) plan.push("Levantamiento de evidencia histórica y documental con aliado académico.");
+  if(dimScores.comercial <= 33) plan.push("Vinculación a canales concretos ya identificados por la Secretaría, no teoría de mercado.");
+  if(dimScores.distintividad < 50) plan.push("Búsqueda de anterioridades y opinión del IMPI sobre el nombre antes de invertir en estudio técnico.");
+  if(dimScores.vinculo < 60) plan.push("Validación de exclusividad territorial frente a producciones similares en otros estados.");
+  if(ejeScores.cooperativo >= 67) plan.push("Candidata a estructura cooperativa bajo la Ley de Fomento al Cooperativismo de Jalisco. Informativo, no altera prioridad.");
+  if(plan.length === 0) plan.push("Acompañamiento de seguimiento en la etapa vigente.");
+
+  return {respuestas:respuestas, dimScores:dimScores, ejeScores:ejeScores, paso0:paso0, veredicto:veredicto,
+          mesesRestantes:mesesRestantes, brechaCerrable:brechaCerrable, prioridad:prioridad, plan:plan};
+}
+
+function renderFiltroPaso0(diag){
+  var rechazo = diag.veredicto === "noprocede";
+  var preguntasHTML = FILTRO_TERRITORIAL_PREGUNTAS.map(function(p){
+    var val = diag.paso0[p.id];
+    return '' +
+      '<div class="filtro-pregunta">' +
+        '<span>' + esc(p.texto) + '</span>' +
+        '<span class="alt-si-no">' + (val ? "Sí" : "No") + '</span>' +
+      '</div>';
+  }).join("");
+  var veredictoLabel = diag.veredicto === "procede" ? "Procede" : diag.veredicto === "validacion" ? "Requiere validación IMPI" : "No procede como IG";
+  var alterna = rechazo ? '<p class="filtro-alterna">Considera marca colectiva como alternativa: protege el origen sin exigir exclusividad territorial.</p>' : "";
   return '' +
-    '<div class="eje">' +
-      '<div class="eje-cab"><span class="eje-nombre">' + nombre + '</span><span class="eje-valor">' + valor + '/5</span></div>' +
-      '<div class="meter">' + bloques + '</div>' +
+    '<div class="filtro-territorial ' + (rechazo ? "rechazo" : "") + '">' +
+      '<span class="mono">Paso 0 · Filtro de viabilidad territorial</span>' +
+      preguntasHTML +
+      '<div class="veredicto-linea">' +
+        '<span class="veredicto-tag">' + veredictoLabel + '</span>' +
+      '</div>' +
+      alterna +
+    '</div>';
+}
+
+function renderDimension(dim, diag){
+  var score = diag.dimScores[dim.id];
+  var respuestas = diag.respuestas[dim.id];
+  var preguntasHTML = dim.preguntas.map(function(texto, idx){
+    return '' +
+      '<div class="dimension-pregunta">' +
+        '<span>' + esc(texto) + '</span>' +
+        '<span class="dimension-resp">' + ESCALA_LABELS[respuestas[idx]] + '</span>' +
+      '</div>';
+  }).join("");
+  return '' +
+    '<div class="dimension">' +
+      '<details>' +
+        '<summary><span>' + esc(dim.nombre) + '</span><span class="eje-nivel-tag">' + score + ' · ' + nivelDe(score) + '</span></summary>' +
+        '<div class="dimension-body">' + preguntasHTML + '</div>' +
+      '</details>' +
+    '</div>';
+}
+
+function renderEjeCard(eje, diag){
+  var score = diag.ejeScores[eje.id];
+  var advertencia = eje.id === "cooperativo"
+    ? '<p class="eje-advertencia">Este eje no entra en el cálculo de prioridad. Es información para diseñar acompañamiento, no un criterio de filtro.</p>'
+    : "";
+  var indicePrioridad = eje.id === "viabilidad"
+    ? '<div class="indice-prioridad"><span class="mono">Índice de prioridad (60% viabilidad IG + 40% brecha cerrable en 12 meses, proxy provisional)</span>' + diag.prioridad + ' / 100</div>'
+    : "";
+  var dimsHTML = eje.dimensiones.map(function(dim){ return renderDimension(dim, diag); }).join("");
+  return '' +
+    '<div class="eje-card">' +
+      '<div class="eje-card-cab"><h4>' + esc(eje.nombre) + '</h4><span class="eje-nivel-tag">' + score + ' · ' + nivelDe(score) + '</span></div>' +
+      '<p class="eje-proposito">' + esc(eje.proposito) + '</p>' +
+      advertencia +
+      '<div class="dimensiones">' + dimsHTML + '</div>' +
+      indicePrioridad +
+    '</div>';
+}
+
+function renderPlanFortalecimiento(diag){
+  return '' +
+    '<div class="plan-fortalecimiento">' +
+      '<h4>Plan de fortalecimiento</h4>' +
+      '<ul>' + diag.plan.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' +
     '</div>';
 }
 
 function renderDiagnostico(group){
-  var d = computeDiagnostico(group);
+  var diag = computeDiagnostico(group);
+  var ejesHTML = EJES_DIAGNOSTICO.map(function(eje){ return renderEjeCard(eje, diag); }).join("");
   return '' +
+    renderFiltroPaso0(diag) +
     '<div class="diagnostico">' +
       '<span class="mono">Instrumento en calibración</span>' +
-      '<h3>Diagnóstico preliminar</h3>' +
+      '<h3>Diagnóstico</h3>' +
       '<p class="aviso">Cálculo de referencia, no una evaluación oficial. Sirve para priorizar acompañamiento, no para descartar agrupaciones.</p>' +
-      '<div class="ejes">' +
-        renderEje("Madurez organizativa", d.madurez) +
-        renderEje("Viabilidad técnica", d.viabilidad) +
-        renderEje("Potencial de mercado", d.potencial) +
-      '</div>' +
+      '<div class="ejes-cards">' + ejesHTML + '</div>' +
+      renderPlanFortalecimiento(diag) +
     '</div>';
 }
 
