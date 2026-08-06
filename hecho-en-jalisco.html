@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hecho en Jalisco · Demo de estructura</title>
+<meta name="description" content="Demo de estructura para SEDECO Jalisco: seguimiento de agrupaciones hacia una Indicación Geográfica ante el IMPI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Karla:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --naranja:#FFAB40;
+    --naranja-hondo:#B9720A;
+    --negro:#0A0A0A;
+    --carbon:#1C1C1C;
+    --gris:#6E6E6E;
+    --gris-claro:#E4E2DE;
+    --blanco:#FFFFFF;
+    --verde:#204533;
+    --terracota:#A2383A;
+    --rosa:#D89A9D;
+    --azul:#3E7E8C;
+    --franja-h:34px;
+    --topbar-h:56px;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--blanco);
+    color:var(--negro);
+    font-family:'Karla',sans-serif;
+    font-size:15px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Archivo',sans-serif;
+    font-weight:800;
+    letter-spacing:-0.028em;
+    line-height:1.03;
+    margin:0;
+  }
+  h2{
+    font-size:25px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:0 0 18px;
+  }
+  h2::after{
+    content:"";
+    flex:1 1 auto;
+    min-width:20px;
+    height:1px;
+    background:var(--gris-claro);
+  }
+  .ficha-cab h2{display:block;margin-bottom:6px;}
+  .ficha-cab h2::after{content:none;}
+  .mono{
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    font-size:10px;
+    letter-spacing:.1em;
+  }
+  button,select{font-family:'Karla',sans-serif;font-size:14px;}
+  a{color:inherit;}
+  button{cursor:pointer;}
+  ul,ol{margin:0;padding:0;list-style:none;}
+  p{margin:0;}
+
+  /* ---------- foco de teclado ---------- */
+  a:focus-visible,button:focus-visible,select:focus-visible,
+  [tabindex]:focus-visible,summary:focus-visible,input:focus-visible{
+    outline:3px solid var(--naranja-hondo);
+    outline-offset:2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none!important;animation:none!important;}
+  }
+
+  /* ---------- franja tejida (firma de marca) ---------- */
+  .franja-marca{display:flex;height:5px;width:100%;}
+  .franja-marca span{flex:1 1 0;height:100%;}
+
+  /* ---------- franja fija ---------- */
+  .franja-demo{
+    position:sticky;top:0;z-index:60;
+    height:var(--franja-h);
+    background:var(--negro);
+    color:var(--blanco);
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;
+    padding:0 12px;
+  }
+  .franja-demo span{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky;top:var(--franja-h);z-index:50;
+    background:var(--blanco);
+    border-bottom:2px solid var(--negro);
+    padding:14px 20px;
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;
+  }
+  .marca{display:flex;flex-direction:column;gap:2px;}
+  .marca h1{font-size:22px;}
+  .marca .mono{color:var(--gris);}
+  .roles{display:flex;flex-wrap:wrap;gap:6px;}
+  .role-btn{
+    background:var(--blanco);
+    border:2px solid var(--negro);
+    color:var(--negro);
+    padding:8px 12px;
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    font-size:10px;
+    letter-spacing:.08em;
+  }
+  .role-btn[aria-pressed="true"]{
+    background:var(--negro);
+    color:var(--blanco);
+  }
+  .role-btn:hover{border-color:var(--naranja-hondo);}
+
+  /* ---------- subbar ---------- */
+  .subbar{
+    background:var(--gris-claro);
+    border-bottom:2px solid var(--negro);
+    padding:10px 20px;
+    display:flex;flex-wrap:wrap;gap:16px;align-items:center;
+  }
+  .subbar.vacia{display:none;}
+  .campo{display:flex;flex-direction:column;gap:4px;}
+  .campo label{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;color:var(--gris);}
+  .campo select{
+    border:2px solid var(--negro);
+    background:var(--blanco);
+    color:var(--negro);
+    padding:6px 8px;
+    min-width:170px;
+  }
+  .volver-btn{
+    background:var(--blanco);
+    border:2px solid var(--negro);
+    padding:8px 12px;
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    font-size:10px;
+    letter-spacing:.08em;
+  }
+  .volver-btn:hover{border-color:var(--naranja-hondo);}
+  .sesion-simulada{
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    font-size:10px;
+    letter-spacing:.08em;
+    color:var(--gris);
+  }
+
+  /* ---------- subnav sedeco ---------- */
+  .subnav{gap:4px;padding:0 20px;}
+  .subnav-btn{
+    background:transparent;
+    border:none;
+    border-bottom:3px solid transparent;
+    color:var(--gris);
+    padding:12px 10px 9px;
+    font-family:'IBM Plex Mono',monospace;
+    text-transform:uppercase;
+    font-size:10px;
+    letter-spacing:.08em;
+  }
+  .subnav-btn[aria-pressed="true"]{
+    color:var(--negro);
+    border-bottom-color:var(--naranja);
+    font-weight:600;
+  }
+  .subnav-btn:hover{color:var(--negro);}
+
+  main{max-width:1180px;margin:0 auto;padding:32px 20px 90px;}
+
+  /* ---------- funnel ---------- */
+  .funnel-title{margin-bottom:4px;}
+  .funnel-sub{color:var(--gris);margin-bottom:16px;}
+  .funnel{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:2px;
+    margin-bottom:8px;
+  }
+  .funnel-col{
+    background:var(--negro);
+    color:var(--blanco);
+    padding:14px 10px;
+    min-height:120px;
+    min-width:0;
+    display:flex;flex-direction:column;justify-content:space-between;gap:10px;
+  }
+  @media (max-width:760px){
+    .funnel{grid-template-columns:repeat(3,1fr);}
+  }
+  @media (max-width:420px){
+    .funnel{grid-template-columns:repeat(2,1fr);}
+  }
+  .funnel-num{font-family:'Archivo',sans-serif;font-weight:800;font-size:30px;line-height:1;}
+  .funnel-label{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;color:var(--gris-claro);}
+  .funnel-bar{height:5px;background:var(--carbon);}
+  .funnel-bar span{display:block;height:100%;background:var(--naranja);}
+  .funnel-nota{
+    border:2px solid var(--negro);
+    border-left:6px solid var(--naranja);
+    background:var(--blanco);
+    padding:12px 14px;
+    margin:16px 0 28px;
+  }
+  .funnel-nota .mono{color:var(--naranja-hondo);display:block;margin-bottom:4px;}
+
+  /* ---------- panorama: resumen tipo tablero ---------- */
+  .panorama-resumen{display:grid;grid-template-columns:280px 1fr;gap:2px;margin-bottom:8px;}
+  @media (max-width:760px){ .panorama-resumen{grid-template-columns:1fr;} }
+  .panorama-total{background:var(--negro);color:var(--blanco);padding:20px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;}
+  .panorama-total-click{background:none;border:none;color:inherit;text-align:left;font:inherit;padding:0;cursor:pointer;display:block;width:100%;}
+  .panorama-total-click:hover .panorama-total-num{color:var(--blanco);}
+  .panorama-total-num{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:62px;line-height:1;color:var(--naranja);}
+  .panorama-total-leyenda{display:block;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;color:var(--gris-claro);margin-top:8px;}
+  .panorama-total-bar{display:block;height:6px;background:var(--carbon);margin-top:14px;}
+  .panorama-total-bar span{display:block;height:100%;background:var(--naranja);}
+  .panorama-total-falta{
+    background:none;border:none;padding:0;text-align:left;cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    color:var(--gris-claro);text-decoration:underline;
+  }
+  .panorama-total-falta:hover{color:var(--naranja);}
+
+  .panorama-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+  @media (max-width:640px){ .panorama-kpis{grid-template-columns:repeat(2,1fr);} }
+  .kpi-btn{
+    background:var(--negro);color:var(--blanco);border:none;padding:16px 14px;text-align:left;font:inherit;cursor:pointer;
+    display:flex;flex-direction:column;gap:8px;min-height:100px;justify-content:space-between;
+  }
+  .kpi-btn:hover{background:var(--carbon);}
+  .kpi-num{font-family:'Archivo',sans-serif;font-weight:800;font-size:28px;}
+  .kpi-num.rojo{color:var(--terracota);}
+  .kpi-label{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--gris-claro);}
+
+  .kpi-chip{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+    border:2px solid var(--negro);border-left:6px solid var(--naranja);padding:10px 14px;margin-bottom:14px;
+  }
+  .btn-quitar-chip{background:var(--blanco);border:2px solid var(--negro);padding:6px 10px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;}
+  .btn-quitar-chip:hover{border-color:var(--naranja-hondo);}
+
+  .link-agrupacion{
+    background:none;border:none;padding:4px 0;text-align:left;font:inherit;font-size:14px;color:var(--negro);cursor:pointer;
+    text-decoration:underline;text-decoration-color:var(--gris-claro);
+  }
+  .link-agrupacion:hover{color:var(--naranja-hondo);text-decoration-color:var(--naranja-hondo);}
+  .tarjeta-lista-vacia{color:var(--gris);font-style:italic;padding:4px 0;}
+
+  /* ---------- alertas ---------- */
+  .alertas-wrap{margin-bottom:36px;}
+  .alertas-wrap h2{font-size:18px;margin-bottom:10px;}
+  .alerta{
+    border:2px solid var(--negro);
+    border-left:6px solid var(--terracota);
+    background:var(--blanco);
+    padding:10px 14px;
+    margin-bottom:6px;
+    display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;
+  }
+  .alerta.media{border-left-color:var(--rosa);}
+  .alerta .tag{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;
+    color:var(--terracota);flex:0 0 auto;
+  }
+  .alerta.media .tag{color:var(--gris);}
+  .alerta .grupo{font-weight:700;}
+  .alerta .texto{color:var(--carbon);}
+
+  /* ---------- filtros ---------- */
+  .filtros{
+    display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;
+    border:2px solid var(--negro);
+    padding:12px 14px;
+    margin-bottom:20px;
+  }
+  .filtros .campo select{min-width:150px;}
+  .filtros .contador{margin-left:auto;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;color:var(--gris);align-self:center;}
+
+  /* ---------- tabla ---------- */
+  .tabla-wrap{overflow-x:auto;}
+  table.cartera{width:100%;border-collapse:collapse;min-width:760px;}
+  table.cartera caption{text-align:left;margin-bottom:8px;}
+  table.cartera th{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;
+    text-align:left;color:var(--gris);border-bottom:2px solid var(--negro);padding:8px 10px;
+  }
+  table.cartera td{
+    border-bottom:1px solid var(--gris-claro);
+    padding:10px;
+    vertical-align:middle;
+  }
+  table.cartera tbody tr{cursor:pointer;}
+  table.cartera tbody tr:hover{background:var(--gris-claro);}
+  table.cartera tbody tr:focus-visible{background:var(--gris-claro);}
+  .producto-nombre{font-weight:700;display:block;}
+  .clasif{color:var(--gris);}
+
+  .badge-ig,.badge-mc{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    padding:3px 6px;border:1px solid var(--gris);display:inline-block;white-space:nowrap;
+  }
+  .badge-mc{background:var(--negro);color:var(--blanco);border-color:var(--negro);}
+  .badge-potencial{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    border:1px solid var(--negro);padding:3px 6px;display:inline-block;white-space:nowrap;
+  }
+
+  /* ---------- sarape ---------- */
+  .sarape{display:flex;gap:2px;width:100%;min-width:140px;}
+  .sarape.mini{height:16px;}
+  .sarape.grande{height:34px;}
+  .hilo{flex:1 1 0;}
+  .hilo.completada{background:var(--verde);}
+  .hilo.encurso{background:var(--naranja);}
+  .hilo.sininiciar{background:var(--gris-claro);}
+  .hilo.noaplica{
+    background:repeating-linear-gradient(45deg,var(--gris-claro) 0 3px,var(--blanco) 3px 6px);
+    border:1px solid var(--gris-claro);
+  }
+  .sarape-leyenda{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;}
+  .sarape-leyenda .item{display:flex;align-items:center;gap:6px;}
+  .sarape-leyenda .swatch{width:14px;height:14px;flex:0 0 auto;}
+  .sarape-leyenda .swatch.completada{background:var(--verde);}
+  .sarape-leyenda .swatch.encurso{background:var(--naranja);}
+  .sarape-leyenda .swatch.sininiciar{background:var(--gris-claro);}
+  .sarape-leyenda .swatch.noaplica{background:repeating-linear-gradient(45deg,var(--gris-claro) 0 3px,var(--blanco) 3px 6px);border:1px solid var(--gris-claro);}
+  .sarape-leyenda .mono{color:var(--gris);}
+
+  /* ---------- tabla responsiva ---------- */
+  @media (max-width:680px){
+    table.cartera{min-width:0;}
+    table.cartera thead{display:none;}
+    table.cartera, table.cartera tbody, table.cartera tr, table.cartera td{display:block;width:100%;}
+    table.cartera tr{border:2px solid var(--negro);margin-bottom:12px;padding:10px;}
+    table.cartera td{border:0;padding:6px 0;}
+    table.cartera td[data-label]::before{
+      content:attr(data-label);
+      display:block;
+      font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;color:var(--gris);
+      margin-bottom:3px;
+    }
+  }
+
+  /* ---------- asesor / municipio listas simples ---------- */
+  .lista-simple-cab{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+
+  /* ---------- tarjetas (cohortes / mesas / plantillas) ---------- */
+  .tarjeta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:14px;}
+  .tarjeta{border:2px solid var(--negro);background:var(--blanco);padding:16px;}
+  .tarjeta-cab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px;}
+  .tarjeta-cab h3{font-size:16px;}
+  .tarjeta-cab .mono{color:var(--gris);flex:0 0 auto;}
+  .tarjeta-datos{margin:0;}
+  .tarjeta-dato{border-top:1px solid var(--gris-claro);padding:6px 0;display:flex;justify-content:space-between;gap:10px;}
+  .tarjeta-dato:first-child{border-top:none;}
+  .tarjeta-dato dt{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--gris);}
+  .tarjeta-dato dd{margin:0;font-weight:700;text-align:right;}
+  .tarjeta-lista li{padding:4px 0;border-top:1px solid var(--gris-claro);}
+  .tarjeta-lista li:first-child{border-top:none;}
+  .tarjeta-fija{border-width:3px;}
+  .tarjeta-fija p{margin-top:4px;max-width:70ch;}
+
+  .tag-lifecycle{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    padding:4px 8px;border:1px solid var(--negro);
+  }
+  .tag-hecho{background:var(--negro);color:var(--blanco);border-color:var(--negro);}
+  .tag-progreso{background:var(--blanco);color:var(--naranja-hondo);border-color:var(--naranja);}
+  .tag-pendiente{background:var(--blanco);color:var(--gris);border:1px dashed var(--gris-claro);}
+
+  /* ---------- ruta de participación municipal ---------- */
+  .ruta-municipal-wrap{margin-bottom:26px;}
+  .ruta-municipal-wrap > .mono{display:block;margin-bottom:8px;color:var(--gris);}
+  .ruta-municipal{display:flex;gap:2px;}
+  .ruta-paso{flex:1 1 0;display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .ruta-paso-bloque{height:10px;}
+  .ruta-paso-bloque.completada{background:var(--verde);}
+  .ruta-paso-bloque.encurso{background:var(--naranja);}
+  .ruta-paso-bloque.sininiciar{background:var(--gris-claro);}
+  .ruta-paso-num{font-family:'Archivo',sans-serif;font-weight:800;font-size:16px;}
+  .ruta-paso-nombre{font-size:11.5px;color:var(--gris);line-height:1.25;}
+  .ruta-municipal-nota{margin-top:10px;padding-left:10px;border-left:4px solid var(--naranja);font-weight:700;max-width:60ch;}
+
+  /* ---------- ficha ---------- */
+  .ficha-back{margin-bottom:14px;}
+  .ficha-cab{margin-bottom:14px;}
+  .ficha-cab .mono{color:var(--gris);display:block;margin-bottom:6px;}
+  .ficha-cab h2{font-size:30px;margin-bottom:6px;}
+  .ficha-cab .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+
+  .ficha-grid{display:grid;grid-template-columns:1fr 300px;gap:24px;margin-top:20px;}
+  @media (max-width:860px){.ficha-grid{grid-template-columns:1fr;}}
+
+  .panel-negro{
+    background:var(--negro);color:var(--blanco);
+    padding:18px;align-self:start;
+  }
+  .panel-negro h3{color:var(--blanco);font-size:15px;margin-bottom:14px;}
+  .panel-negro dl{margin:0;}
+  .panel-negro .fila{border-top:1px solid var(--carbon);padding:8px 0;}
+  .panel-negro .fila:first-of-type{border-top:none;}
+  .panel-negro dt{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;color:var(--gris-claro);margin-bottom:2px;}
+  .panel-negro dd{margin:0;font-weight:700;}
+
+  .etapas-list details{border:2px solid var(--negro);margin-bottom:8px;}
+  .etapas-list summary{
+    list-style:none;cursor:pointer;padding:12px 14px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+  }
+  .etapas-list summary::-webkit-details-marker{display:none;}
+  .etapa-tit{display:flex;gap:12px;align-items:baseline;}
+  .etapa-num{font-family:'Archivo',sans-serif;font-weight:800;font-size:18px;color:var(--gris);}
+  .etapa-nombre{font-weight:700;}
+  .etapa-resp{color:var(--gris);}
+  .estado-tag{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;
+    padding:4px 8px;border:1px solid var(--negro);
+  }
+  .estado-tag.completada{background:var(--verde);color:var(--blanco);border-color:var(--verde);}
+  .estado-tag.encurso{background:var(--naranja);color:var(--negro);border-color:var(--naranja);}
+  .estado-tag.sininiciar{background:var(--blanco);color:var(--gris);border-color:var(--gris-claro);}
+  .estado-tag.noaplica{background:var(--blanco);color:var(--gris);border-color:var(--gris-claro);}
+
+  .etapa-body{padding:0 14px 16px;border-top:2px solid var(--gris-claro);}
+  .etapa-body .guia{padding-top:12px;margin-bottom:14px;}
+  .etapa-body .guia .mono{color:var(--naranja-hondo);display:block;margin-bottom:4px;}
+  .req-list li{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+    padding:8px 0;border-top:1px solid var(--gris-claro);
+  }
+  .req-list li:first-child{border-top:none;}
+  .req-texto{flex:1 1 220px;}
+  .st-tag{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    padding:4px 8px;border:1px solid;white-space:nowrap;
+  }
+  .st-sincargar{color:var(--gris);border-color:var(--gris-claro);background:var(--gris-claro);}
+  .st-cargada{color:var(--naranja-hondo);border-color:var(--naranja);background:var(--blanco);}
+  .st-validada{color:var(--blanco);border-color:var(--azul);background:var(--azul);}
+  .st-aceptada{color:var(--blanco);border-color:var(--verde);background:var(--verde);}
+  .st-rechazada{color:var(--blanco);border-color:var(--terracota);background:var(--terracota);}
+
+  .no-aplica-nota{padding-top:12px;color:var(--gris);}
+
+  .liberar-zona{margin-top:14px;padding-top:14px;border-top:2px dashed var(--gris-claro);}
+  .btn-liberar{
+    background:var(--negro);color:var(--blanco);border:2px solid var(--negro);
+    padding:10px 16px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;
+  }
+  .btn-liberar:disabled{background:var(--blanco);color:var(--gris-claro);border-color:var(--gris-claro);cursor:not-allowed;}
+  .btn-liberar:not(:disabled):hover{background:var(--naranja-hondo);border-color:var(--naranja-hondo);}
+  .falta-nota{display:inline-block;margin-left:10px;color:var(--terracota);font-weight:700;}
+  .no-libera-texto{color:var(--gris);border-left:4px solid var(--gris-claro);padding-left:10px;}
+  .liberada-msg{color:var(--verde);font-weight:700;}
+  .solo-lectura{color:var(--gris);}
+
+  /* ---------- filtro de viabilidad territorial (paso 0) ---------- */
+  .filtro-territorial{
+    margin-top:26px;border:4px solid var(--negro);padding:18px 20px;background:var(--blanco);color:var(--negro);
+  }
+  .filtro-territorial.rechazo{background:var(--terracota);color:var(--blanco);border-color:var(--terracota);}
+  .filtro-territorial > .mono{display:block;margin-bottom:10px;color:var(--gris);}
+  .filtro-territorial.rechazo > .mono{color:var(--rosa);}
+  .filtro-pregunta{
+    display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+    padding:8px 0;border-top:1px solid var(--gris-claro);
+  }
+  .filtro-pregunta:first-of-type{border-top:none;}
+  .filtro-territorial.rechazo .filtro-pregunta{border-top-color:rgba(255,255,255,.3);}
+  .alt-si-no{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    border:1px solid currentColor;padding:3px 8px;flex:0 0 auto;
+  }
+  .veredicto-linea{margin-top:12px;padding-top:12px;border-top:2px solid var(--negro);}
+  .filtro-territorial.rechazo .veredicto-linea{border-top-color:rgba(255,255,255,.5);}
+  .veredicto-tag{
+    display:inline-block;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:11px;letter-spacing:.08em;
+    padding:6px 10px;border:2px solid currentColor;font-weight:600;
+  }
+  .filtro-alterna{margin-top:10px;max-width:60ch;}
+
+  /* ---------- diagnostico ---------- */
+  .diagnostico{
+    margin-top:20px;background:var(--naranja);color:var(--negro);padding:20px;
+  }
+  .diagnostico .mono{display:block;margin-bottom:10px;font-weight:600;}
+  .diagnostico h3{font-size:20px;margin-bottom:6px;}
+  .diagnostico .aviso{margin-bottom:18px;max-width:60ch;}
+  .ejes-cards{display:flex;flex-direction:column;gap:14px;}
+  .eje-card{background:var(--blanco);color:var(--negro);border:2px solid var(--negro);padding:16px;}
+  .eje-card-cab{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:4px;}
+  .eje-card-cab h4{font-size:16px;}
+  .eje-nivel-tag{
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    border:1px solid var(--negro);padding:3px 8px;flex:0 0 auto;white-space:nowrap;
+  }
+  .eje-proposito{color:var(--gris);max-width:64ch;margin-bottom:12px;}
+  .eje-advertencia{border:2px dashed var(--negro);padding:8px 10px;margin-bottom:12px;font-weight:700;}
+  .dimensiones{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media (max-width:760px){.dimensiones{grid-template-columns:1fr;}}
+  .dimension details{border:1px solid var(--gris-claro);}
+  .dimension summary{
+    list-style:none;cursor:pointer;padding:8px 10px;display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:13px;
+  }
+  .dimension summary::-webkit-details-marker{display:none;}
+  .dimension-body{padding:0 10px 10px;}
+  .dimension-pregunta{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px solid var(--gris-claro);font-size:12.5px;}
+  .dimension-pregunta:first-child{border-top:none;}
+  .dimension-resp{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;color:var(--gris);flex:0 0 auto;}
+  .indice-prioridad{margin-top:10px;padding-top:10px;border-top:1px dashed var(--negro);font-size:13px;font-weight:700;}
+  .indice-prioridad .mono{color:var(--gris);display:block;font-weight:400;margin-bottom:3px;}
+
+  .plan-fortalecimiento{margin-top:18px;border-top:2px solid var(--negro);padding-top:14px;}
+  .plan-fortalecimiento h4{font-size:15px;margin-bottom:8px;}
+  .plan-fortalecimiento li{padding:6px 0;border-top:1px solid rgba(10,10,10,.15);}
+  .plan-fortalecimiento li:first-child{border-top:none;}
+
+  .footer{max-width:1180px;margin:0 auto;padding:20px;color:var(--gris);}
+
+  /* ---------- formulario nueva agrupación ---------- */
+  .topbar-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .btn-nueva{
+    background:var(--naranja);color:var(--negro);border:2px solid var(--negro);
+    padding:8px 14px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;font-weight:600;
+  }
+  .btn-nueva:hover{background:var(--naranja-hondo);color:var(--blanco);}
+
+  .form-panel{position:fixed;inset:0;z-index:100;background:var(--blanco);display:flex;flex-direction:column;}
+  .form-header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 20px;border-bottom:2px solid var(--negro);flex:0 0 auto;
+  }
+  .form-header .mono{color:var(--gris);}
+  .form-cerrar{background:var(--blanco);border:2px solid var(--negro);width:32px;height:32px;font-size:14px;line-height:1;}
+  .form-cerrar:hover{border-color:var(--naranja-hondo);}
+
+  .form-progreso{display:flex;gap:2px;padding:0 20px;flex:0 0 auto;border-bottom:2px solid var(--gris-claro);}
+  .form-progreso-paso{flex:1 1 0;min-width:0;padding:10px 4px;border-bottom:3px solid var(--gris-claro);display:flex;flex-direction:column;gap:2px;}
+  .form-progreso-paso.hecho{border-bottom-color:var(--negro);}
+  .form-progreso-paso.actual{border-bottom-color:var(--naranja);}
+  .form-progreso-num{font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;}
+  .form-progreso-label{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:9px;letter-spacing:.04em;color:var(--gris);display:none;}
+  @media (min-width:640px){ .form-progreso-label{display:block;} }
+
+  .form-body{flex:1 1 auto;overflow-y:auto;padding:20px;max-width:720px;margin:0 auto;width:100%;}
+  .form-body h3{font-size:20px;margin-bottom:14px;}
+  .form-footer{flex:0 0 auto;display:flex;justify-content:space-between;gap:10px;padding:14px 20px;border-top:2px solid var(--negro);}
+  .form-footer .btn-nueva{margin-left:auto;}
+
+  .form-campo{margin-bottom:16px;display:flex;flex-direction:column;gap:4px;}
+  .form-campo label{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--gris);}
+  .form-campo input,.form-campo select,.form-campo textarea{
+    border:2px solid var(--negro);padding:9px 10px;font-family:'Karla',sans-serif;font-size:14px;background:var(--blanco);color:var(--negro);width:100%;
+  }
+  .form-campo textarea{resize:vertical;}
+  .form-ayuda{color:var(--gris);font-size:12.5px;}
+  .form-error{color:var(--negro);font-size:12.5px;font-weight:700;padding-left:8px;border-left:3px solid var(--naranja);}
+  .form-nota{color:var(--gris);margin-bottom:16px;max-width:60ch;}
+
+  .aviso-calibracion{background:var(--naranja);color:var(--negro);border:2px solid var(--negro);padding:12px 14px;margin-bottom:18px;max-width:70ch;}
+
+  .filtro-territorial .form-si-no{padding:10px 0;border-top:1px solid var(--gris-claro);}
+  .form-si-no:first-of-type{border-top:none;}
+  .form-si-no p{margin-bottom:8px;}
+  .si-no-btns{display:flex;gap:8px;}
+  .btn-si-no{background:var(--blanco);border:2px solid var(--negro);padding:6px 16px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;}
+  .btn-si-no.activo{background:var(--negro);color:var(--blanco);}
+
+  .form-eje-body{padding:10px 0 4px;}
+  .form-dimension{margin-bottom:16px;}
+  .form-dimension h5{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:var(--gris);margin-bottom:8px;}
+  .form-pregunta-escala{margin-bottom:12px;}
+  .form-pregunta-escala p{margin-bottom:6px;font-size:13.5px;}
+  .escala-btns{display:flex;gap:4px;flex-wrap:wrap;}
+  .escala-btn{background:var(--blanco);border:1px solid var(--gris-claro);padding:5px 9px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:9.5px;letter-spacing:.04em;color:var(--gris);}
+  .escala-btn.activo{background:var(--negro);border-color:var(--negro);color:var(--blanco);}
+
+  .doc-list{border:2px solid var(--negro);}
+  .doc-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--gris-claro);flex-wrap:wrap;}
+  .doc-item:first-child{border-top:none;}
+  .doc-estado{display:flex;align-items:center;gap:10px;font-size:13px;}
+  .btn-doc{background:var(--blanco);border:2px solid var(--negro);padding:6px 12px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;cursor:pointer;}
+  .btn-doc:hover{border-color:var(--naranja-hondo);}
+  .btn-quitar{background:none;border:none;text-decoration:underline;font-size:12px;color:var(--gris);cursor:pointer;padding:0;}
+
+  .foto-grid{display:flex;flex-wrap:wrap;gap:10px;}
+  .foto-item{position:relative;width:90px;height:90px;border:2px solid var(--negro);}
+  .foto-item img{width:100%;height:100%;object-fit:cover;display:block;}
+  .foto-item .btn-quitar{position:absolute;bottom:0;left:0;right:0;background:var(--negro);color:var(--blanco);text-align:center;text-decoration:none;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:9px;padding:3px 0;}
+  .foto-agregar{
+    width:90px;height:90px;border:2px dashed var(--gris-claro);display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;color:var(--gris);text-align:center;cursor:pointer;
+  }
+  .foto-agregar:hover{border-color:var(--naranja-hondo);color:var(--naranja-hondo);}
+
+  .lo-que-pasa li{padding:6px 0;border-top:1px solid var(--carbon);}
+  .lo-que-pasa li:first-child{border-top:none;}
+</style>
+</head>
+<body>
+<div class="franja-marca" role="presentation" aria-hidden="true">
+  <span style="background:var(--naranja);"></span>
+  <span style="background:var(--naranja-hondo);"></span>
+  <span style="background:var(--negro);"></span>
+  <span style="background:var(--carbon);"></span>
+  <span style="background:var(--gris-claro);"></span>
+  <span style="background:var(--verde);"></span>
+  <span style="background:var(--terracota);"></span>
+  <span style="background:var(--rosa);"></span>
+  <span style="background:var(--azul);"></span>
+</div>
+<div class="franja-demo"><span>Demo de estructura para revisión con SEDECO. Datos de muestra, no operativos.</span></div>
+<div id="topbar"></div>
+<div id="subbar"></div>
+<main id="main" tabindex="-1"></main>
+<div class="footer mono">Hecho en Jalisco · Prototipo de estructura · No conectado a IMPI ni a SEDECO</div>
+<div id="form-overlay"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================
+   DATOS
+   ========================================================= */
+
+var ETAPAS = [
+  {n:1, nombre:"Organización de productores", responsable:"Productores", duracion:"3 meses",
+   guia:"Junta a quienes producen lo mismo, en la misma zona. Nombren representantes y pónganse de acuerdo en cómo van a trabajar juntos.",
+   requisitos:["Lista de productores participantes, con firma","Acta de la primera reunión del grupo","Mapa de las localidades donde se produce"]},
+  {n:2, nombre:"Constitución de persona moral", responsable:"Productores", duracion:"3 meses",
+   guia:"Formen una figura legal (asociación civil, cooperativa u otra) para poder firmar trámites y recibir apoyos a nombre del grupo, no de una persona sola.",
+   requisitos:["Acta constitutiva ante notario","RFC de la persona moral","Identificación de quien la representa legalmente"]},
+  {n:3, nombre:"Estudio técnico", responsable:"Institución académica", duracion:"6 meses",
+   guia:"Una universidad o centro de investigación documenta qué hace único al producto: su origen, su proceso, y por qué el lugar donde se hace importa.",
+   requisitos:["Estudio del vínculo entre el producto y el territorio","Caracterización del producto (física, química o sensorial)","Convenio firmado con la institución que hizo el estudio"]},
+  {n:4, nombre:"Reglas de uso del producto", responsable:"Agrupación", duracion:"2 meses",
+   guia:"Escriban, por escrito, cómo se debe hacer el producto para poder usar el nombre protegido: materiales, proceso, y hasta dónde llega el territorio.",
+   requisitos:["Documento de reglas de uso o manual de producción","Delimitación del territorio donde aplica","Acuerdo del grupo aprobando las reglas"]},
+  {n:5, nombre:"Integración del expediente IMPI", responsable:"SEDECO", duracion:"1 mes",
+   guia:"SEDECO reúne todos los documentos anteriores y arma la solicitud que se va a presentar ante el IMPI.",
+   requisitos:["Expediente completo integrado","Revisión de requisitos formales del IMPI","Pago de derechos cubierto"]},
+  {n:6, nombre:"Trámite y examen ante IMPI", responsable:"IMPI", duracion:"15 meses",
+   guia:"El IMPI revisa el expediente. Puede pedir aclaraciones o correcciones. Es la etapa más larga: si piden algo, hay que responder rápido.",
+   requisitos:["Solicitud presentada, con folio del IMPI","Respuesta a los requerimientos del IMPI, si los hubo","Publicación en la Gaceta de la Propiedad Industrial"]},
+  {n:7, nombre:"Declaratoria publicada en DOF", responsable:"IMPI", duracion:"1 mes",
+   guia:"Si el IMPI aprueba, publica la declaratoria en el Diario Oficial de la Federación. Desde ese día el nombre queda protegido por ley.",
+   requisitos:["Declaratoria publicada en el DOF","Número de declaratoria registrado","Aviso formal a la agrupación"]},
+  {n:8, nombre:"Acreditación de la certificadora", responsable:"Persona moral certificadora", duracion:"4 meses",
+   guia:"Alguien tiene que poder revisar que cada productor cumple las reglas de uso. Esa persona moral certificadora se acredita ante la autoridad correspondiente.",
+   requisitos:["Persona moral certificadora constituida","Acreditación como unidad de certificación","Procedimiento de verificación definido y publicado"]},
+  {n:9, nombre:"Autorización de uso por productor", responsable:"Cada productor", duracion:"4 meses",
+   guia:"Cada productor pide, uno por uno, su autorización para usar el nombre protegido. Sin esta autorización, la declaratoria no cambia nada en la práctica.",
+   requisitos:["Solicitud individual de autorización de uso","Verificación de cumplimiento de las reglas de uso","Autorización de uso otorgada y vigente"]}
+];
+
+var ASESORES = ["Ana Briceño","Luis Preciado","Karla Núñez"];
+
+var GROUPS_RAW = [
+  {producto:"Cajeta de Sayula", clasificacion:"Agroalimento", region:"Sur", municipios:"Sayula", productores:20, potencial:"ALTO", etapaActual:7,
+   folioIMPI:"353447", fechaSolicitud:"2023-10-06", fechaDeclaratoria:"2024-07-04"},
+  {producto:"La Pitaya", clasificacion:"Agroalimento", region:"Sur", municipios:"Techaluta, Amacueca, Sayula, Zacoalco", productores:"sin dato", potencial:"ALTO", etapaActual:2},
+  {producto:"Equipales de Zacoalco", clasificacion:"Artesanía", region:"Lagunas", municipios:"Zacoalco de Torres", productores:300, potencial:"ALTO", etapaActual:2},
+  {producto:"Birote Salado", clasificacion:"Agroalimento", region:"Centro", municipios:"Guadalajara", productores:2827, potencial:"ALTO", etapaActual:1},
+  {producto:"Arte en Chaquira", clasificacion:"Artesanía", region:"Norte", municipios:"Mezquitic, Huejuquilla, Villa Guerrero", productores:"sin dato", potencial:"ALTO", etapaActual:1},
+  {producto:"Tejido de Etzatlán", clasificacion:"Artesanía", region:"Valles", municipios:"Etzatlán", productores:200, potencial:"MEDIO", etapaActual:2},
+  {producto:"Tejuino", clasificacion:"Bebida", region:"Centro", municipios:"Guadalajara", productores:6, potencial:"MEDIO", etapaActual:2},
+  {producto:"Dulce de Guayaba", clasificacion:"Agroalimento", region:"Valles", municipios:"Mascota", productores:"sin dato", potencial:"MEDIO", etapaActual:1},
+  {producto:"Chilte de Talpa", clasificacion:"Agroalimento", region:"Sierra Occidental", municipios:"Talpa de Allende", productores:"sin dato", potencial:"MEDIO", etapaActual:1},
+  {producto:"Barro Canelo", clasificacion:"Artesanía", region:"Centro", municipios:"Tonalá", productores:20, potencial:"MEDIO", etapaActual:1},
+  {producto:"Barro Bruñido", clasificacion:"Artesanía", region:"Centro", municipios:"Tonalá", productores:10, potencial:"MEDIO", etapaActual:1},
+  {producto:"Nacimientos de Barro", clasificacion:"Artesanía", region:"Centro", municipios:"Tlaquepaque", productores:30, potencial:"MEDIO", etapaActual:1},
+  {producto:"Cerámica Mayólica", clasificacion:"Artesanía", region:"Lagunas", municipios:"Sayula", productores:"sin dato", potencial:"MEDIO", etapaActual:1},
+  {producto:"Labrado de Cantera", clasificacion:"Artesanía", region:"Ciénega", municipios:"Degollado", productores:"sin dato", potencial:"MEDIO", etapaActual:1},
+  {producto:"Fajo Piteado", clasificacion:"Artesanía", region:"Norte", municipios:"Colotlán", productores:"sin dato", potencial:"MEDIO", etapaActual:1},
+  {producto:"Sarapes de Teocaltiche", clasificacion:"Artesanía", region:"Altos Norte", municipios:"Teocaltiche", productores:"sin dato", potencial:"MEDIO", etapaActual:1},
+  {producto:"Figuras de Tipos Mexicanos", clasificacion:"Artesanía", region:"Centro", municipios:"Tlaquepaque", productores:"sin dato", potencial:"BAJO", etapaActual:1},
+  {producto:"Destilado Tonayán", clasificacion:"Destilado", region:"Sierra de Amula", municipios:"Tonaya", productores:"sin dato", potencial:"MEDIO", etapaActual:1},
+  {producto:"Ponche de Granada", clasificacion:"Bebida", region:"Sur", municipios:"Zapotlán el Grande, Tolimán", productores:"sin dato", potencial:"MEDIO", etapaActual:1, ruta:"MC", noAplica:[3,7]}
+];
+
+function slugify(s){
+  return s.toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .replace(/[^a-z0-9]+/g,"-")
+    .replace(/(^-|-$)/g,"");
+}
+
+var GROUPS = GROUPS_RAW.map(function(g, i){
+  return {
+    id: slugify(g.producto),
+    producto: g.producto,
+    clasificacion: g.clasificacion,
+    region: g.region,
+    municipios: g.municipios.split(",").map(function(m){ return m.trim(); }),
+    productores: g.productores,
+    potencial: g.potencial,
+    etapaActual: g.etapaActual,
+    ruta: g.ruta || "IG",
+    noAplica: g.noAplica || [],
+    asesor: ASESORES[i % 3],
+    folioIMPI: g.folioIMPI || null,
+    fechaSolicitud: g.fechaSolicitud || null,
+    fechaDeclaratoria: g.fechaDeclaratoria || null
+  };
+});
+
+function getGroup(id){
+  for(var i=0;i<GROUPS.length;i++){ if(GROUPS[i].id===id) return GROUPS[i]; }
+  return null;
+}
+
+/* =========================================================
+   COHORTES
+   ========================================================= */
+var COHORTES = [
+  {id:"c1", nombre:"Cohorte 1 · Avanzados", facilitador:"Sarape Org. + ASICA", aliado:"Inst. Tec. de Tlajomulco", ventana:"Ago 2026 a Feb 2027",
+   integrantes:["Cajeta de Sayula","La Pitaya","Equipales de Zacoalco"]},
+  {id:"c2", nombre:"Cohorte 2 · Agroalimento y barro", facilitador:"Por asignar", aliado:"CIATEJ, CUT Tonalá", ventana:"Oct 2026 a Abr 2027",
+   integrantes:["Birote Salado","Tejido de Etzatlán","Tejuino","Barro Canelo","Barro Bruñido"]},
+  {id:"c3", nombre:"Cohorte 3 · Artesanía dispersa", facilitador:"Por asignar", aliado:"UDG, Fomento Artesanal", ventana:"Ene a Jul 2027",
+   integrantes:["Arte en Chaquira","Dulce de Guayaba","Chilte de Talpa","Nacimientos de Barro","Cerámica Mayólica","Labrado de Cantera","Fajo Piteado","Sarapes de Teocaltiche"]},
+  {id:"c4", nombre:"Cohorte 4 · Requiere validación previa", facilitador:"Sin facilitador", aliado:"IMPI, CRT", ventana:"Por definir",
+   integrantes:["Figuras de Tipos Mexicanos","Destilado Tonayán","Ponche de Granada"]}
+];
+
+GROUPS.forEach(function(g){
+  var coh = COHORTES.filter(function(c){ return c.integrantes.indexOf(g.producto) !== -1; })[0];
+  g.coh = coh ? coh.id : null;
+});
+
+function getCohorte(id){
+  for(var i=0;i<COHORTES.length;i++){ if(COHORTES[i].id===id) return COHORTES[i]; }
+  return null;
+}
+
+/* =========================================================
+   MESAS REGIONALES
+   ========================================================= */
+var MESAS = [
+  {region:"Sur", sede:"Sayula", fecha:"2026-08-12", convocadas:14, asistencia:11, estado:"Realizada"},
+  {region:"Centro", sede:"Tonalá", fecha:"2026-08-19", convocadas:22, asistencia:18, estado:"Realizada"},
+  {region:"Lagunas", sede:"Zacoalco de Torres", fecha:"2026-08-26", convocadas:9, asistencia:0, estado:"Convocada"},
+  {region:"Valles", sede:"Etzatlán", fecha:"2026-09-02", convocadas:11, asistencia:0, estado:"Convocada"},
+  {region:"Norte", sede:"Colotlán", fecha:"2026-09-09", convocadas:13, asistencia:0, estado:"Por convocar"},
+  {region:"Sierra Occidental", sede:"Talpa de Allende", fecha:"2026-09-16", convocadas:8, asistencia:0, estado:"Por convocar"},
+  {region:"Altos Norte", sede:"Teocaltiche", fecha:"2026-09-23", convocadas:7, asistencia:0, estado:"Por convocar"},
+  {region:"Ciénega", sede:"Degollado", fecha:"2026-09-30", convocadas:6, asistencia:0, estado:"Por convocar"}
+];
+
+/* =========================================================
+   RUTA DE PARTICIPACIÓN MUNICIPAL
+   ========================================================= */
+var RUTA_MUNICIPAL_PASOS = [
+  {n:1, nombre:"Firma de participación", detalle:"Acuerdo formal del municipio, compromiso de director y regidor como enlace territorial."},
+  {n:2, nombre:"Sesión regional de arranque", detalle:"Convocatoria de grupos productivos locales."},
+  {n:3, nombre:"Taller colaborativo de adaptación", detalle:"Co-diseño de ruta territorial e identificación de grupos prioritarios."},
+  {n:4, nombre:"Cofinanciamiento en cabildo", detalle:"Aprobación e inserción en POA municipal."},
+  {n:5, nombre:"Comunicación pública municipal", detalle:"Anuncio como socio territorial."}
+];
+
+var AVANCE_MUNICIPAL = {
+  "Sayula":5, "Guadalajara":4, "Tonalá":3, "Zacoalco":2, "Tlaquepaque":2,
+  "Techaluta":2, "Etzatlán":1, "Mascota":1, "Talpa":1, "Zapotlán el Grande":1
+};
+
+function avanceDeMunicipio(municipio){
+  if(AVANCE_MUNICIPAL.hasOwnProperty(municipio)) return AVANCE_MUNICIPAL[municipio];
+  var keys = Object.keys(AVANCE_MUNICIPAL);
+  for(var i=0;i<keys.length;i++){
+    if(municipio.indexOf(keys[i]) === 0 || keys[i].indexOf(municipio) === 0) return AVANCE_MUNICIPAL[keys[i]];
+  }
+  return 0;
+}
+
+/* =========================================================
+   PLANTILLAS MAESTRAS
+   ========================================================= */
+var PLANTILLAS = [
+  {titulo:"Plantilla maestra agroalimentaria", version:"1.0", estado:"Validada con IMPI", usos:5},
+  {titulo:"Plantilla maestra artesanal", version:"0.9", estado:"En validación", usos:11},
+  {titulo:"Plantilla maestra bebida alcohólica", version:"0.4", estado:"Borrador", usos:2},
+  {titulo:"Ficha de captura de laboratorio comunitario", version:"1.0", estado:"Validada", usos:2},
+  {titulo:"Guía de delimitación georreferenciada", version:"1.0", estado:"Validada", usos:3},
+  {titulo:"Modelo de reglas de uso", version:"0.6", estado:"Borrador", usos:1}
+];
+
+var ALERTAS = [
+  {sev:"alta", grupo:"Birote Salado", texto:"riesgo de que el nombre se considere de uso común."},
+  {sev:"alta", grupo:"Arte en Chaquira", texto:"producto de comunidades wixaritari, requiere consulta y consentimiento comunitario previo."},
+  {sev:"alta", grupo:"Chilte de Talpa", texto:"la fuente lo nombra de dos formas distintas. Definir el nombre exacto, es lo que se protege."},
+  {sev:"alta", grupo:"Nacimientos de Barro", texto:"municipio contradictorio entre la matriz (Tlaquepaque) y la ficha (Tonalá)."},
+  {sev:"alta", grupo:"Destilado Tonayán", texto:"verificar traslape con la DO Tequila y el CRT."},
+  {sev:"alta", grupo:"Ponche de Granada", texto:"va por marca colectiva, es otra ruta."},
+  {sev:"media", grupo:null, texto:"Nueve agrupaciones sin padrón de productores identificado."}
+];
+
+/* =========================================================
+   PRNG determinista (para datos simulados repetibles)
+   ========================================================= */
+function hashStr(s){
+  var h = 2166136261;
+  for(var i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h,16777619); }
+  return h >>> 0;
+}
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+var OVERRIDES = {
+  "cajeta-de-sayula-7": ["aceptada","aceptada","aceptada"],
+  "nacimientos-de-barro-1": ["rechazada","cargada","sincargar"],
+  "arte-en-chaquira-1": ["sincargar","sincargar","cargada"],
+  "birote-salado-1": ["validada","cargada","sincargar"]
+};
+
+function requisitoStatuses(group, etapaN){
+  var count = ETAPAS[etapaN-1].requisitos.length;
+  var key = group.id + "-" + etapaN;
+  if(OVERRIDES[key]) return OVERRIDES[key];
+  var impi = (etapaN===6 || etapaN===7);
+  var doneStatus = impi ? "aceptada" : "validada";
+  if(etapaN < group.etapaActual){
+    var full = []; for(var i=0;i<count;i++) full.push(doneStatus); return full;
+  }
+  if(etapaN > group.etapaActual){
+    var vacio = []; for(var j=0;j<count;j++) vacio.push("sincargar"); return vacio;
+  }
+  var rnd = mulberry32(hashStr(group.id + "-" + etapaN));
+  var pool = impi ? ["sincargar","cargada","validada","aceptada"] : ["sincargar","cargada","validada"];
+  var out = [];
+  for(var k=0;k<count;k++){
+    var idx = Math.floor(rnd()*pool.length);
+    if(idx>=pool.length) idx = pool.length-1;
+    out.push(pool[idx]);
+  }
+  var cumplido = function(s){ return s==="validada" || s==="aceptada"; };
+  if(out.every(cumplido)) out[0] = "cargada";
+  return out;
+}
+
+function etapaEstado(group, n){
+  if(group.noAplica.indexOf(n) !== -1) return "noaplica";
+  if(n < group.etapaActual) return "completada";
+  if(n === group.etapaActual) return "encurso";
+  return "sininiciar";
+}
+
+var STATUS_LABEL = {
+  sincargar:"Sin cargar",
+  cargada:"Cargada sin validar",
+  validada:"Validada por asesor",
+  aceptada:"Aceptada por IMPI",
+  rechazada:"Rechazada"
+};
+
+function cumplido(s){ return s==="validada" || s==="aceptada"; }
+
+/* =========================================================
+   ESTADO DE LA APP
+   ========================================================= */
+var MUNICIPIOS = uniqueSorted(flatMap(GROUPS, function(g){ return g.municipios; }));
+var REGIONES = uniqueSorted(GROUPS.map(function(g){ return g.region; }));
+
+var REGION_POR_MUNICIPIO = {};
+GROUPS.forEach(function(g){ g.municipios.forEach(function(m){ REGION_POR_MUNICIPIO[m] = g.region; }); });
+function regionDeMunicipio(m){ return REGION_POR_MUNICIPIO[m] || "Sin región asignada"; }
+
+function flatMap(arr, fn){ var out=[]; arr.forEach(function(x){ out = out.concat(fn(x)); }); return out; }
+function uniqueSorted(arr){
+  var seen = {}; var out = [];
+  arr.forEach(function(x){ if(!seen[x]){ seen[x]=true; out.push(x); } });
+  out.sort(function(a,b){ return a.localeCompare(b,"es"); });
+  return out;
+}
+
+var state = {
+  role: "sedeco",
+  sedecoView: "panorama",
+  municipioSel: "Guadalajara",
+  asesorSel: "Ana Briceño",
+  agrupacionSel: "cajeta-de-sayula",
+  filterRegion: "todas",
+  filterMunicipio: "todas",
+  filterEtapa: "todas",
+  view: "list",
+  fichaId: null,
+  liberaciones: {},
+  formOpen: false,
+  form: null,
+  filtroKPI: null
+};
+
+/* =========================================================
+   HELPERS DE FORMATO
+   ========================================================= */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+function fmtProductores(p){
+  return (typeof p === "number") ? p.toLocaleString("es-MX") : "Sin dato registrado";
+}
+function fmtFecha(f){
+  if(!f) return "—";
+  var partes = f.split("-");
+  var meses = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  return partes[2] + " " + meses[parseInt(partes[1],10)-1] + " " + partes[0];
+}
+
+/* =========================================================
+   SAREPE
+   ========================================================= */
+function renderSarape(group, tam){
+  var hilos = ETAPAS.map(function(e){
+    var estado = etapaEstado(group, e.n);
+    return '<span class="hilo ' + estado + '" title="' + (e.n) + '. ' + esc(e.nombre) + ' — ' + estadoTexto(estado) + '"></span>';
+  }).join("");
+  return '<div class="sarape ' + tam + '" role="img" aria-label="Avance de ' + esc(group.producto) + ': ' + sarapeResumen(group) + '">' + hilos + '</div>';
+}
+function estadoTexto(estado){
+  return estado==="completada" ? "completada" : estado==="encurso" ? "en curso" : estado==="noaplica" ? "no aplica" : "sin iniciar";
+}
+function sarapeResumen(group){
+  var c=0,e=0,s=0,n=0;
+  ETAPAS.forEach(function(et){
+    var st = etapaEstado(group, et.n);
+    if(st==="completada") c++; else if(st==="encurso") e++; else if(st==="noaplica") n++; else s++;
+  });
+  return c + " completadas, " + e + " en curso, " + s + " sin iniciar, " + n + " no aplica";
+}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+function rutaLabel(ruta){
+  return ruta === "MC" ? "Marca colectiva" :
+         ruta === "DO" ? "Denominación de origen" :
+         ruta === "MCERT" ? "Marca de certificación" : "Indicación geográfica";
+}
+function rutaBadge(group){
+  return group.ruta === "MC"
+    ? '<span class="badge-mc">Marca colectiva</span>'
+    : '<span class="badge-ig">' + rutaLabel(group.ruta) + '</span>';
+}
+function potencialBadge(group){
+  return '<span class="badge-potencial">' + esc(group.potencial) + '</span>';
+}
+
+/* =========================================================
+   TOPBAR / SUBBAR
+   ========================================================= */
+function renderTopbar(){
+  var roles = [
+    {id:"sedeco", label:"SEDECO"},
+    {id:"municipio", label:"Gobierno municipal"},
+    {id:"asesor", label:"Asesor técnico"},
+    {id:"agrupacion", label:"Agrupación"}
+  ];
+  var btns = roles.map(function(r){
+    return '<button type="button" class="role-btn" data-role-btn="' + r.id + '" aria-pressed="' + (state.role===r.id) + '">' + r.label + '</button>';
+  }).join("");
+  return '' +
+  '<header class="topbar">' +
+    '<div class="marca"><h1>Hecho en Jalisco</h1><span class="mono">SEDECO Jalisco · Seguimiento de Indicación Geográfica</span></div>' +
+    '<div class="topbar-actions">' +
+      '<button type="button" class="btn-nueva" data-form-open>+ Nueva agrupación</button>' +
+      '<nav class="roles" aria-label="Seleccionar rol">' + btns + '</nav>' +
+    '</div>' +
+  '</header>';
+}
+
+function renderSubbar(){
+  if(state.view === "ficha"){
+    if(state.role === "agrupacion"){
+      return '<div class="subbar"><span class="sesion-simulada">Vista de demostración — simulando el ingreso de:</span>' + selectorAgrupacion() + '</div>';
+    }
+    return '<div class="subbar"><button type="button" class="volver-btn" data-back>← Volver a la cartera</button></div>';
+  }
+  if(state.role === "sedeco"){
+    return renderSubnavSedeco();
+  }
+  if(state.role === "municipio"){
+    return '<div class="subbar"><span class="sesion-simulada">Sesión simulada — Ayuntamiento de:</span>' + selectorMunicipio() + '</div>';
+  }
+  if(state.role === "asesor"){
+    return '<div class="subbar"><span class="sesion-simulada">Sesión simulada — Asesor técnico:</span>' + selectorAsesor() + '</div>';
+  }
+  if(state.role === "agrupacion"){
+    return '<div class="subbar"><span class="sesion-simulada">Vista de demostración — simulando el ingreso de:</span>' + selectorAgrupacion() + '</div>';
+  }
+  return '<div class="subbar vacia"></div>';
+}
+
+function selectorMunicipio(){
+  var opts = MUNICIPIOS.map(function(m){ return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("");
+  return '<div class="campo"><label for="sel-municipio-rol">Municipio</label><select id="sel-municipio-rol">' + opts + '</select></div>';
+}
+function selectorAsesor(){
+  var opts = ASESORES.map(function(a){ return '<option value="' + esc(a) + '">' + esc(a) + '</option>'; }).join("");
+  return '<div class="campo"><label for="sel-asesor-rol">Asesor</label><select id="sel-asesor-rol">' + opts + '</select></div>';
+}
+function selectorAgrupacion(){
+  var opts = GROUPS.map(function(g){ return '<option value="' + g.id + '">' + esc(g.producto) + '</option>'; }).join("");
+  return '<div class="campo"><label for="sel-agrupacion-rol">Agrupación</label><select id="sel-agrupacion-rol">' + opts + '</select></div>';
+}
+
+function renderSubnavSedeco(){
+  var tabs = [
+    {id:"panorama", label:"Panorama"},
+    {id:"cartera", label:"Cartera"},
+    {id:"cohortes", label:"Cohortes"},
+    {id:"mesas", label:"Mesas regionales"},
+    {id:"plantillas", label:"Plantillas"}
+  ];
+  var btns = tabs.map(function(t){
+    return '<button type="button" class="subnav-btn" data-sedeco-tab="' + t.id + '" aria-pressed="' + (state.sedecoView===t.id) + '">' + t.label + '</button>';
+  }).join("");
+  return '<nav class="subbar subnav" aria-label="Secciones de SEDECO">' + btns + '</nav>';
+}
+
+/* =========================================================
+   EMBUDO
+   ========================================================= */
+var FUNNEL_STEPS = [
+  {label:"Registradas", test:function(g){ return true; }},
+  {label:"Con organización lista", test:function(g){ return g.etapaActual>=2; }},
+  {label:"Con persona moral", test:function(g){ return g.etapaActual>=3; }},
+  {label:"Expediente ingresado", test:function(g){ return g.etapaActual>=6; }},
+  {label:"Declaratoria en DOF", test:function(g){ return g.etapaActual>=7; }},
+  {label:"Con autorizaciones de uso", test:function(g){ return g.etapaActual>=9; }}
+];
+
+function renderFunnel(groups){
+  var total = groups.length || 1;
+  var cols = FUNNEL_STEPS.map(function(step, i){
+    var n = groups.filter(step.test).length;
+    var pct = Math.round((n/total)*100);
+    return '' +
+      '<div class="funnel-col">' +
+        '<div><div class="funnel-num">' + n + '</div><div class="funnel-label">' + step.label + '</div></div>' +
+        '<div class="funnel-bar"><span style="width:' + pct + '%"></span></div>' +
+      '</div>';
+  }).join("");
+  return '' +
+    '<h2 class="funnel-title">Embudo de avance</h2>' +
+    '<p class="funnel-sub mono">' + groups.length + ' agrupaciones en este corte</p>' +
+    '<div class="funnel">' + cols + '</div>' +
+    '<div class="funnel-nota">' +
+      '<span class="mono">Lectura obligada</span>' +
+      'Una declaratoria obtenida todavía no significa beneficio para el productor. La columna final — autorizaciones de uso — está en cero incluso para Cajeta de Sayula, la agrupación más avanzada del estado.' +
+    '</div>';
+}
+
+/* =========================================================
+   ALERTAS
+   ========================================================= */
+function renderAlertas(){
+  var altas = ALERTAS.filter(function(a){ return a.sev==="alta"; });
+  var medias = ALERTAS.filter(function(a){ return a.sev==="media"; });
+  function item(a){
+    return '' +
+      '<li class="alerta ' + (a.sev==="media"?"media":"") + '">' +
+        '<span class="tag">' + (a.sev==="alta"?"Alta":"Media") + '</span>' +
+        (a.grupo ? '<span class="grupo">' + esc(a.grupo) + ':</span>' : '') +
+        '<span class="texto">' + esc(a.texto) + '</span>' +
+      '</li>';
+  }
+  return '' +
+    '<div class="alertas-wrap">' +
+      '<h2>Alertas de calidad de datos</h2>' +
+      '<ul>' + altas.map(item).join("") + medias.map(item).join("") + '</ul>' +
+    '</div>';
+}
+
+/* =========================================================
+   FILTROS
+   ========================================================= */
+function renderFiltros(regionesDisp, municipiosDisp, mostrarRegionMunicipio, visibleCount){
+  var regionOpts = '<option value="todas">Todas</option>' + regionesDisp.map(function(r){ return '<option value="' + esc(r) + '">' + esc(r) + '</option>'; }).join("");
+  var munOpts = '<option value="todas">Todos</option>' + municipiosDisp.map(function(m){ return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join("");
+  var etapaOpts = '<option value="todas">Todas</option>' + ETAPAS.map(function(e){ return '<option value="' + e.n + '">' + e.n + '. ' + esc(e.nombre) + '</option>'; }).join("");
+
+  var regionMunicipioHTML = mostrarRegionMunicipio ? (
+    '<div class="campo"><label for="filtro-region">Región</label><select id="filtro-region">' + regionOpts + '</select></div>' +
+    '<div class="campo"><label for="filtro-municipio">Municipio</label><select id="filtro-municipio">' + munOpts + '</select></div>'
+  ) : "";
+
+  return '' +
+    '<div class="filtros">' +
+      regionMunicipioHTML +
+      '<div class="campo"><label for="filtro-etapa">Etapa actual</label><select id="filtro-etapa">' + etapaOpts + '</select></div>' +
+      '<span class="contador">' + visibleCount + ' resultado(s)</span>' +
+    '</div>';
+}
+
+/* =========================================================
+   TABLA DE CARTERA
+   ========================================================= */
+function renderTabla(groups, caption){
+  if(groups.length===0){
+    return '<p class="mono" style="color:var(--gris);padding:20px 0;">Sin agrupaciones que coincidan con el filtro.</p>';
+  }
+  var rows = groups.map(function(g){
+    var etapaObj = ETAPAS[g.etapaActual-1];
+    return '' +
+      '<tr tabindex="0" role="button" data-open-ficha="' + g.id + '" aria-label="Abrir ficha de ' + esc(g.producto) + '">' +
+        '<td data-label="Producto"><span class="producto-nombre">' + esc(g.producto) + '</span><span class="clasif mono">' + esc(g.clasificacion) + '</span></td>' +
+        '<td data-label="Región / municipio">' + esc(g.region) + '<br><span class="clasif">' + esc(g.municipios.join(", ")) + '</span></td>' +
+        '<td data-label="Productores">' + fmtProductores(g.productores) + '</td>' +
+        '<td data-label="Potencial">' + potencialBadge(g) + '</td>' +
+        '<td data-label="Ruta">' + rutaBadge(g) + '</td>' +
+        '<td data-label="Etapa actual">' + g.etapaActual + '. ' + esc(etapaObj.nombre) + '</td>' +
+        '<td data-label="Avance (sarape)">' + renderSarape(g, "mini") + '</td>' +
+      '</tr>';
+  }).join("");
+
+  return '' +
+    '<div class="tabla-wrap">' +
+    '<table class="cartera">' +
+      '<caption class="mono" style="color:var(--gris);">' + caption + '</caption>' +
+      '<thead><tr>' +
+        '<th>Producto</th><th>Región / municipio</th><th>Productores</th><th>Potencial</th><th>Ruta</th><th>Etapa actual</th><th>Avance</th>' +
+      '</tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+    '</table>' +
+    '</div>' +
+    renderLeyendaSarape();
+}
+
+function renderLeyendaSarape(){
+  return '' +
+    '<div class="sarape-leyenda mono">' +
+      '<span class="item"><span class="swatch completada"></span>Completada</span>' +
+      '<span class="item"><span class="swatch encurso"></span>En curso</span>' +
+      '<span class="item"><span class="swatch sininiciar"></span>Sin iniciar</span>' +
+      '<span class="item"><span class="swatch noaplica"></span>No aplica</span>' +
+    '</div>';
+}
+
+/* =========================================================
+   VISTAS DE LISTA
+   ========================================================= */
+function applyFiltros(groups){
+  return groups.filter(function(g){
+    if(state.filterRegion !== "todas" && g.region !== state.filterRegion) return false;
+    if(state.filterMunicipio !== "todas" && g.municipios.indexOf(state.filterMunicipio) === -1) return false;
+    if(state.filterEtapa !== "todas" && g.etapaActual !== parseInt(state.filterEtapa,10)) return false;
+    return true;
+  });
+}
+
+/* =========================================================
+   PANORAMA — resumen tipo tablero + KPI interactivos
+   ========================================================= */
+var META_AGRUPACIONES = 75;
+var PANORAMA_KPIS = [
+  {label:"Con organización lista", pred:function(g){ return g.etapaActual>=2; }},
+  {label:"Con persona moral", pred:function(g){ return g.etapaActual>=3; }},
+  {label:"Expediente ingresado", pred:function(g){ return g.etapaActual>=6; }},
+  {label:"Declaratoria en DOF", pred:function(g){ return g.etapaActual>=7; }},
+  {label:"Con autorizaciones de uso", pred:function(g){ return g.etapaActual>=9; }, rojo:true}
+];
+
+function irACarteraFiltrada(kpiIndex){
+  var kpi = PANORAMA_KPIS[kpiIndex];
+  state.role = "sedeco";
+  state.sedecoView = "cartera";
+  state.view = "list";
+  state.fichaId = null;
+  state.filterRegion = "todas"; state.filterMunicipio = "todas"; state.filterEtapa = "todas";
+  state.filtroKPI = {label:kpi.label, kpiIndex:kpiIndex};
+  renderAll();
+}
+function irACarteraCompleta(){
+  state.role = "sedeco";
+  state.sedecoView = "cartera";
+  state.view = "list";
+  state.fichaId = null;
+  state.filtroKPI = null;
+  state.filterRegion = "todas"; state.filterMunicipio = "todas"; state.filterEtapa = "todas";
+  renderAll();
+}
+function irAMesas(){
+  state.role = "sedeco";
+  state.sedecoView = "mesas";
+  state.view = "list";
+  state.fichaId = null;
+  renderAll();
+}
+
+function renderPanoramaResumen(){
+  var total = GROUPS.length;
+  var faltan = Math.max(0, META_AGRUPACIONES - total);
+  var pct = Math.min(100, Math.round(total / META_AGRUPACIONES * 100));
+  var mesasRealizadas = MESAS.filter(function(m){ return m.estado === "Realizada"; }).length;
+
+  var kpisHTML = PANORAMA_KPIS.map(function(k, i){
+    var n = GROUPS.filter(k.pred).length;
+    return '' +
+      '<button type="button" class="kpi-btn" data-kpi-index="' + i + '" aria-label="Ver ' + esc(k.label) + ' en la cartera">' +
+        '<span class="kpi-num ' + (k.rojo?"rojo":"") + '">' + n + '</span>' +
+        '<span class="kpi-label">' + esc(k.label) + '</span>' +
+      '</button>';
+  }).join("") + '' +
+    '<button type="button" class="kpi-btn" data-ir-mesas aria-label="Ver mesas regionales">' +
+      '<span class="kpi-num">' + mesasRealizadas + ' / ' + MESAS.length + '</span>' +
+      '<span class="kpi-label">Mesas realizadas</span>' +
+    '</button>';
+
+  return '' +
+    '<h2 class="funnel-title">Panorama</h2>' +
+    '<p class="funnel-sub mono">Toca un número para ver el detalle</p>' +
+    '<div class="panorama-resumen">' +
+      '<div class="panorama-total">' +
+        '<button type="button" class="panorama-total-click" data-ir-cartera aria-label="Ver todas las agrupaciones registradas">' +
+          '<span class="panorama-total-num">' + total + '</span>' +
+          '<span class="panorama-total-leyenda">de ' + META_AGRUPACIONES + ' agrupaciones comprometidas</span>' +
+          '<span class="panorama-total-bar"><span style="width:' + pct + '%"></span></span>' +
+        '</button>' +
+        '<button type="button" class="panorama-total-falta" data-ir-mesas>Faltan ' + faltan + ' por diagnosticar en ' + MESAS.length + ' mesas regionales</button>' +
+      '</div>' +
+      '<div class="panorama-kpis">' + kpisHTML + '</div>' +
+    '</div>';
+}
+
+function renderPanoramaNota(){
+  return '' +
+    '<div class="funnel-nota">' +
+      '<span class="mono">Lectura obligada</span>' +
+      'Una declaratoria obtenida todavía no es beneficio para el productor. La columna en rojo mide impacto real y hoy está en cero, incluso para Cajeta de Sayula, cuya declaratoria salió en julio 2024.' +
+    '</div>';
+}
+
+function renderFiltroViabilidadSeccion(){
+  var buckets = {procede:[], validacion:[], noprocede:[]};
+  GROUPS.forEach(function(g){
+    var v = computeDiagnostico(g).veredicto;
+    buckets[v].push(g);
+  });
+  function tarjeta(clave, titulo){
+    var lista = buckets[clave];
+    var itemsHTML = lista.length
+      ? lista.map(function(g){ return '<li><button type="button" class="link-agrupacion" data-open-ficha="' + g.id + '">' + esc(g.producto) + '</button></li>'; }).join("")
+      : '<li class="tarjeta-lista-vacia">Ninguna en este corte.</li>';
+    return '' +
+      '<div class="tarjeta">' +
+        '<div class="tarjeta-cab"><h3>' + titulo + '</h3><span class="mono">' + lista.length + '</span></div>' +
+        '<ul class="tarjeta-lista">' + itemsHTML + '</ul>' +
+      '</div>';
+  }
+  return '' +
+    '<h2 style="margin:36px 0 20px;">Filtro de viabilidad territorial</h2>' +
+    '<div class="tarjeta-grid">' +
+      tarjeta("procede", "Procede") +
+      tarjeta("validacion", "Requiere validación IMPI") +
+      tarjeta("noprocede", "No procede") +
+    '</div>';
+}
+
+function renderSedecoPanorama(){
+  return '' +
+    renderPanoramaResumen() +
+    renderPanoramaNota() +
+    renderFiltroViabilidadSeccion() +
+    renderAlertas();
+}
+
+function renderSedecoCartera(){
+  var base = state.filtroKPI ? GROUPS.filter(PANORAMA_KPIS[state.filtroKPI.kpiIndex].pred) : GROUPS;
+  var filtradas = applyFiltros(base);
+  var chip = state.filtroKPI ? (
+    '<div class="kpi-chip"><span>Mostrando: <strong>' + esc(state.filtroKPI.label) + '</strong> (' + base.length + ')</span>' +
+    '<button type="button" class="btn-quitar-chip" data-clear-kpi>Quitar filtro ✕</button></div>'
+  ) : "";
+  return '' +
+    '<h2 style="margin-bottom:20px;">Cartera de agrupaciones</h2>' +
+    chip +
+    renderFiltros(REGIONES, MUNICIPIOS, true, filtradas.length) +
+    renderTabla(filtradas, "Cartera estatal — SEDECO Jalisco");
+}
+
+/* =========================================================
+   VISTA COHORTES
+   ========================================================= */
+function renderCohortesView(){
+  var cards = COHORTES.map(function(coh){
+    var integrantes = GROUPS.filter(function(g){ return g.coh === coh.id; });
+    var viabProm = integrantes.length
+      ? Math.round(integrantes.reduce(function(sum,g){ return sum + computeDiagnostico(g).ejeScores.viabilidad; }, 0) / integrantes.length)
+      : 0;
+    var alertaTope = integrantes.length > 12
+      ? '<div class="alerta"><span class="tag">Alta</span><span class="texto">Supera el tope de 12 agrupaciones por facilitador que fija el modelo.</span></div>'
+      : "";
+    var listaIntegrantes = integrantes.map(function(g){
+      return '<li>' + esc(g.producto) + '</li>';
+    }).join("");
+    return '' +
+      '<div class="tarjeta">' +
+        '<div class="tarjeta-cab"><h3>' + esc(coh.nombre) + '</h3><span class="mono">' + integrantes.length + ' agrupación(es)</span></div>' +
+        '<dl class="tarjeta-datos">' +
+          '<div class="tarjeta-dato"><dt>Ventana</dt><dd>' + esc(coh.ventana) + '</dd></div>' +
+          '<div class="tarjeta-dato"><dt>Facilitador</dt><dd>' + esc(coh.facilitador) + '</dd></div>' +
+          '<div class="tarjeta-dato"><dt>Aliado técnico</dt><dd>' + esc(coh.aliado) + '</dd></div>' +
+          '<div class="tarjeta-dato"><dt>Viabilidad IG promedio</dt><dd>' + viabProm + ' / 100</dd></div>' +
+        '</dl>' +
+        alertaTope +
+        '<p class="mono" style="margin:12px 0 6px;color:var(--gris);">Integrantes</p>' +
+        '<ul class="tarjeta-lista">' + listaIntegrantes + '</ul>' +
+      '</div>';
+  }).join("");
+
+  var oportunidad = '' +
+    '<div class="tarjeta tarjeta-fija">' +
+      '<h3>Oportunidad de agrupamiento</h3>' +
+      '<p>Barro Canelo, Barro Bruñido y Nacimientos de Barro comparten técnica, territorio y aliado académico; donde sea legalmente viable pueden compartir reglas de uso y una sola certificadora en vez de tramitarlo tres veces.</p>' +
+    '</div>';
+
+  return '<h2 style="margin-bottom:20px;">Cohortes</h2>' + '<div class="tarjeta-grid">' + cards + '</div>' + oportunidad;
+}
+
+/* =========================================================
+   VISTA MESAS REGIONALES
+   ========================================================= */
+function renderMesasView(){
+  var META_CONVOCADAS = 100;
+  var totalConvocadas = MESAS.reduce(function(s,m){ return s + m.convocadas; }, 0);
+  var totalAsistencia = MESAS.reduce(function(s,m){ return s + m.asistencia; }, 0);
+  var pctConvocadas = Math.round(totalConvocadas / META_CONVOCADAS * 100);
+
+  var kpis = '' +
+    '<div class="funnel-col">' +
+      '<div><div class="funnel-num">' + totalConvocadas + '</div><div class="funnel-label">Convocadas · meta ' + META_CONVOCADAS + '</div></div>' +
+      '<div class="funnel-bar"><span style="width:' + Math.min(100,pctConvocadas) + '%"></span></div>' +
+    '</div>' +
+    '<div class="funnel-col">' +
+      '<div><div class="funnel-num">' + totalAsistencia + '</div><div class="funnel-label">Asistencia registrada</div></div>' +
+      '<div class="funnel-bar"><span style="width:' + Math.round(totalAsistencia/Math.max(1,totalConvocadas)*100) + '%"></span></div>' +
+    '</div>' +
+    '<div class="funnel-col">' +
+      '<div><div class="funnel-num" style="font-size:20px;">Noviembre 2026</div><div class="funnel-label">Cierre por MIR</div></div>' +
+      '<div class="funnel-bar"><span style="width:100%"></span></div>' +
+    '</div>';
+
+  var rows = MESAS.map(function(m){
+    var actaCargada = m.estado === "Realizada";
+    var tagClass = m.estado === "Realizada" ? "tag-hecho" : m.estado === "Convocada" ? "tag-progreso" : "tag-pendiente";
+    return '' +
+      '<tr>' +
+        '<td data-label="Región">' + esc(m.region) + '</td>' +
+        '<td data-label="Sede">' + esc(m.sede) + '</td>' +
+        '<td data-label="Fecha">' + fmtFecha(m.fecha) + '</td>' +
+        '<td data-label="Convocadas">' + m.convocadas + '</td>' +
+        '<td data-label="Asistencia">' + m.asistencia + '</td>' +
+        '<td data-label="Estado"><span class="tag-lifecycle ' + tagClass + '">' + esc(m.estado) + '</span></td>' +
+        '<td data-label="Acta cargada">' + (actaCargada ? "Sí" : "No") + '</td>' +
+      '</tr>';
+  }).join("");
+
+  return '' +
+    '<h2 style="margin-bottom:20px;">Mesas regionales</h2>' +
+    '<div class="funnel" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">' + kpis + '</div>' +
+    '<div class="tabla-wrap">' +
+    '<table class="cartera">' +
+      '<caption class="mono" style="color:var(--gris);">8 mesas regionales programadas</caption>' +
+      '<thead><tr><th>Región</th><th>Sede</th><th>Fecha</th><th>Convocadas</th><th>Asistencia</th><th>Estado</th><th>Acta cargada</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+    '</table>' +
+    '</div>';
+}
+
+/* =========================================================
+   VISTA PLANTILLAS
+   ========================================================= */
+function renderPlantillasView(){
+  var cards = PLANTILLAS.map(function(p){
+    var tagClass = /^Validada/.test(p.estado) ? "tag-hecho" : p.estado === "En validación" ? "tag-progreso" : "tag-pendiente";
+    return '' +
+      '<div class="tarjeta">' +
+        '<div class="tarjeta-cab"><h3>' + esc(p.titulo) + '</h3><span class="mono">v' + esc(p.version) + '</span></div>' +
+        '<span class="tag-lifecycle ' + tagClass + '">' + esc(p.estado) + '</span>' +
+        '<p style="margin-top:10px;">' + p.usos + ' agrupación(es) la usan</p>' +
+      '</div>';
+  }).join("");
+  return '<h2 style="margin-bottom:20px;">Plantillas maestras</h2>' + '<div class="tarjeta-grid">' + cards + '</div>';
+}
+
+/* =========================================================
+   RUTA DE PARTICIPACIÓN MUNICIPAL
+   ========================================================= */
+function renderRutaMunicipal(municipio){
+  var avance = avanceDeMunicipio(municipio);
+  var pasoActual = avance < 5 ? avance + 1 : null;
+  var pasos = RUTA_MUNICIPAL_PASOS.map(function(p){
+    var estado = p.n <= avance ? "completada" : (p.n === pasoActual ? "encurso" : "sininiciar");
+    return '' +
+      '<div class="ruta-paso">' +
+        '<div class="ruta-paso-bloque ' + estado + '"></div>' +
+        '<span class="ruta-paso-num">' + p.n + '</span>' +
+        '<span class="ruta-paso-nombre">' + esc(p.nombre) + '</span>' +
+      '</div>';
+  }).join("");
+  return '' +
+    '<div class="ruta-municipal-wrap">' +
+      '<span class="mono">Ruta de participación municipal</span>' +
+      '<div class="ruta-municipal">' + pasos + '</div>' +
+      '<p class="ruta-municipal-nota">Sin llegar al paso 4 el municipio no puede aportar recursos vía POA.</p>' +
+    '</div>';
+}
+
+function renderMunicipioList(){
+  var deMunicipio = GROUPS.filter(function(g){ return g.municipios.indexOf(state.municipioSel) !== -1; });
+  var filtradas = applyFiltros(deMunicipio);
+  return '' +
+    renderRutaMunicipal(state.municipioSel) +
+    renderFunnel(deMunicipio) +
+    '<h2 style="margin:32px 0 20px;">Cartera de ' + esc(state.municipioSel) + '</h2>' +
+    renderFiltros([], [], false, filtradas.length) +
+    renderTabla(filtradas, "Cartera municipal — " + esc(state.municipioSel));
+}
+
+function renderAsesorList(){
+  var deAsesor = GROUPS.filter(function(g){ return g.asesor === state.asesorSel; });
+  return '' +
+    '<div class="lista-simple-cab">' +
+      '<h2>Tu cartera</h2>' +
+      '<span class="mono" style="color:var(--gris);">' + deAsesor.length + ' agrupación(es) asignada(s)</span>' +
+    '</div>' +
+    '<p style="max-width:60ch;margin-bottom:18px;color:var(--carbon);">Abre una agrupación para revisar sus requisitos y liberar la etapa en curso cuando estén completos.</p>' +
+    renderTabla(deAsesor, "Cartera de " + esc(state.asesorSel));
+}
+
+/* =========================================================
+   FICHA
+   ========================================================= */
+function renderFicha(group, role){
+  if(!group){
+    return '<p>No se encontró la agrupación.</p>';
+  }
+  var alertasGrupo = ALERTAS.filter(function(a){ return a.grupo === group.producto; });
+  var alertasHTML = alertasGrupo.length ? (
+    '<div class="alertas-wrap" style="margin-top:14px;">' +
+      '<ul>' + alertasGrupo.map(function(a){
+        return '<li class="alerta ' + (a.sev==="media"?"media":"") + '">' +
+          '<span class="tag">' + (a.sev==="alta"?"Alta":"Media") + '</span>' +
+          '<span class="texto">' + esc(a.texto) + '</span>' +
+        '</li>';
+      }).join("") + '</ul>' +
+    '</div>'
+  ) : "";
+
+  var etapasHTML = ETAPAS.map(function(e){ return renderEtapaDetalle(group, e, role); }).join("");
+
+  return '' +
+    '<div class="ficha-cab">' +
+      '<span class="mono">' + esc(group.clasificacion) + ' · ' + esc(group.region) + ' · ' + esc(group.municipios.join(", ")) + '</span>' +
+      '<h2>' + esc(group.producto) + '</h2>' +
+      '<div class="badges">' + rutaBadge(group) + potencialBadge(group) + '</div>' +
+    '</div>' +
+    renderSarape(group, "grande") +
+    renderLeyendaSarape() +
+    alertasHTML +
+    '<div class="ficha-grid">' +
+      '<div class="etapas-list">' + etapasHTML + '</div>' +
+      renderPanelNegro(group) +
+    '</div>' +
+    renderDiagnostico(group);
+}
+
+function renderEtapaDetalle(group, e, role){
+  var estado = etapaEstado(group, e.n);
+  var estadoLabel = {completada:"Completada", encurso:"En curso", sininiciar:"Sin iniciar", noaplica:"No aplica"}[estado];
+
+  var cuerpo;
+  if(estado === "noaplica"){
+    cuerpo = '<p class="no-aplica-nota">No aplica para esta agrupación: su ruta es de marca colectiva, no de Indicación Geográfica.</p>';
+  } else {
+    var statuses = requisitoStatuses(group, e.n);
+    var reqItems = e.requisitos.map(function(texto, idx){
+      var st = statuses[idx];
+      return '<li><span class="req-texto">' + esc(texto) + '</span><span class="st-tag st-' + st + '">' + STATUS_LABEL[st] + '</span></li>';
+    }).join("");
+
+    var control = "";
+    if(estado === "encurso"){
+      var faltan = statuses.filter(function(s){ return !cumplido(s); }).length;
+      if(role === "agrupacion"){
+        control = '<div class="liberar-zona"><p class="no-libera-texto">Tu agrupación no puede liberar esta etapa. Quien revisa y libera es tu asesor técnico.</p></div>';
+      } else if(role === "asesor"){
+        var key = group.id + "-" + e.n;
+        var yaLiberada = !!state.liberaciones[key];
+        if(yaLiberada){
+          control = '<div class="liberar-zona"><p class="liberada-msg">Etapa liberada. (Cambio de demostración, no se guarda.)</p></div>';
+        } else {
+          var disabled = faltan > 0 ? "disabled" : "";
+          control = '' +
+            '<div class="liberar-zona">' +
+              '<button type="button" class="btn-liberar" data-liberar="' + key + '" ' + disabled + '>Liberar etapa</button>' +
+              (faltan > 0 ? '<span class="falta-nota">Faltan ' + faltan + ' requisito(s)</span>' : '<span class="falta-nota" style="color:var(--verde);">Sin pendientes</span>') +
+            '</div>';
+        }
+      } else {
+        control = '<div class="liberar-zona"><p class="solo-lectura">Este perfil solo consulta. La liberación de etapas corresponde al asesor técnico.</p></div>';
+      }
+    }
+
+    cuerpo = '' +
+      '<div class="guia"><span class="mono">Qué hay que hacer</span>' + esc(e.guia) + '</div>' +
+      '<ul class="req-list">' + reqItems + '</ul>' +
+      control;
+  }
+
+  return '' +
+    '<details ' + (estado==="encurso" ? "open" : "") + '>' +
+      '<summary>' +
+        '<span class="etapa-tit"><span class="etapa-num">' + e.n + '</span><span><span class="etapa-nombre">' + esc(e.nombre) + '</span><br><span class="etapa-resp mono">' + esc(e.responsable) + ' · ' + esc(e.duracion) + '</span></span></span>' +
+        '<span class="estado-tag ' + estado + '">' + estadoLabel + '</span>' +
+      '</summary>' +
+      '<div class="etapa-body">' + cuerpo + '</div>' +
+    '</details>';
+}
+
+function renderPanelNegro(group){
+  function fila(label, valor){
+    return '<div class="fila"><dt>' + label + '</dt><dd>' + valor + '</dd></div>';
+  }
+  var cohorte = getCohorte(group.coh);
+  var filas = '' +
+    fila("Clasificación", esc(group.clasificacion)) +
+    fila("Región", esc(group.region)) +
+    fila("Municipios", esc(group.municipios.join(", "))) +
+    fila("Productores", fmtProductores(group.productores)) +
+    fila("Potencial", esc(group.potencial)) +
+    fila("Ruta", rutaLabel(group.ruta)) +
+    fila("Asesor asignado", esc(group.asesor)) +
+    fila("Cohorte", cohorte ? esc(cohorte.nombre) : "Sin asignar");
+  if(group.folioIMPI){
+    filas += fila("Folio IMPI", esc(group.folioIMPI));
+    filas += fila("Solicitud presentada", fmtFecha(group.fechaSolicitud));
+    filas += fila("Declaratoria DOF", fmtFecha(group.fechaDeclaratoria));
+  }
+  if(group.bitacora){
+    filas += fila("Registrado por", esc(group.bitacora.usuario));
+    filas += fila("Fecha de registro", fmtFecha(group.bitacora.fecha));
+    filas += fila("Mesa regional de origen", esc(group.bitacora.mesaOrigen));
+  }
+  return '<aside class="panel-negro"><h3>Datos de la agrupación</h3><dl>' + filas + '</dl></aside>';
+}
+
+/* =========================================================
+   DIAGNÓSTICO — MODELO DE DOS NIVELES
+   ========================================================= */
+var ESCALA_LABELS = ["No","Apenas","Parcial","Casi","Sí"];
+
+var FILTRO_TERRITORIAL_PREGUNTAS = [
+  {id:"a", texto:"¿Existe una característica del territorio (clima, suelo, agua, materia prima) que el producto necesite y que no se replique en otros estados?"},
+  {id:"b", texto:"¿La técnica de elaboración es propia de esta zona y está viva hoy?"},
+  {id:"c", texto:"¿Se descarta que exista producción equivalente en otro estado con el mismo nombre?"}
+];
+
+var EJES_DIAGNOSTICO = [
+  {id:"madurez", nombre:"Madurez", proposito:"Qué tan lista está la agrupación hoy. Define el paquete de fortalecimiento.",
+   dimensiones:[
+     {id:"organizativa", nombre:"Organizativa", preguntas:[
+        "¿Existe una agrupación formal constituida?",
+        "¿Hay liderazgo y representación clara?",
+        "¿Toman decisiones colectivas con alguna regla acordada?"]},
+     {id:"tecnica", nombre:"Técnica", preguntas:[
+        "¿Está documentado el proceso productivo?",
+        "¿Hay evidencia del vínculo producto-territorio?",
+        "¿Existe algún control de calidad o trazabilidad?"]},
+     {id:"comercial", nombre:"Comercial", preguntas:[
+        "¿Tiene canales de venta activos?",
+        "¿Hay mercado identificado que valore el origen?",
+        "¿Puede escalar producción sin perder la técnica?"]}
+   ]},
+  {id:"viabilidad", nombre:"Viabilidad IG", proposito:"Probabilidad de que el IMPI conceda. Es el eje que ordena la prioridad.",
+   dimensiones:[
+     {id:"vinculo", nombre:"Vínculo geográfico", preguntas:[
+        "¿El vínculo es defendible con datos y no solo con tradición?",
+        "¿La zona se puede delimitar con precisión?",
+        "¿Hay institución dispuesta a firmar el estudio técnico?"]},
+     {id:"evidencia", nombre:"Evidencia documental", preguntas:[
+        "¿Existen registros históricos o publicaciones?",
+        "¿Hay evidencia de antigüedad verificable?",
+        "¿Se puede levantar testimonio de productores de más de una generación?"]},
+     {id:"distintividad", nombre:"Distintividad del nombre", preguntas:[
+        "¿El nombre está libre de conflicto con marcas o DO existentes?",
+        "¿No es un término genérico de uso común?",
+        "¿Ya se asocia públicamente a esta zona?"]}
+   ]},
+  {id:"cooperativo", nombre:"Potencial cooperativo", proposito:"Información para diseñar el acompañamiento. No se usa como criterio de filtro ni de prioridad.",
+   dimensiones:[
+     {id:"cohesion", nombre:"Cohesión grupal", preguntas:[
+        "¿Se reúnen con regularidad?",
+        "¿Resuelven diferencias sin romperse?",
+        "¿Hay confianza para compartir información entre talleres?"]},
+     {id:"voluntad", nombre:"Voluntad asociativa", preguntas:[
+        "¿Hay interés explícito en figura cooperativa?",
+        "¿Compartirían reglas de uso con otros grupos?",
+        "¿Aceptarían una certificadora común?"]},
+     {id:"gestion", nombre:"Capacidad de gestión", preguntas:[
+        "¿Alguien puede dar seguimiento administrativo?",
+        "¿Manejan cuentas o registros básicos?",
+        "¿Han gestionado antes algún apoyo o trámite?"]}
+   ]}
+];
+
+// Overrides explícitos pedidos por el cliente (sesgo central 0-4 por dimensión)
+var SESGO_OVERRIDES = {
+  "cajeta-de-sayula": {organizativa:4, tecnica:4, comercial:4, vinculo:4, evidencia:4, distintividad:4},
+  "birote-salado": {distintividad:0.3},
+  "chilte-de-talpa": {organizativa:0.3},
+  "ceramica-mayolica": {organizativa:0.3}
+};
+
+// Overrides del veredicto del Paso 0, atados a alertas ya existentes en ALERTAS
+var FILTRO_OVERRIDES = {
+  "destilado-tonayan": {c:false},           // alerta: traslape con DO Tequila y el CRT
+  "ponche-de-granada": {a:false, c:false}   // alerta: va por marca colectiva, es otra ruta
+};
+
+function generarSesgos(group){
+  var potNum = group.potencial === "ALTO" ? 3.3 : group.potencial === "MEDIO" ? 2.2 : 1.2;
+  var etapaNum = Math.min(4, 0.5 + group.etapaActual * 0.4);
+  var tieneProductores = typeof group.productores === "number";
+  var alertaTexto = ALERTAS.filter(function(a){ return a.grupo === group.producto; }).map(function(a){ return a.texto; }).join(" ");
+  var distintividadBase = potNum;
+  if(/uso común|dos formas distintas|traslape/.test(alertaTexto)) distintividadBase = 0.6;
+  var sesgos = {
+    organizativa: etapaNum,
+    tecnica: Math.max(potNum, etapaNum - 0.5),
+    comercial: potNum + (tieneProductores ? 0.3 : -0.3),
+    vinculo: potNum,
+    evidencia: potNum - 0.2,
+    distintividad: distintividadBase,
+    cohesion: 2.0,
+    voluntad: 2.0,
+    gestion: tieneProductores ? 2.3 : 1.6
+  };
+  var over = SESGO_OVERRIDES[group.id];
+  if(over){ Object.keys(over).forEach(function(k){ sesgos[k] = over[k]; }); }
+  return sesgos;
+}
+
+function preguntasDeDimension(seedBase, centro){
+  var out = [];
+  for(var i=0;i<3;i++){
+    var r = mulberry32(hashStr(seedBase + "-" + i))();
+    var val = Math.round(centro + (r - 0.5) * 1.6);
+    out.push(Math.max(0, Math.min(4, val)));
+  }
+  return out;
+}
+
+function respuestasPaso0(group){
+  var potNum = group.potencial === "ALTO" ? 0.75 : group.potencial === "MEDIO" ? 0.55 : 0.35;
+  var out = {};
+  FILTRO_TERRITORIAL_PREGUNTAS.forEach(function(p){
+    var r = mulberry32(hashStr(group.id + "-filtro-" + p.id))();
+    out[p.id] = r < potNum;
+  });
+  var over = FILTRO_OVERRIDES[group.id];
+  if(over){ Object.keys(over).forEach(function(k){ out[k] = over[k]; }); }
+  return out;
+}
+
+function parseDuracionMeses(d){ return parseInt(d, 10) || 0; }
+
+function nivelDe(score){ return score <= 33 ? "Básica" : score <= 66 ? "Intermedia" : "Avanzada"; }
+
+function computeDiagnostico(group){
+  var sesgos = group.respuestasManual ? null : generarSesgos(group);
+  var respuestas = {}, dimScores = {};
+  EJES_DIAGNOSTICO.forEach(function(eje){
+    eje.dimensiones.forEach(function(dim){
+      var arr = group.respuestasManual ? group.respuestasManual[dim.id] : preguntasDeDimension(group.id + "-" + dim.id, sesgos[dim.id]);
+      respuestas[dim.id] = arr;
+      dimScores[dim.id] = Math.round(((arr[0] + arr[1] + arr[2]) / 3) / 4 * 100);
+    });
+  });
+  var ejeScores = {};
+  EJES_DIAGNOSTICO.forEach(function(eje){
+    var ds = eje.dimensiones.map(function(dim){ return dimScores[dim.id]; });
+    ejeScores[eje.id] = Math.round((ds[0] + ds[1] + ds[2]) / 3);
+  });
+
+  var paso0 = group.paso0Manual || respuestasPaso0(group);
+  var siCount = (paso0.a?1:0) + (paso0.b?1:0) + (paso0.c?1:0);
+  var veredicto = siCount === 3 ? "procede" : siCount === 2 ? "validacion" : "noprocede";
+
+  // TODO: "brecha cerrable en 12 meses" no tiene fórmula definida por el cliente.
+  // Proxy provisional: meses restantes de la ruta crítica desde la etapa actual
+  // hasta la 9 (sumando ETAPAS.duracion). <=12 meses restantes = 100. Confirmar con SEDECO.
+  var mesesRestantes = 0;
+  for(var n=group.etapaActual; n<=9; n++){
+    if(group.noAplica.indexOf(n) !== -1) continue;
+    mesesRestantes += parseDuracionMeses(ETAPAS[n-1].duracion);
+  }
+  var brechaCerrable = Math.round(Math.min(1, 12/Math.max(1,mesesRestantes)) * 100);
+  var prioridad = Math.round(ejeScores.viabilidad * 0.6 + brechaCerrable * 0.4);
+
+  var plan = [];
+  if(dimScores.organizativa <= 33) plan.push("Apoyo para constituir legalmente la agrupación y definir estructura de representación y gobernanza interna.");
+  else if(dimScores.organizativa <= 66) plan.push("Taller de gobernanza: reglamento interno mínimo y reglas de decisión colectiva.");
+  if(dimScores.tecnica <= 66) plan.push("Laboratorio comunitario guiado de 3 horas en territorio: línea de tiempo colectiva, recorrido grabado y mapa participativo.");
+  if(dimScores.evidencia < 60) plan.push("Levantamiento de evidencia histórica y documental con aliado académico.");
+  if(dimScores.comercial <= 33) plan.push("Vinculación a canales concretos ya identificados por la Secretaría, no teoría de mercado.");
+  if(dimScores.distintividad < 50) plan.push("Búsqueda de anterioridades y opinión del IMPI sobre el nombre antes de invertir en estudio técnico.");
+  if(dimScores.vinculo < 60) plan.push("Validación de exclusividad territorial frente a producciones similares en otros estados.");
+  if(ejeScores.cooperativo >= 67) plan.push("Candidata a estructura cooperativa bajo la Ley de Fomento al Cooperativismo de Jalisco. Informativo, no altera prioridad.");
+  if(plan.length === 0) plan.push("Acompañamiento de seguimiento en la etapa vigente.");
+
+  return {respuestas:respuestas, dimScores:dimScores, ejeScores:ejeScores, paso0:paso0, veredicto:veredicto,
+          mesesRestantes:mesesRestantes, brechaCerrable:brechaCerrable, prioridad:prioridad, plan:plan};
+}
+
+function renderFiltroPaso0(diag){
+  var rechazo = diag.veredicto === "noprocede";
+  var preguntasHTML = FILTRO_TERRITORIAL_PREGUNTAS.map(function(p){
+    var val = diag.paso0[p.id];
+    return '' +
+      '<div class="filtro-pregunta">' +
+        '<span>' + esc(p.texto) + '</span>' +
+        '<span class="alt-si-no">' + (val ? "Sí" : "No") + '</span>' +
+      '</div>';
+  }).join("");
+  var veredictoLabel = diag.veredicto === "procede" ? "Procede" : diag.veredicto === "validacion" ? "Requiere validación IMPI" : "No procede como IG";
+  var alterna = rechazo ? '<p class="filtro-alterna">Considera marca colectiva como alternativa: protege el origen sin exigir exclusividad territorial.</p>' : "";
+  return '' +
+    '<div class="filtro-territorial ' + (rechazo ? "rechazo" : "") + '">' +
+      '<span class="mono">Paso 0 · Filtro de viabilidad territorial</span>' +
+      preguntasHTML +
+      '<div class="veredicto-linea">' +
+        '<span class="veredicto-tag">' + veredictoLabel + '</span>' +
+      '</div>' +
+      alterna +
+    '</div>';
+}
+
+function renderDimension(dim, diag){
+  var score = diag.dimScores[dim.id];
+  var respuestas = diag.respuestas[dim.id];
+  var preguntasHTML = dim.preguntas.map(function(texto, idx){
+    return '' +
+      '<div class="dimension-pregunta">' +
+        '<span>' + esc(texto) + '</span>' +
+        '<span class="dimension-resp">' + ESCALA_LABELS[respuestas[idx]] + '</span>' +
+      '</div>';
+  }).join("");
+  return '' +
+    '<div class="dimension">' +
+      '<details>' +
+        '<summary><span>' + esc(dim.nombre) + '</span><span class="eje-nivel-tag">' + score + ' · ' + nivelDe(score) + '</span></summary>' +
+        '<div class="dimension-body">' + preguntasHTML + '</div>' +
+      '</details>' +
+    '</div>';
+}
+
+function renderEjeCard(eje, diag){
+  var score = diag.ejeScores[eje.id];
+  var advertencia = eje.id === "cooperativo"
+    ? '<p class="eje-advertencia">Este eje no entra en el cálculo de prioridad. Es información para diseñar acompañamiento, no un criterio de filtro.</p>'
+    : "";
+  var indicePrioridad = eje.id === "viabilidad"
+    ? '<div class="indice-prioridad"><span class="mono">Índice de prioridad (60% viabilidad IG + 40% brecha cerrable en 12 meses, proxy provisional)</span>' + diag.prioridad + ' / 100</div>'
+    : "";
+  var dimsHTML = eje.dimensiones.map(function(dim){ return renderDimension(dim, diag); }).join("");
+  return '' +
+    '<div class="eje-card">' +
+      '<div class="eje-card-cab"><h4>' + esc(eje.nombre) + '</h4><span class="eje-nivel-tag">' + score + ' · ' + nivelDe(score) + '</span></div>' +
+      '<p class="eje-proposito">' + esc(eje.proposito) + '</p>' +
+      advertencia +
+      '<div class="dimensiones">' + dimsHTML + '</div>' +
+      indicePrioridad +
+    '</div>';
+}
+
+function renderPlanFortalecimiento(diag){
+  return '' +
+    '<div class="plan-fortalecimiento">' +
+      '<h4>Plan de fortalecimiento</h4>' +
+      '<ul>' + diag.plan.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' +
+    '</div>';
+}
+
+function renderDiagnostico(group){
+  var diag = computeDiagnostico(group);
+  var ejesHTML = EJES_DIAGNOSTICO.map(function(eje){ return renderEjeCard(eje, diag); }).join("");
+  return '' +
+    renderFiltroPaso0(diag) +
+    '<div class="diagnostico">' +
+      '<span class="mono">Instrumento en calibración</span>' +
+      '<h3>Diagnóstico</h3>' +
+      '<p class="aviso">Cálculo de referencia, no una evaluación oficial. Sirve para priorizar acompañamiento, no para descartar agrupaciones.</p>' +
+      '<div class="ejes-cards">' + ejesHTML + '</div>' +
+      renderPlanFortalecimiento(diag) +
+    '</div>';
+}
+
+/* =========================================================
+   FORMULARIO — NUEVA AGRUPACIÓN
+   ========================================================= */
+var FORM_STEPS = ["Perfil","Filtro territorial","Diagnóstico","Documentos y fotos","Resumen"];
+var CLASIFICACIONES = ["Agroalimento","Artesanía","Bebida","Destilado"];
+var INSTRUMENTOS = [
+  {value:"IG", label:"Indicación Geográfica"},
+  {value:"DO", label:"Denominación de Origen"},
+  {value:"MC", label:"Marca Colectiva"},
+  {value:"MCERT", label:"Marca de Certificación"}
+];
+var ORGANIZACION_OPTS = [
+  {value:"ninguna", label:"Sin organización"},
+  {value:"informal", label:"Grupo informal (sin persona moral)"},
+  {value:"formal", label:"Persona moral constituida"}
+];
+var DOCUMENTOS_ADJUNTABLES = [
+  {id:"padron", label:"Padrón de productores"},
+  {id:"actaAsamblea", label:"Acta de asamblea"},
+  {id:"actaConstitutiva", label:"Acta constitutiva"},
+  {id:"rfc", label:"RFC"},
+  {id:"estudio", label:"Estudio o documento histórico"},
+  {id:"otro", label:"Otro"}
+];
+var TAMANO_MAX_ARCHIVO = 10 * 1024 * 1024;
+
+function orgLabel(v){
+  var o = ORGANIZACION_OPTS.filter(function(x){ return x.value === v; })[0];
+  return o ? o.label : v;
+}
+
+function veredictoDeFiltro(f){
+  if(f.a === null || f.b === null || f.c === null) return null;
+  var c = (f.a?1:0) + (f.b?1:0) + (f.c?1:0);
+  return c === 3 ? "procede" : c === 2 ? "validacion" : "noprocede";
+}
+
+function nuevoFormState(){
+  var respuestas = {};
+  EJES_DIAGNOSTICO.forEach(function(eje){
+    eje.dimensiones.forEach(function(dim){ respuestas[dim.id] = [2,2,2]; });
+  });
+  return {
+    step: 1,
+    errors: {},
+    data: {
+      producto: "", clasificacion: "Agroalimento", instrumento: "IG", municipioPrincipal: "",
+      productores: "", organizacionExistente: "ninguna", descripcion: "", contacto: "", telefono: "",
+      mesaOrigen: "",
+      filtro: {a:null, b:null, c:null},
+      respuestas: respuestas,
+      documentos: {},
+      fotos: [],
+      archivoError: ""
+    }
+  };
+}
+
+function abrirFormulario(){
+  state.form = nuevoFormState();
+  state.formOpen = true;
+  renderAll();
+}
+function cerrarFormulario(){
+  state.formOpen = false;
+  state.form = null;
+  renderAll();
+}
+
+function validarPasoActual(){
+  state.form.errors = {};
+  var d = state.form.data;
+  if(state.form.step === 1){
+    if(!d.producto || !d.producto.trim()) state.form.errors.producto = "Falta el nombre del producto.";
+    if(!d.municipioPrincipal || !d.municipioPrincipal.trim()) state.form.errors.municipioPrincipal = "Falta el municipio principal.";
+  }
+  if(state.form.step === 2){
+    if(d.filtro.a === null || d.filtro.b === null || d.filtro.c === null) state.form.errors.filtro = "Responde las 3 preguntas para continuar.";
+  }
+  return Object.keys(state.form.errors).length === 0;
+}
+
+function asignarCohorteNueva(clasificacion, veredicto){
+  if(veredicto !== "procede") return "c4";
+  if(clasificacion === "Artesanía") return "c3";
+  return "c2";
+}
+
+function uniqueGroupId(base){
+  var id = base, n = 2;
+  while(getGroup(id)){ id = base + "-" + n; n++; }
+  return id;
+}
+
+function registrarAgrupacion(){
+  if(!validarPasoActual()){ renderAll(); return; }
+  var d = state.form.data;
+  var veredicto = veredictoDeFiltro(d.filtro);
+  var etapaInicial = d.organizacionExistente === "formal" ? 2 : 1;
+  var municipio = d.municipioPrincipal.trim();
+  var id = uniqueGroupId(slugify(d.producto));
+
+  var respuestasManual = {};
+  EJES_DIAGNOSTICO.forEach(function(eje){
+    eje.dimensiones.forEach(function(dim){ respuestasManual[dim.id] = d.respuestas[dim.id].slice(); });
+  });
+
+  var mesaIdx = d.mesaOrigen !== "" ? parseInt(d.mesaOrigen, 10) : -1;
+  var mesaLabel = mesaIdx >= 0 ? (MESAS[mesaIdx].region + " — " + MESAS[mesaIdx].sede) : "Sin especificar";
+
+  var nuevo = {
+    id: id,
+    producto: d.producto.trim(),
+    clasificacion: d.clasificacion,
+    region: regionDeMunicipio(municipio),
+    municipios: [municipio],
+    productores: (d.productores !== "" && !isNaN(parseInt(d.productores,10))) ? parseInt(d.productores,10) : "sin dato",
+    potencial: "MEDIO",
+    etapaActual: etapaInicial,
+    ruta: d.instrumento,
+    noAplica: d.instrumento === "MC" ? [3,7] : [],
+    asesor: ASESORES[GROUPS.length % 3],
+    folioIMPI: null,
+    fechaSolicitud: null,
+    fechaDeclaratoria: null,
+    respuestasManual: respuestasManual,
+    paso0Manual: {a:d.filtro.a, b:d.filtro.b, c:d.filtro.c},
+    bitacora: {
+      usuario: "Personal de campo (sesión demo)",
+      fecha: new Date().toISOString().slice(0,10),
+      mesaOrigen: mesaLabel
+    }
+  };
+  nuevo.coh = asignarCohorteNueva(nuevo.clasificacion, veredicto);
+
+  GROUPS.push(nuevo);
+  MUNICIPIOS = uniqueSorted(MUNICIPIOS.concat([municipio]));
+  if(REGIONES.indexOf(nuevo.region) === -1) REGIONES = uniqueSorted(REGIONES.concat([nuevo.region]));
+  REGION_POR_MUNICIPIO[municipio] = nuevo.region;
+
+  if(nuevo.productores === "sin dato"){
+    ALERTAS.push({sev:"media", grupo:nuevo.producto, texto:"sin padrón de productores identificado."});
+  }
+  if(veredicto !== "procede"){
+    ALERTAS.push({sev:"alta", grupo:nuevo.producto, texto: veredicto === "validacion"
+      ? "el filtro de viabilidad territorial requiere validación del IMPI antes de continuar."
+      : "el filtro de viabilidad territorial no procede como Indicación Geográfica; revisar ruta alternativa."});
+  }
+
+  state.formOpen = false;
+  state.form = null;
+  state.view = "ficha";
+  state.fichaId = nuevo.id;
+  state.sedecoView = "cartera";
+  renderAll();
+  window.scrollTo(0,0);
+}
+
+function formCampoTexto(field, label, tipo, ayuda, placeholder){
+  var val = esc(state.form.data[field] || "");
+  var err = state.form.errors[field];
+  return '' +
+    '<div class="form-campo">' +
+      '<label for="ff-' + field + '">' + esc(label) + '</label>' +
+      '<input type="' + tipo + '" id="ff-' + field + '" data-form-field="' + field + '" value="' + val + '" placeholder="' + esc(placeholder||"") + '">' +
+      (ayuda ? '<span class="form-ayuda">' + esc(ayuda) + '</span>' : "") +
+      (err ? '<span class="form-error">' + esc(err) + '</span>' : "") +
+    '</div>';
+}
+function formCampoTextarea(field, label, ayuda){
+  var val = esc(state.form.data[field] || "");
+  return '' +
+    '<div class="form-campo">' +
+      '<label for="ff-' + field + '">' + esc(label) + '</label>' +
+      '<textarea id="ff-' + field + '" data-form-field="' + field + '" rows="3">' + val + '</textarea>' +
+      (ayuda ? '<span class="form-ayuda">' + esc(ayuda) + '</span>' : "") +
+    '</div>';
+}
+function formCampoSelect(field, label, opciones, ayuda){
+  var val = state.form.data[field];
+  var opts = opciones.map(function(o){
+    return '<option value="' + esc(o.value) + '" ' + (o.value===val?"selected":"") + '>' + esc(o.label) + '</option>';
+  }).join("");
+  return '' +
+    '<div class="form-campo">' +
+      '<label for="ff-' + field + '">' + esc(label) + '</label>' +
+      '<select id="ff-' + field + '" data-form-field="' + field + '">' + opts + '</select>' +
+      (ayuda ? '<span class="form-ayuda">' + esc(ayuda) + '</span>' : "") +
+    '</div>';
+}
+
+function renderFormPaso1(){
+  var mesaOpts = [{value:"", label:"— Sin especificar —"}].concat(MESAS.map(function(m,i){ return {value:String(i), label:m.region + " — " + m.sede}; }));
+  return '' +
+    '<h3>Perfil</h3>' +
+    formCampoTexto("producto", "Nombre del producto", "text", "Escríbelo exactamente como se protegerá, es lo que el IMPI evalúa.", "Ej. Cajeta de Sayula") +
+    formCampoSelect("clasificacion", "Clasificación", CLASIFICACIONES.map(function(c){ return {value:c, label:c}; })) +
+    formCampoSelect("instrumento", "Instrumento", INSTRUMENTOS, "Cada instrumento tiene su propia ruta crítica.") +
+    formCampoTexto("municipioPrincipal", "Municipio principal", "text", "", "Ej. Sayula") +
+    formCampoTexto("productores", "Número de productores", "number", "Si no hay padrón déjalo vacío, se registra como alerta.", "") +
+    formCampoSelect("organizacionExistente", "Organización existente", ORGANIZACION_OPTS) +
+    formCampoTextarea("descripcion", "Descripción", "") +
+    formCampoTexto("contacto", "Contacto", "text", "", "Nombre de la persona de contacto") +
+    formCampoTexto("telefono", "Teléfono", "tel", "", "") +
+    formCampoSelect("mesaOrigen", "Mesa regional de origen", mesaOpts);
+}
+
+function renderFormPaso2(){
+  var f = state.form.data.filtro;
+  var preguntasHTML = FILTRO_TERRITORIAL_PREGUNTAS.map(function(p){
+    var val = f[p.id];
+    return '' +
+      '<div class="form-si-no">' +
+        '<p>' + esc(p.texto) + '</p>' +
+        '<div class="si-no-btns">' +
+          '<button type="button" class="btn-si-no ' + (val===true?"activo":"") + '" data-form-filtro="' + p.id + '" data-value="si">Sí</button>' +
+          '<button type="button" class="btn-si-no ' + (val===false?"activo":"") + '" data-form-filtro="' + p.id + '" data-value="no">No</button>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+  var veredicto = veredictoDeFiltro(f);
+  var veredictoHTML = "";
+  if(veredicto){
+    var label = veredicto==="procede" ? "Procede" : veredicto==="validacion" ? "Requiere validación IMPI" : "No procede como IG";
+    veredictoHTML = '' +
+      '<div class="veredicto-linea"><span class="veredicto-tag">' + label + '</span></div>' +
+      (veredicto === "noprocede" ? '<p class="filtro-alterna">Considera marca colectiva como alternativa: protege el origen sin exigir exclusividad territorial.</p>' : "");
+  }
+  var err = state.form.errors.filtro;
+  return '' +
+    '<h3>Paso 0 · Filtro de viabilidad territorial</h3>' +
+    '<div class="filtro-territorial" style="margin-top:0;">' + preguntasHTML + veredictoHTML + '</div>' +
+    (err ? '<p class="form-error" style="margin-top:10px;">' + esc(err) + '</p>' : "");
+}
+
+function renderFormPaso3(){
+  var respuestas = state.form.data.respuestas;
+  var ejesHTML = EJES_DIAGNOSTICO.map(function(eje){
+    var dimsHTML = eje.dimensiones.map(function(dim){
+      var preguntasHTML = dim.preguntas.map(function(texto, idx){
+        var valorActual = respuestas[dim.id][idx];
+        var botones = ESCALA_LABELS.map(function(lab, v){
+          return '<button type="button" class="escala-btn ' + (v===valorActual?"activo":"") + '" data-form-escala="' + dim.id + '" data-idx="' + idx + '" data-value="' + v + '">' + lab + '</button>';
+        }).join("");
+        return '' +
+          '<div class="form-pregunta-escala">' +
+            '<p>' + esc(texto) + '</p>' +
+            '<div class="escala-btns">' + botones + '</div>' +
+          '</div>';
+      }).join("");
+      return '<div class="form-dimension"><h5>' + esc(dim.nombre) + '</h5>' + preguntasHTML + '</div>';
+    }).join("");
+    return '' +
+      '<details open><summary><span>' + esc(eje.nombre) + '</span></summary>' +
+        '<div class="form-eje-body">' + dimsHTML + '</div>' +
+      '</details>';
+  }).join("");
+  return '' +
+    '<h3>Diagnóstico</h3>' +
+    '<div class="aviso-calibracion"><strong>Instrumento en calibración, versión 0.2.</strong> La rúbrica aún no se valida con IMPI e ITESO. Los resultados sirven para diseñar acompañamiento, no todavía para asignar presupuesto.</div>' +
+    ejesHTML;
+}
+
+function renderFormPaso4(){
+  var docs = state.form.data.documentos;
+  var docsHTML = DOCUMENTOS_ADJUNTABLES.map(function(d){
+    var actual = docs[d.id];
+    var inputId = "doc-input-" + d.id;
+    return '' +
+      '<div class="doc-item">' +
+        '<span>' + esc(d.label) + '</span>' +
+        (actual
+          ? '<span class="doc-estado">' + esc(actual.nombre) + '<button type="button" class="btn-quitar" data-form-doc-quitar="' + d.id + '">Quitar</button></span>'
+          : '<label class="btn-doc" for="' + inputId + '">Adjuntar<input type="file" id="' + inputId + '" data-doc-key="' + d.id + '" style="display:none;"></label>') +
+      '</div>';
+  }).join("");
+
+  var fotos = state.form.data.fotos;
+  var fotosHTML = fotos.map(function(f, idx){
+    return '' +
+      '<div class="foto-item">' +
+        '<img src="' + f.url + '" alt="' + esc(f.nombre) + '">' +
+        '<button type="button" class="btn-quitar" data-form-foto-quitar="' + idx + '">Quitar</button>' +
+      '</div>';
+  }).join("");
+
+  var errorHTML = state.form.data.archivoError ? '<p class="form-error">' + esc(state.form.data.archivoError) + '</p>' : "";
+
+  return '' +
+    '<h3>Documentos y fotos</h3>' +
+    '<p class="form-nota">Máximo 10 MB por archivo. Las fotos se comprimen antes de subirse. Es simulado, sin subida real.</p>' +
+    errorHTML +
+    '<div class="doc-list">' + docsHTML + '</div>' +
+    '<p class="mono" style="margin:16px 0 8px;color:var(--gris);">Fotografías</p>' +
+    '<div class="foto-grid">' + fotosHTML +
+      '<label class="foto-agregar" for="foto-input">+ Agregar<input type="file" id="foto-input" data-foto-input accept="image/*" multiple style="display:none;"></label>' +
+    '</div>';
+}
+
+function renderFormPaso5(){
+  var d = state.form.data;
+  var etapaInicial = d.organizacionExistente === "formal" ? 2 : 1;
+  var docsCount = Object.keys(d.documentos).filter(function(k){ return d.documentos[k]; }).length;
+
+  var resumen = '' +
+    '<div class="tarjeta">' +
+      '<div class="tarjeta-cab"><h3>' + esc(d.producto || "(sin nombre)") + '</h3><span class="mono">' + rutaLabel(d.instrumento) + '</span></div>' +
+      '<dl class="tarjeta-datos">' +
+        '<div class="tarjeta-dato"><dt>Clasificación</dt><dd>' + esc(d.clasificacion) + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Municipio principal</dt><dd>' + esc(d.municipioPrincipal || "—") + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Productores</dt><dd>' + (d.productores ? esc(d.productores) : "Sin dato registrado") + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Organización existente</dt><dd>' + esc(orgLabel(d.organizacionExistente)) + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Contacto</dt><dd>' + esc(d.contacto || "—") + (d.telefono ? " · " + esc(d.telefono) : "") + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Documentos adjuntos</dt><dd>' + docsCount + ' de ' + DOCUMENTOS_ADJUNTABLES.length + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Fotografías</dt><dd>' + d.fotos.length + '</dd></div>' +
+      '</dl>' +
+    '</div>';
+
+  return '' +
+    '<h3>Resumen</h3>' +
+    resumen +
+    '<div class="panel-negro" style="margin-top:16px;">' +
+      '<h3>Lo que pasa al registrar</h3>' +
+      '<ul class="lo-que-pasa">' +
+        '<li>Se coloca en la etapa ' + etapaInicial + ' según la figura legal declarada.</li>' +
+        '<li>Se asigna cohorte.</li>' +
+        '<li>Se genera el plan de fortalecimiento.</li>' +
+        '<li>Se abren alertas por datos faltantes, empezando por el padrón.</li>' +
+        '<li>Queda registro en bitácora con usuario, fecha y mesa regional de origen.</li>' +
+      '</ul>' +
+    '</div>' +
+    (state.form.errors.registro ? '<p class="form-error" style="margin-top:12px;">' + esc(state.form.errors.registro) + '</p>' : "");
+}
+
+function renderFormProgreso(){
+  return '<div class="form-progreso">' + FORM_STEPS.map(function(label, i){
+    var n = i + 1;
+    var estado = n < state.form.step ? "hecho" : n === state.form.step ? "actual" : "pendiente";
+    return '<div class="form-progreso-paso ' + estado + '"><span class="form-progreso-num">' + n + '</span><span class="form-progreso-label">' + esc(label) + '</span></div>';
+  }).join("") + '</div>';
+}
+
+function renderFormOverlay(){
+  var stepFns = [renderFormPaso1, renderFormPaso2, renderFormPaso3, renderFormPaso4, renderFormPaso5];
+  var contenido = stepFns[state.form.step - 1]();
+  var esUltimo = state.form.step === FORM_STEPS.length;
+  var esPrimero = state.form.step === 1;
+  return '' +
+    '<div class="form-panel" role="dialog" aria-label="Registrar nueva agrupación">' +
+      '<div class="form-header">' +
+        '<span class="mono">Nueva agrupación</span>' +
+        '<button type="button" class="form-cerrar" data-form-close aria-label="Cerrar formulario">✕</button>' +
+      '</div>' +
+      renderFormProgreso() +
+      '<div class="form-body" id="form-body">' + contenido + '</div>' +
+      '<div class="form-footer">' +
+        (esPrimero ? '' : '<button type="button" class="volver-btn" data-form-prev>← Atrás</button>') +
+        (esUltimo
+          ? '<button type="button" class="btn-nueva" data-form-submit>Registrar</button>'
+          : '<button type="button" class="btn-nueva" data-form-next>Siguiente →</button>') +
+      '</div>' +
+    '</div>';
+}
+
+/* =========================================================
+   RENDER PRINCIPAL
+   ========================================================= */
+function renderMain(){
+  if(state.role === "sedeco"){
+    if(state.view === "ficha") return renderFicha(getGroup(state.fichaId), "sedeco");
+    if(state.sedecoView === "cartera") return renderSedecoCartera();
+    if(state.sedecoView === "cohortes") return renderCohortesView();
+    if(state.sedecoView === "mesas") return renderMesasView();
+    if(state.sedecoView === "plantillas") return renderPlantillasView();
+    return renderSedecoPanorama();
+  }
+  if(state.role === "municipio"){
+    return state.view==="ficha" ? renderFicha(getGroup(state.fichaId), "municipio") : renderMunicipioList();
+  }
+  if(state.role === "asesor"){
+    return state.view==="ficha" ? renderFicha(getGroup(state.fichaId), "asesor") : renderAsesorList();
+  }
+  if(state.role === "agrupacion"){
+    return renderFicha(getGroup(state.agrupacionSel), "agrupacion");
+  }
+  return "";
+}
+
+function renderAll(){
+  document.getElementById("topbar").innerHTML = renderTopbar();
+  document.getElementById("subbar").innerHTML = renderSubbar();
+  document.getElementById("main").innerHTML = renderMain();
+  syncSelectValues();
+
+  var overlayEl = document.getElementById("form-overlay");
+  var prevScroll = 0;
+  var prevBody = document.getElementById("form-body");
+  if(prevBody) prevScroll = prevBody.scrollTop;
+  overlayEl.innerHTML = state.formOpen ? renderFormOverlay() : "";
+  var newBody = document.getElementById("form-body");
+  if(newBody) newBody.scrollTop = prevScroll;
+}
+
+function syncSelectValues(){
+  var map = {
+    "filtro-region": state.filterRegion,
+    "filtro-municipio": state.filterMunicipio,
+    "filtro-etapa": state.filterEtapa,
+    "sel-municipio-rol": state.municipioSel,
+    "sel-asesor-rol": state.asesorSel,
+    "sel-agrupacion-rol": state.agrupacionSel
+  };
+  Object.keys(map).forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.value = map[id];
+  });
+}
+
+/* =========================================================
+   EVENTOS
+   ========================================================= */
+function openFicha(id, role){
+  state.view = "ficha";
+  state.fichaId = id;
+  renderAll();
+  var main = document.getElementById("main");
+  if(main) main.focus && main.focus();
+  window.scrollTo(0,0);
+}
+
+document.addEventListener("click", function(e){
+  var roleBtn = e.target.closest("[data-role-btn]");
+  if(roleBtn){
+    state.role = roleBtn.dataset.roleBtn;
+    state.view = "list";
+    state.fichaId = null;
+    renderAll();
+    return;
+  }
+  var rowEl = e.target.closest("[data-open-ficha]");
+  if(rowEl){
+    openFicha(rowEl.dataset.openFicha, state.role);
+    return;
+  }
+  var tabBtn = e.target.closest("[data-sedeco-tab]");
+  if(tabBtn){
+    state.sedecoView = tabBtn.dataset.sedecoTab;
+    renderAll();
+    return;
+  }
+  var kpiBtn = e.target.closest("[data-kpi-index]");
+  if(kpiBtn){ irACarteraFiltrada(parseInt(kpiBtn.dataset.kpiIndex, 10)); return; }
+
+  var irMesasBtn = e.target.closest("[data-ir-mesas]");
+  if(irMesasBtn){ irAMesas(); return; }
+
+  var irCarteraBtn = e.target.closest("[data-ir-cartera]");
+  if(irCarteraBtn){ irACarteraCompleta(); return; }
+
+  var clearKpiBtn = e.target.closest("[data-clear-kpi]");
+  if(clearKpiBtn){ state.filtroKPI = null; renderAll(); return; }
+
+  var backEl = e.target.closest("[data-back]");
+  if(backEl){
+    state.view = "list";
+    state.fichaId = null;
+    renderAll();
+    return;
+  }
+  var liberarBtn = e.target.closest("[data-liberar]");
+  if(liberarBtn && !liberarBtn.disabled){
+    state.liberaciones[liberarBtn.dataset.liberar] = true;
+    renderAll();
+    return;
+  }
+
+  var formOpenBtn = e.target.closest("[data-form-open]");
+  if(formOpenBtn){ abrirFormulario(); return; }
+
+  var formCloseBtn = e.target.closest("[data-form-close]");
+  if(formCloseBtn){ cerrarFormulario(); return; }
+
+  var formNextBtn = e.target.closest("[data-form-next]");
+  if(formNextBtn){
+    if(validarPasoActual()){ state.form.step++; }
+    renderAll();
+    return;
+  }
+
+  var formPrevBtn = e.target.closest("[data-form-prev]");
+  if(formPrevBtn){ state.form.step--; renderAll(); return; }
+
+  var formSubmitBtn = e.target.closest("[data-form-submit]");
+  if(formSubmitBtn){ registrarAgrupacion(); return; }
+
+  var filtroBtn = e.target.closest("[data-form-filtro]");
+  if(filtroBtn){
+    state.form.data.filtro[filtroBtn.dataset.formFiltro] = filtroBtn.dataset.value === "si";
+    renderAll();
+    return;
+  }
+
+  var escalaBtn = e.target.closest("[data-form-escala]");
+  if(escalaBtn){
+    var dimId = escalaBtn.dataset.formEscala;
+    var idx = parseInt(escalaBtn.dataset.idx, 10);
+    var valor = parseInt(escalaBtn.dataset.value, 10);
+    state.form.data.respuestas[dimId][idx] = valor;
+    renderAll();
+    return;
+  }
+
+  var docQuitarBtn = e.target.closest("[data-form-doc-quitar]");
+  if(docQuitarBtn){
+    delete state.form.data.documentos[docQuitarBtn.dataset.formDocQuitar];
+    renderAll();
+    return;
+  }
+
+  var fotoQuitarBtn = e.target.closest("[data-form-foto-quitar]");
+  if(fotoQuitarBtn){
+    var idxFoto = parseInt(fotoQuitarBtn.dataset.formFotoQuitar, 10);
+    state.form.data.fotos.splice(idxFoto, 1);
+    renderAll();
+    return;
+  }
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Enter" || e.key === " "){
+    var rowEl = e.target.closest("[data-open-ficha]");
+    if(rowEl){
+      e.preventDefault();
+      openFicha(rowEl.dataset.openFicha, state.role);
+    }
+  }
+});
+
+function updateFormField(t){
+  if(state.form && t.dataset && t.dataset.formField){
+    state.form.data[t.dataset.formField] = t.value;
+  }
+}
+
+document.addEventListener("input", function(e){
+  updateFormField(e.target);
+});
+
+document.addEventListener("change", function(e){
+  var t = e.target;
+  updateFormField(t);
+
+  if(t.dataset && t.dataset.docKey){
+    var docFile = t.files && t.files[0];
+    if(docFile){
+      if(docFile.size > TAMANO_MAX_ARCHIVO){
+        state.form.data.archivoError = '"' + docFile.name + '" supera 10 MB y no se adjuntó.';
+      } else {
+        state.form.data.documentos[t.dataset.docKey] = {nombre:docFile.name};
+        state.form.data.archivoError = "";
+      }
+      renderAll();
+    }
+    return;
+  }
+  if(t.hasAttribute && t.hasAttribute("data-foto-input")){
+    var files = Array.prototype.slice.call(t.files || []);
+    var rechazado = null;
+    files.forEach(function(file){
+      if(file.size > TAMANO_MAX_ARCHIVO){ rechazado = file.name; return; }
+      state.form.data.fotos.push({nombre:file.name, url:URL.createObjectURL(file)});
+    });
+    state.form.data.archivoError = rechazado ? '"' + rechazado + '" supera 10 MB y no se agregó.' : "";
+    renderAll();
+    return;
+  }
+
+  if(t.id === "filtro-region"){ state.filterRegion = t.value; renderAll(); }
+  else if(t.id === "filtro-municipio"){ state.filterMunicipio = t.value; renderAll(); }
+  else if(t.id === "filtro-etapa"){ state.filterEtapa = t.value; renderAll(); }
+  else if(t.id === "sel-municipio-rol"){ state.municipioSel = t.value; renderAll(); }
+  else if(t.id === "sel-asesor-rol"){ state.asesorSel = t.value; renderAll(); }
+  else if(t.id === "sel-agrupacion-rol"){ state.agrupacionSel = t.value; renderAll(); }
+});
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+renderAll();
+
+})();
+</script>
+</body>
+</html>
