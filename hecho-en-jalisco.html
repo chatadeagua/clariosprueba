@@ -466,6 +466,85 @@
   .plan-fortalecimiento li:first-child{border-top:none;}
 
   .footer{max-width:1180px;margin:0 auto;padding:20px;color:var(--gris);}
+
+  /* ---------- formulario nueva agrupación ---------- */
+  .topbar-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .btn-nueva{
+    background:var(--naranja);color:var(--negro);border:2px solid var(--negro);
+    padding:8px 14px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;font-weight:600;
+  }
+  .btn-nueva:hover{background:var(--naranja-hondo);color:var(--blanco);}
+
+  .form-panel{position:fixed;inset:0;z-index:100;background:var(--blanco);display:flex;flex-direction:column;}
+  .form-header{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 20px;border-bottom:2px solid var(--negro);flex:0 0 auto;
+  }
+  .form-header .mono{color:var(--gris);}
+  .form-cerrar{background:var(--blanco);border:2px solid var(--negro);width:32px;height:32px;font-size:14px;line-height:1;}
+  .form-cerrar:hover{border-color:var(--naranja-hondo);}
+
+  .form-progreso{display:flex;gap:2px;padding:0 20px;flex:0 0 auto;border-bottom:2px solid var(--gris-claro);}
+  .form-progreso-paso{flex:1 1 0;min-width:0;padding:10px 4px;border-bottom:3px solid var(--gris-claro);display:flex;flex-direction:column;gap:2px;}
+  .form-progreso-paso.hecho{border-bottom-color:var(--negro);}
+  .form-progreso-paso.actual{border-bottom-color:var(--naranja);}
+  .form-progreso-num{font-family:'Archivo',sans-serif;font-weight:800;font-size:14px;}
+  .form-progreso-label{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:9px;letter-spacing:.04em;color:var(--gris);display:none;}
+  @media (min-width:640px){ .form-progreso-label{display:block;} }
+
+  .form-body{flex:1 1 auto;overflow-y:auto;padding:20px;max-width:720px;margin:0 auto;width:100%;}
+  .form-body h3{font-size:20px;margin-bottom:14px;}
+  .form-footer{flex:0 0 auto;display:flex;justify-content:space-between;gap:10px;padding:14px 20px;border-top:2px solid var(--negro);}
+  .form-footer .btn-nueva{margin-left:auto;}
+
+  .form-campo{margin-bottom:16px;display:flex;flex-direction:column;gap:4px;}
+  .form-campo label{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--gris);}
+  .form-campo input,.form-campo select,.form-campo textarea{
+    border:2px solid var(--negro);padding:9px 10px;font-family:'Karla',sans-serif;font-size:14px;background:var(--blanco);color:var(--negro);width:100%;
+  }
+  .form-campo textarea{resize:vertical;}
+  .form-ayuda{color:var(--gris);font-size:12.5px;}
+  .form-error{color:var(--negro);font-size:12.5px;font-weight:700;padding-left:8px;border-left:3px solid var(--naranja);}
+  .form-nota{color:var(--gris);margin-bottom:16px;max-width:60ch;}
+
+  .aviso-calibracion{background:var(--naranja);color:var(--negro);border:2px solid var(--negro);padding:12px 14px;margin-bottom:18px;max-width:70ch;}
+
+  .filtro-territorial .form-si-no{padding:10px 0;border-top:1px solid var(--gris-claro);}
+  .form-si-no:first-of-type{border-top:none;}
+  .form-si-no p{margin-bottom:8px;}
+  .si-no-btns{display:flex;gap:8px;}
+  .btn-si-no{background:var(--blanco);border:2px solid var(--negro);padding:6px 16px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;}
+  .btn-si-no.activo{background:var(--negro);color:var(--blanco);}
+
+  .form-eje-body{padding:10px 0 4px;}
+  .form-dimension{margin-bottom:16px;}
+  .form-dimension h5{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:var(--gris);margin-bottom:8px;}
+  .form-pregunta-escala{margin-bottom:12px;}
+  .form-pregunta-escala p{margin-bottom:6px;font-size:13.5px;}
+  .escala-btns{display:flex;gap:4px;flex-wrap:wrap;}
+  .escala-btn{background:var(--blanco);border:1px solid var(--gris-claro);padding:5px 9px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:9.5px;letter-spacing:.04em;color:var(--gris);}
+  .escala-btn.activo{background:var(--negro);border-color:var(--negro);color:var(--blanco);}
+
+  .doc-list{border:2px solid var(--negro);}
+  .doc-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--gris-claro);flex-wrap:wrap;}
+  .doc-item:first-child{border-top:none;}
+  .doc-estado{display:flex;align-items:center;gap:10px;font-size:13px;}
+  .btn-doc{background:var(--blanco);border:2px solid var(--negro);padding:6px 12px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;cursor:pointer;}
+  .btn-doc:hover{border-color:var(--naranja-hondo);}
+  .btn-quitar{background:none;border:none;text-decoration:underline;font-size:12px;color:var(--gris);cursor:pointer;padding:0;}
+
+  .foto-grid{display:flex;flex-wrap:wrap;gap:10px;}
+  .foto-item{position:relative;width:90px;height:90px;border:2px solid var(--negro);}
+  .foto-item img{width:100%;height:100%;object-fit:cover;display:block;}
+  .foto-item .btn-quitar{position:absolute;bottom:0;left:0;right:0;background:var(--negro);color:var(--blanco);text-align:center;text-decoration:none;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:9px;padding:3px 0;}
+  .foto-agregar{
+    width:90px;height:90px;border:2px dashed var(--gris-claro);display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;color:var(--gris);text-align:center;cursor:pointer;
+  }
+  .foto-agregar:hover{border-color:var(--naranja-hondo);color:var(--naranja-hondo);}
+
+  .lo-que-pasa li{padding:6px 0;border-top:1px solid var(--carbon);}
+  .lo-que-pasa li:first-child{border-top:none;}
 </style>
 </head>
 <body>
@@ -474,6 +553,7 @@
 <div id="subbar"></div>
 <main id="main"></main>
 <div class="footer mono">Hecho en Jalisco · Prototipo de estructura · No conectado a IMPI ni a SEDECO</div>
+<div id="form-overlay"></div>
 
 <script>
 (function(){
@@ -726,6 +806,10 @@ function cumplido(s){ return s==="validada" || s==="aceptada"; }
 var MUNICIPIOS = uniqueSorted(flatMap(GROUPS, function(g){ return g.municipios; }));
 var REGIONES = uniqueSorted(GROUPS.map(function(g){ return g.region; }));
 
+var REGION_POR_MUNICIPIO = {};
+GROUPS.forEach(function(g){ g.municipios.forEach(function(m){ REGION_POR_MUNICIPIO[m] = g.region; }); });
+function regionDeMunicipio(m){ return REGION_POR_MUNICIPIO[m] || "Sin región asignada"; }
+
 function flatMap(arr, fn){ var out=[]; arr.forEach(function(x){ out = out.concat(fn(x)); }); return out; }
 function uniqueSorted(arr){
   var seen = {}; var out = [];
@@ -745,7 +829,9 @@ var state = {
   filterEtapa: "todas",
   view: "list",
   fichaId: null,
-  liberaciones: {}
+  liberaciones: {},
+  formOpen: false,
+  form: null
 };
 
 /* =========================================================
@@ -791,10 +877,15 @@ function sarapeResumen(group){
 /* =========================================================
    BADGES
    ========================================================= */
+function rutaLabel(ruta){
+  return ruta === "MC" ? "Marca colectiva" :
+         ruta === "DO" ? "Denominación de origen" :
+         ruta === "MCERT" ? "Marca de certificación" : "Indicación geográfica";
+}
 function rutaBadge(group){
   return group.ruta === "MC"
     ? '<span class="badge-mc">Marca colectiva</span>'
-    : '<span class="badge-ig">Indicación geográfica</span>';
+    : '<span class="badge-ig">' + rutaLabel(group.ruta) + '</span>';
 }
 function potencialBadge(group){
   return '<span class="badge-potencial">' + esc(group.potencial) + '</span>';
@@ -816,7 +907,10 @@ function renderTopbar(){
   return '' +
   '<header class="topbar">' +
     '<div class="marca"><h1>Hecho en Jalisco</h1><span class="mono">SEDECO Jalisco · Seguimiento de Indicación Geográfica</span></div>' +
-    '<nav class="roles" aria-label="Seleccionar rol">' + btns + '</nav>' +
+    '<div class="topbar-actions">' +
+      '<button type="button" class="btn-nueva" data-form-open>+ Nueva agrupación</button>' +
+      '<nav class="roles" aria-label="Seleccionar rol">' + btns + '</nav>' +
+    '</div>' +
   '</header>';
 }
 
@@ -1258,18 +1352,25 @@ function renderPanelNegro(group){
   function fila(label, valor){
     return '<div class="fila"><dt>' + label + '</dt><dd>' + valor + '</dd></div>';
   }
+  var cohorte = getCohorte(group.coh);
   var filas = '' +
     fila("Clasificación", esc(group.clasificacion)) +
     fila("Región", esc(group.region)) +
     fila("Municipios", esc(group.municipios.join(", "))) +
     fila("Productores", fmtProductores(group.productores)) +
     fila("Potencial", esc(group.potencial)) +
-    fila("Ruta", group.ruta==="MC" ? "Marca colectiva" : "Indicación geográfica") +
-    fila("Asesor asignado", esc(group.asesor));
+    fila("Ruta", rutaLabel(group.ruta)) +
+    fila("Asesor asignado", esc(group.asesor)) +
+    fila("Cohorte", cohorte ? esc(cohorte.nombre) : "Sin asignar");
   if(group.folioIMPI){
     filas += fila("Folio IMPI", esc(group.folioIMPI));
     filas += fila("Solicitud presentada", fmtFecha(group.fechaSolicitud));
     filas += fila("Declaratoria DOF", fmtFecha(group.fechaDeclaratoria));
+  }
+  if(group.bitacora){
+    filas += fila("Registrado por", esc(group.bitacora.usuario));
+    filas += fila("Fecha de registro", fmtFecha(group.bitacora.fecha));
+    filas += fila("Mesa regional de origen", esc(group.bitacora.mesaOrigen));
   }
   return '<aside class="panel-negro"><h3>Datos de la agrupación</h3><dl>' + filas + '</dl></aside>';
 }
@@ -1397,11 +1498,11 @@ function parseDuracionMeses(d){ return parseInt(d, 10) || 0; }
 function nivelDe(score){ return score <= 33 ? "Básica" : score <= 66 ? "Intermedia" : "Avanzada"; }
 
 function computeDiagnostico(group){
-  var sesgos = generarSesgos(group);
+  var sesgos = group.respuestasManual ? null : generarSesgos(group);
   var respuestas = {}, dimScores = {};
   EJES_DIAGNOSTICO.forEach(function(eje){
     eje.dimensiones.forEach(function(dim){
-      var arr = preguntasDeDimension(group.id + "-" + dim.id, sesgos[dim.id]);
+      var arr = group.respuestasManual ? group.respuestasManual[dim.id] : preguntasDeDimension(group.id + "-" + dim.id, sesgos[dim.id]);
       respuestas[dim.id] = arr;
       dimScores[dim.id] = Math.round(((arr[0] + arr[1] + arr[2]) / 3) / 4 * 100);
     });
@@ -1412,7 +1513,7 @@ function computeDiagnostico(group){
     ejeScores[eje.id] = Math.round((ds[0] + ds[1] + ds[2]) / 3);
   });
 
-  var paso0 = respuestasPaso0(group);
+  var paso0 = group.paso0Manual || respuestasPaso0(group);
   var siCount = (paso0.a?1:0) + (paso0.b?1:0) + (paso0.c?1:0);
   var veredicto = siCount === 3 ? "procede" : siCount === 2 ? "validacion" : "noprocede";
 
@@ -1526,6 +1627,370 @@ function renderDiagnostico(group){
 }
 
 /* =========================================================
+   FORMULARIO — NUEVA AGRUPACIÓN
+   ========================================================= */
+var FORM_STEPS = ["Perfil","Filtro territorial","Diagnóstico","Documentos y fotos","Resumen"];
+var CLASIFICACIONES = ["Agroalimento","Artesanía","Bebida","Destilado"];
+var INSTRUMENTOS = [
+  {value:"IG", label:"Indicación Geográfica"},
+  {value:"DO", label:"Denominación de Origen"},
+  {value:"MC", label:"Marca Colectiva"},
+  {value:"MCERT", label:"Marca de Certificación"}
+];
+var ORGANIZACION_OPTS = [
+  {value:"ninguna", label:"Sin organización"},
+  {value:"informal", label:"Grupo informal (sin persona moral)"},
+  {value:"formal", label:"Persona moral constituida"}
+];
+var DOCUMENTOS_ADJUNTABLES = [
+  {id:"padron", label:"Padrón de productores"},
+  {id:"actaAsamblea", label:"Acta de asamblea"},
+  {id:"actaConstitutiva", label:"Acta constitutiva"},
+  {id:"rfc", label:"RFC"},
+  {id:"estudio", label:"Estudio o documento histórico"},
+  {id:"otro", label:"Otro"}
+];
+var TAMANO_MAX_ARCHIVO = 10 * 1024 * 1024;
+
+function orgLabel(v){
+  var o = ORGANIZACION_OPTS.filter(function(x){ return x.value === v; })[0];
+  return o ? o.label : v;
+}
+
+function veredictoDeFiltro(f){
+  if(f.a === null || f.b === null || f.c === null) return null;
+  var c = (f.a?1:0) + (f.b?1:0) + (f.c?1:0);
+  return c === 3 ? "procede" : c === 2 ? "validacion" : "noprocede";
+}
+
+function nuevoFormState(){
+  var respuestas = {};
+  EJES_DIAGNOSTICO.forEach(function(eje){
+    eje.dimensiones.forEach(function(dim){ respuestas[dim.id] = [2,2,2]; });
+  });
+  return {
+    step: 1,
+    errors: {},
+    data: {
+      producto: "", clasificacion: "Agroalimento", instrumento: "IG", municipioPrincipal: "",
+      productores: "", organizacionExistente: "ninguna", descripcion: "", contacto: "", telefono: "",
+      mesaOrigen: "",
+      filtro: {a:null, b:null, c:null},
+      respuestas: respuestas,
+      documentos: {},
+      fotos: [],
+      archivoError: ""
+    }
+  };
+}
+
+function abrirFormulario(){
+  state.form = nuevoFormState();
+  state.formOpen = true;
+  renderAll();
+}
+function cerrarFormulario(){
+  state.formOpen = false;
+  state.form = null;
+  renderAll();
+}
+
+function validarPasoActual(){
+  state.form.errors = {};
+  var d = state.form.data;
+  if(state.form.step === 1){
+    if(!d.producto || !d.producto.trim()) state.form.errors.producto = "Falta el nombre del producto.";
+    if(!d.municipioPrincipal || !d.municipioPrincipal.trim()) state.form.errors.municipioPrincipal = "Falta el municipio principal.";
+  }
+  if(state.form.step === 2){
+    if(d.filtro.a === null || d.filtro.b === null || d.filtro.c === null) state.form.errors.filtro = "Responde las 3 preguntas para continuar.";
+  }
+  return Object.keys(state.form.errors).length === 0;
+}
+
+function asignarCohorteNueva(clasificacion, veredicto){
+  if(veredicto !== "procede") return "c4";
+  if(clasificacion === "Artesanía") return "c3";
+  return "c2";
+}
+
+function uniqueGroupId(base){
+  var id = base, n = 2;
+  while(getGroup(id)){ id = base + "-" + n; n++; }
+  return id;
+}
+
+function registrarAgrupacion(){
+  if(!validarPasoActual()){ renderAll(); return; }
+  var d = state.form.data;
+  var veredicto = veredictoDeFiltro(d.filtro);
+  var etapaInicial = d.organizacionExistente === "formal" ? 2 : 1;
+  var municipio = d.municipioPrincipal.trim();
+  var id = uniqueGroupId(slugify(d.producto));
+
+  var respuestasManual = {};
+  EJES_DIAGNOSTICO.forEach(function(eje){
+    eje.dimensiones.forEach(function(dim){ respuestasManual[dim.id] = d.respuestas[dim.id].slice(); });
+  });
+
+  var mesaIdx = d.mesaOrigen !== "" ? parseInt(d.mesaOrigen, 10) : -1;
+  var mesaLabel = mesaIdx >= 0 ? (MESAS[mesaIdx].region + " — " + MESAS[mesaIdx].sede) : "Sin especificar";
+
+  var nuevo = {
+    id: id,
+    producto: d.producto.trim(),
+    clasificacion: d.clasificacion,
+    region: regionDeMunicipio(municipio),
+    municipios: [municipio],
+    productores: (d.productores !== "" && !isNaN(parseInt(d.productores,10))) ? parseInt(d.productores,10) : "sin dato",
+    potencial: "MEDIO",
+    etapaActual: etapaInicial,
+    ruta: d.instrumento,
+    noAplica: d.instrumento === "MC" ? [3,7] : [],
+    asesor: ASESORES[GROUPS.length % 3],
+    folioIMPI: null,
+    fechaSolicitud: null,
+    fechaDeclaratoria: null,
+    respuestasManual: respuestasManual,
+    paso0Manual: {a:d.filtro.a, b:d.filtro.b, c:d.filtro.c},
+    bitacora: {
+      usuario: "Personal de campo (sesión demo)",
+      fecha: new Date().toISOString().slice(0,10),
+      mesaOrigen: mesaLabel
+    }
+  };
+  nuevo.coh = asignarCohorteNueva(nuevo.clasificacion, veredicto);
+
+  GROUPS.push(nuevo);
+  MUNICIPIOS = uniqueSorted(MUNICIPIOS.concat([municipio]));
+  if(REGIONES.indexOf(nuevo.region) === -1) REGIONES = uniqueSorted(REGIONES.concat([nuevo.region]));
+  REGION_POR_MUNICIPIO[municipio] = nuevo.region;
+
+  if(nuevo.productores === "sin dato"){
+    ALERTAS.push({sev:"media", grupo:nuevo.producto, texto:"sin padrón de productores identificado."});
+  }
+  if(veredicto !== "procede"){
+    ALERTAS.push({sev:"alta", grupo:nuevo.producto, texto: veredicto === "validacion"
+      ? "el filtro de viabilidad territorial requiere validación del IMPI antes de continuar."
+      : "el filtro de viabilidad territorial no procede como Indicación Geográfica; revisar ruta alternativa."});
+  }
+
+  state.formOpen = false;
+  state.form = null;
+  state.view = "ficha";
+  state.fichaId = nuevo.id;
+  state.sedecoView = "cartera";
+  renderAll();
+  window.scrollTo(0,0);
+}
+
+function formCampoTexto(field, label, tipo, ayuda, placeholder){
+  var val = esc(state.form.data[field] || "");
+  var err = state.form.errors[field];
+  return '' +
+    '<div class="form-campo">' +
+      '<label for="ff-' + field + '">' + esc(label) + '</label>' +
+      '<input type="' + tipo + '" id="ff-' + field + '" data-form-field="' + field + '" value="' + val + '" placeholder="' + esc(placeholder||"") + '">' +
+      (ayuda ? '<span class="form-ayuda">' + esc(ayuda) + '</span>' : "") +
+      (err ? '<span class="form-error">' + esc(err) + '</span>' : "") +
+    '</div>';
+}
+function formCampoTextarea(field, label, ayuda){
+  var val = esc(state.form.data[field] || "");
+  return '' +
+    '<div class="form-campo">' +
+      '<label for="ff-' + field + '">' + esc(label) + '</label>' +
+      '<textarea id="ff-' + field + '" data-form-field="' + field + '" rows="3">' + val + '</textarea>' +
+      (ayuda ? '<span class="form-ayuda">' + esc(ayuda) + '</span>' : "") +
+    '</div>';
+}
+function formCampoSelect(field, label, opciones, ayuda){
+  var val = state.form.data[field];
+  var opts = opciones.map(function(o){
+    return '<option value="' + esc(o.value) + '" ' + (o.value===val?"selected":"") + '>' + esc(o.label) + '</option>';
+  }).join("");
+  return '' +
+    '<div class="form-campo">' +
+      '<label for="ff-' + field + '">' + esc(label) + '</label>' +
+      '<select id="ff-' + field + '" data-form-field="' + field + '">' + opts + '</select>' +
+      (ayuda ? '<span class="form-ayuda">' + esc(ayuda) + '</span>' : "") +
+    '</div>';
+}
+
+function renderFormPaso1(){
+  var mesaOpts = [{value:"", label:"— Sin especificar —"}].concat(MESAS.map(function(m,i){ return {value:String(i), label:m.region + " — " + m.sede}; }));
+  return '' +
+    '<h3>Perfil</h3>' +
+    formCampoTexto("producto", "Nombre del producto", "text", "Escríbelo exactamente como se protegerá, es lo que el IMPI evalúa.", "Ej. Cajeta de Sayula") +
+    formCampoSelect("clasificacion", "Clasificación", CLASIFICACIONES.map(function(c){ return {value:c, label:c}; })) +
+    formCampoSelect("instrumento", "Instrumento", INSTRUMENTOS, "Cada instrumento tiene su propia ruta crítica.") +
+    formCampoTexto("municipioPrincipal", "Municipio principal", "text", "", "Ej. Sayula") +
+    formCampoTexto("productores", "Número de productores", "number", "Si no hay padrón déjalo vacío, se registra como alerta.", "") +
+    formCampoSelect("organizacionExistente", "Organización existente", ORGANIZACION_OPTS) +
+    formCampoTextarea("descripcion", "Descripción", "") +
+    formCampoTexto("contacto", "Contacto", "text", "", "Nombre de la persona de contacto") +
+    formCampoTexto("telefono", "Teléfono", "tel", "", "") +
+    formCampoSelect("mesaOrigen", "Mesa regional de origen", mesaOpts);
+}
+
+function renderFormPaso2(){
+  var f = state.form.data.filtro;
+  var preguntasHTML = FILTRO_TERRITORIAL_PREGUNTAS.map(function(p){
+    var val = f[p.id];
+    return '' +
+      '<div class="form-si-no">' +
+        '<p>' + esc(p.texto) + '</p>' +
+        '<div class="si-no-btns">' +
+          '<button type="button" class="btn-si-no ' + (val===true?"activo":"") + '" data-form-filtro="' + p.id + '" data-value="si">Sí</button>' +
+          '<button type="button" class="btn-si-no ' + (val===false?"activo":"") + '" data-form-filtro="' + p.id + '" data-value="no">No</button>' +
+        '</div>' +
+      '</div>';
+  }).join("");
+  var veredicto = veredictoDeFiltro(f);
+  var veredictoHTML = "";
+  if(veredicto){
+    var label = veredicto==="procede" ? "Procede" : veredicto==="validacion" ? "Requiere validación IMPI" : "No procede como IG";
+    veredictoHTML = '' +
+      '<div class="veredicto-linea"><span class="veredicto-tag">' + label + '</span></div>' +
+      (veredicto === "noprocede" ? '<p class="filtro-alterna">Considera marca colectiva como alternativa: protege el origen sin exigir exclusividad territorial.</p>' : "");
+  }
+  var err = state.form.errors.filtro;
+  return '' +
+    '<h3>Paso 0 · Filtro de viabilidad territorial</h3>' +
+    '<div class="filtro-territorial" style="margin-top:0;">' + preguntasHTML + veredictoHTML + '</div>' +
+    (err ? '<p class="form-error" style="margin-top:10px;">' + esc(err) + '</p>' : "");
+}
+
+function renderFormPaso3(){
+  var respuestas = state.form.data.respuestas;
+  var ejesHTML = EJES_DIAGNOSTICO.map(function(eje){
+    var dimsHTML = eje.dimensiones.map(function(dim){
+      var preguntasHTML = dim.preguntas.map(function(texto, idx){
+        var valorActual = respuestas[dim.id][idx];
+        var botones = ESCALA_LABELS.map(function(lab, v){
+          return '<button type="button" class="escala-btn ' + (v===valorActual?"activo":"") + '" data-form-escala="' + dim.id + '" data-idx="' + idx + '" data-value="' + v + '">' + lab + '</button>';
+        }).join("");
+        return '' +
+          '<div class="form-pregunta-escala">' +
+            '<p>' + esc(texto) + '</p>' +
+            '<div class="escala-btns">' + botones + '</div>' +
+          '</div>';
+      }).join("");
+      return '<div class="form-dimension"><h5>' + esc(dim.nombre) + '</h5>' + preguntasHTML + '</div>';
+    }).join("");
+    return '' +
+      '<details open><summary><span>' + esc(eje.nombre) + '</span></summary>' +
+        '<div class="form-eje-body">' + dimsHTML + '</div>' +
+      '</details>';
+  }).join("");
+  return '' +
+    '<h3>Diagnóstico</h3>' +
+    '<div class="aviso-calibracion"><strong>Instrumento en calibración, versión 0.2.</strong> La rúbrica aún no se valida con IMPI e ITESO. Los resultados sirven para diseñar acompañamiento, no todavía para asignar presupuesto.</div>' +
+    ejesHTML;
+}
+
+function renderFormPaso4(){
+  var docs = state.form.data.documentos;
+  var docsHTML = DOCUMENTOS_ADJUNTABLES.map(function(d){
+    var actual = docs[d.id];
+    var inputId = "doc-input-" + d.id;
+    return '' +
+      '<div class="doc-item">' +
+        '<span>' + esc(d.label) + '</span>' +
+        (actual
+          ? '<span class="doc-estado">' + esc(actual.nombre) + '<button type="button" class="btn-quitar" data-form-doc-quitar="' + d.id + '">Quitar</button></span>'
+          : '<label class="btn-doc" for="' + inputId + '">Adjuntar<input type="file" id="' + inputId + '" data-doc-key="' + d.id + '" style="display:none;"></label>') +
+      '</div>';
+  }).join("");
+
+  var fotos = state.form.data.fotos;
+  var fotosHTML = fotos.map(function(f, idx){
+    return '' +
+      '<div class="foto-item">' +
+        '<img src="' + f.url + '" alt="' + esc(f.nombre) + '">' +
+        '<button type="button" class="btn-quitar" data-form-foto-quitar="' + idx + '">Quitar</button>' +
+      '</div>';
+  }).join("");
+
+  var errorHTML = state.form.data.archivoError ? '<p class="form-error">' + esc(state.form.data.archivoError) + '</p>' : "";
+
+  return '' +
+    '<h3>Documentos y fotos</h3>' +
+    '<p class="form-nota">Máximo 10 MB por archivo. Las fotos se comprimen antes de subirse. Es simulado, sin subida real.</p>' +
+    errorHTML +
+    '<div class="doc-list">' + docsHTML + '</div>' +
+    '<p class="mono" style="margin:16px 0 8px;color:var(--gris);">Fotografías</p>' +
+    '<div class="foto-grid">' + fotosHTML +
+      '<label class="foto-agregar" for="foto-input">+ Agregar<input type="file" id="foto-input" data-foto-input accept="image/*" multiple style="display:none;"></label>' +
+    '</div>';
+}
+
+function renderFormPaso5(){
+  var d = state.form.data;
+  var etapaInicial = d.organizacionExistente === "formal" ? 2 : 1;
+  var docsCount = Object.keys(d.documentos).filter(function(k){ return d.documentos[k]; }).length;
+
+  var resumen = '' +
+    '<div class="tarjeta">' +
+      '<div class="tarjeta-cab"><h3>' + esc(d.producto || "(sin nombre)") + '</h3><span class="mono">' + rutaLabel(d.instrumento) + '</span></div>' +
+      '<dl class="tarjeta-datos">' +
+        '<div class="tarjeta-dato"><dt>Clasificación</dt><dd>' + esc(d.clasificacion) + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Municipio principal</dt><dd>' + esc(d.municipioPrincipal || "—") + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Productores</dt><dd>' + (d.productores ? esc(d.productores) : "Sin dato registrado") + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Organización existente</dt><dd>' + esc(orgLabel(d.organizacionExistente)) + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Contacto</dt><dd>' + esc(d.contacto || "—") + (d.telefono ? " · " + esc(d.telefono) : "") + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Documentos adjuntos</dt><dd>' + docsCount + ' de ' + DOCUMENTOS_ADJUNTABLES.length + '</dd></div>' +
+        '<div class="tarjeta-dato"><dt>Fotografías</dt><dd>' + d.fotos.length + '</dd></div>' +
+      '</dl>' +
+    '</div>';
+
+  return '' +
+    '<h3>Resumen</h3>' +
+    resumen +
+    '<div class="panel-negro" style="margin-top:16px;">' +
+      '<h3>Lo que pasa al registrar</h3>' +
+      '<ul class="lo-que-pasa">' +
+        '<li>Se coloca en la etapa ' + etapaInicial + ' según la figura legal declarada.</li>' +
+        '<li>Se asigna cohorte.</li>' +
+        '<li>Se genera el plan de fortalecimiento.</li>' +
+        '<li>Se abren alertas por datos faltantes, empezando por el padrón.</li>' +
+        '<li>Queda registro en bitácora con usuario, fecha y mesa regional de origen.</li>' +
+      '</ul>' +
+    '</div>' +
+    (state.form.errors.registro ? '<p class="form-error" style="margin-top:12px;">' + esc(state.form.errors.registro) + '</p>' : "");
+}
+
+function renderFormProgreso(){
+  return '<div class="form-progreso">' + FORM_STEPS.map(function(label, i){
+    var n = i + 1;
+    var estado = n < state.form.step ? "hecho" : n === state.form.step ? "actual" : "pendiente";
+    return '<div class="form-progreso-paso ' + estado + '"><span class="form-progreso-num">' + n + '</span><span class="form-progreso-label">' + esc(label) + '</span></div>';
+  }).join("") + '</div>';
+}
+
+function renderFormOverlay(){
+  var stepFns = [renderFormPaso1, renderFormPaso2, renderFormPaso3, renderFormPaso4, renderFormPaso5];
+  var contenido = stepFns[state.form.step - 1]();
+  var esUltimo = state.form.step === FORM_STEPS.length;
+  var esPrimero = state.form.step === 1;
+  return '' +
+    '<div class="form-panel" role="dialog" aria-label="Registrar nueva agrupación">' +
+      '<div class="form-header">' +
+        '<span class="mono">Nueva agrupación</span>' +
+        '<button type="button" class="form-cerrar" data-form-close aria-label="Cerrar formulario">✕</button>' +
+      '</div>' +
+      renderFormProgreso() +
+      '<div class="form-body" id="form-body">' + contenido + '</div>' +
+      '<div class="form-footer">' +
+        (esPrimero ? '' : '<button type="button" class="volver-btn" data-form-prev>← Atrás</button>') +
+        (esUltimo
+          ? '<button type="button" class="btn-nueva" data-form-submit>Registrar</button>'
+          : '<button type="button" class="btn-nueva" data-form-next>Siguiente →</button>') +
+      '</div>' +
+    '</div>';
+}
+
+/* =========================================================
    RENDER PRINCIPAL
    ========================================================= */
 function renderMain(){
@@ -1554,6 +2019,14 @@ function renderAll(){
   document.getElementById("subbar").innerHTML = renderSubbar();
   document.getElementById("main").innerHTML = renderMain();
   syncSelectValues();
+
+  var overlayEl = document.getElementById("form-overlay");
+  var prevScroll = 0;
+  var prevBody = document.getElementById("form-body");
+  if(prevBody) prevScroll = prevBody.scrollTop;
+  overlayEl.innerHTML = state.formOpen ? renderFormOverlay() : "";
+  var newBody = document.getElementById("form-body");
+  if(newBody) newBody.scrollTop = prevScroll;
 }
 
 function syncSelectValues(){
@@ -1616,6 +2089,57 @@ document.addEventListener("click", function(e){
     renderAll();
     return;
   }
+
+  var formOpenBtn = e.target.closest("[data-form-open]");
+  if(formOpenBtn){ abrirFormulario(); return; }
+
+  var formCloseBtn = e.target.closest("[data-form-close]");
+  if(formCloseBtn){ cerrarFormulario(); return; }
+
+  var formNextBtn = e.target.closest("[data-form-next]");
+  if(formNextBtn){
+    if(validarPasoActual()){ state.form.step++; }
+    renderAll();
+    return;
+  }
+
+  var formPrevBtn = e.target.closest("[data-form-prev]");
+  if(formPrevBtn){ state.form.step--; renderAll(); return; }
+
+  var formSubmitBtn = e.target.closest("[data-form-submit]");
+  if(formSubmitBtn){ registrarAgrupacion(); return; }
+
+  var filtroBtn = e.target.closest("[data-form-filtro]");
+  if(filtroBtn){
+    state.form.data.filtro[filtroBtn.dataset.formFiltro] = filtroBtn.dataset.value === "si";
+    renderAll();
+    return;
+  }
+
+  var escalaBtn = e.target.closest("[data-form-escala]");
+  if(escalaBtn){
+    var dimId = escalaBtn.dataset.formEscala;
+    var idx = parseInt(escalaBtn.dataset.idx, 10);
+    var valor = parseInt(escalaBtn.dataset.value, 10);
+    state.form.data.respuestas[dimId][idx] = valor;
+    renderAll();
+    return;
+  }
+
+  var docQuitarBtn = e.target.closest("[data-form-doc-quitar]");
+  if(docQuitarBtn){
+    delete state.form.data.documentos[docQuitarBtn.dataset.formDocQuitar];
+    renderAll();
+    return;
+  }
+
+  var fotoQuitarBtn = e.target.closest("[data-form-foto-quitar]");
+  if(fotoQuitarBtn){
+    var idxFoto = parseInt(fotoQuitarBtn.dataset.formFotoQuitar, 10);
+    state.form.data.fotos.splice(idxFoto, 1);
+    renderAll();
+    return;
+  }
 });
 
 document.addEventListener("keydown", function(e){
@@ -1628,8 +2152,45 @@ document.addEventListener("keydown", function(e){
   }
 });
 
+function updateFormField(t){
+  if(state.form && t.dataset && t.dataset.formField){
+    state.form.data[t.dataset.formField] = t.value;
+  }
+}
+
+document.addEventListener("input", function(e){
+  updateFormField(e.target);
+});
+
 document.addEventListener("change", function(e){
   var t = e.target;
+  updateFormField(t);
+
+  if(t.dataset && t.dataset.docKey){
+    var docFile = t.files && t.files[0];
+    if(docFile){
+      if(docFile.size > TAMANO_MAX_ARCHIVO){
+        state.form.data.archivoError = '"' + docFile.name + '" supera 10 MB y no se adjuntó.';
+      } else {
+        state.form.data.documentos[t.dataset.docKey] = {nombre:docFile.name};
+        state.form.data.archivoError = "";
+      }
+      renderAll();
+    }
+    return;
+  }
+  if(t.hasAttribute && t.hasAttribute("data-foto-input")){
+    var files = Array.prototype.slice.call(t.files || []);
+    var rechazado = null;
+    files.forEach(function(file){
+      if(file.size > TAMANO_MAX_ARCHIVO){ rechazado = file.name; return; }
+      state.form.data.fotos.push({nombre:file.name, url:URL.createObjectURL(file)});
+    });
+    state.form.data.archivoError = rechazado ? '"' + rechazado + '" supera 10 MB y no se agregó.' : "";
+    renderAll();
+    return;
+  }
+
   if(t.id === "filtro-region"){ state.filterRegion = t.value; renderAll(); }
   else if(t.id === "filtro-municipio"){ state.filterMunicipio = t.value; renderAll(); }
   else if(t.id === "filtro-etapa"){ state.filterEtapa = t.value; renderAll(); }
