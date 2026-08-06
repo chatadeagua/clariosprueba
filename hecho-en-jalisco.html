@@ -41,6 +41,22 @@
     line-height:1.03;
     margin:0;
   }
+  h2{
+    font-size:25px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:0 0 18px;
+  }
+  h2::after{
+    content:"";
+    flex:1 1 auto;
+    min-width:20px;
+    height:1px;
+    background:var(--gris-claro);
+  }
+  .ficha-cab h2{display:block;margin-bottom:6px;}
+  .ficha-cab h2::after{content:none;}
   .mono{
     font-family:'IBM Plex Mono',monospace;
     text-transform:uppercase;
@@ -63,6 +79,10 @@
   @media (prefers-reduced-motion: reduce){
     *{transition:none!important;animation:none!important;}
   }
+
+  /* ---------- franja tejida (firma de marca) ---------- */
+  .franja-marca{display:flex;height:5px;width:100%;}
+  .franja-marca span{flex:1 1 0;height:100%;}
 
   /* ---------- franja fija ---------- */
   .franja-demo{
@@ -159,7 +179,7 @@
   }
   .subnav-btn:hover{color:var(--negro);}
 
-  main{max-width:1180px;margin:0 auto;padding:24px 20px 80px;}
+  main{max-width:1180px;margin:0 auto;padding:32px 20px 90px;}
 
   /* ---------- funnel ---------- */
   .funnel-title{margin-bottom:4px;}
@@ -240,7 +260,7 @@
   .tarjeta-lista-vacia{color:var(--gris);font-style:italic;padding:4px 0;}
 
   /* ---------- alertas ---------- */
-  .alertas-wrap{margin-bottom:28px;}
+  .alertas-wrap{margin-bottom:36px;}
   .alertas-wrap h2{font-size:18px;margin-bottom:10px;}
   .alerta{
     border:2px solid var(--negro);
@@ -590,10 +610,21 @@
 </style>
 </head>
 <body>
+<div class="franja-marca" role="presentation" aria-hidden="true">
+  <span style="background:var(--naranja);"></span>
+  <span style="background:var(--naranja-hondo);"></span>
+  <span style="background:var(--negro);"></span>
+  <span style="background:var(--carbon);"></span>
+  <span style="background:var(--gris-claro);"></span>
+  <span style="background:var(--verde);"></span>
+  <span style="background:var(--terracota);"></span>
+  <span style="background:var(--rosa);"></span>
+  <span style="background:var(--azul);"></span>
+</div>
 <div class="franja-demo"><span>Demo de estructura para revisión con SEDECO. Datos de muestra, no operativos.</span></div>
 <div id="topbar"></div>
 <div id="subbar"></div>
-<main id="main"></main>
+<main id="main" tabindex="-1"></main>
 <div class="footer mono">Hecho en Jalisco · Prototipo de estructura · No conectado a IMPI ni a SEDECO</div>
 <div id="form-overlay"></div>
 
@@ -1237,7 +1268,7 @@ function renderFiltroViabilidadSeccion(){
       '</div>';
   }
   return '' +
-    '<h2 style="margin:28px 0 12px;">Filtro de viabilidad territorial</h2>' +
+    '<h2 style="margin:36px 0 20px;">Filtro de viabilidad territorial</h2>' +
     '<div class="tarjeta-grid">' +
       tarjeta("procede", "Procede") +
       tarjeta("validacion", "Requiere validación IMPI") +
@@ -1261,7 +1292,7 @@ function renderSedecoCartera(){
     '<button type="button" class="btn-quitar-chip" data-clear-kpi>Quitar filtro ✕</button></div>'
   ) : "";
   return '' +
-    '<h2 style="margin-bottom:12px;">Cartera de agrupaciones</h2>' +
+    '<h2 style="margin-bottom:20px;">Cartera de agrupaciones</h2>' +
     chip +
     renderFiltros(REGIONES, MUNICIPIOS, true, filtradas.length) +
     renderTabla(filtradas, "Cartera estatal — SEDECO Jalisco");
@@ -1303,7 +1334,7 @@ function renderCohortesView(){
       '<p>Barro Canelo, Barro Bruñido y Nacimientos de Barro comparten técnica, territorio y aliado académico; donde sea legalmente viable pueden compartir reglas de uso y una sola certificadora en vez de tramitarlo tres veces.</p>' +
     '</div>';
 
-  return '<h2 style="margin-bottom:12px;">Cohortes</h2>' + '<div class="tarjeta-grid">' + cards + '</div>' + oportunidad;
+  return '<h2 style="margin-bottom:20px;">Cohortes</h2>' + '<div class="tarjeta-grid">' + cards + '</div>' + oportunidad;
 }
 
 /* =========================================================
@@ -1345,7 +1376,7 @@ function renderMesasView(){
   }).join("");
 
   return '' +
-    '<h2 style="margin-bottom:12px;">Mesas regionales</h2>' +
+    '<h2 style="margin-bottom:20px;">Mesas regionales</h2>' +
     '<div class="funnel" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">' + kpis + '</div>' +
     '<div class="tabla-wrap">' +
     '<table class="cartera">' +
@@ -1369,7 +1400,7 @@ function renderPlantillasView(){
         '<p style="margin-top:10px;">' + p.usos + ' agrupación(es) la usan</p>' +
       '</div>';
   }).join("");
-  return '<h2 style="margin-bottom:12px;">Plantillas maestras</h2>' + '<div class="tarjeta-grid">' + cards + '</div>';
+  return '<h2 style="margin-bottom:20px;">Plantillas maestras</h2>' + '<div class="tarjeta-grid">' + cards + '</div>';
 }
 
 /* =========================================================
@@ -1401,7 +1432,7 @@ function renderMunicipioList(){
   return '' +
     renderRutaMunicipal(state.municipioSel) +
     renderFunnel(deMunicipio) +
-    '<h2 style="margin:24px 0 12px;">Cartera de ' + esc(state.municipioSel) + '</h2>' +
+    '<h2 style="margin:32px 0 20px;">Cartera de ' + esc(state.municipioSel) + '</h2>' +
     renderFiltros([], [], false, filtradas.length) +
     renderTabla(filtradas, "Cartera municipal — " + esc(state.municipioSel));
 }
