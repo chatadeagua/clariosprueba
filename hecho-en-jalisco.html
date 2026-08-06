@@ -197,6 +197,48 @@
   }
   .funnel-nota .mono{color:var(--naranja-hondo);display:block;margin-bottom:4px;}
 
+  /* ---------- panorama: resumen tipo tablero ---------- */
+  .panorama-resumen{display:grid;grid-template-columns:280px 1fr;gap:2px;margin-bottom:8px;}
+  @media (max-width:760px){ .panorama-resumen{grid-template-columns:1fr;} }
+  .panorama-total{background:var(--negro);color:var(--blanco);padding:20px;display:flex;flex-direction:column;justify-content:space-between;gap:16px;}
+  .panorama-total-click{background:none;border:none;color:inherit;text-align:left;font:inherit;padding:0;cursor:pointer;display:block;width:100%;}
+  .panorama-total-click:hover .panorama-total-num{color:var(--blanco);}
+  .panorama-total-num{display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:62px;line-height:1;color:var(--naranja);}
+  .panorama-total-leyenda{display:block;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.08em;color:var(--gris-claro);margin-top:8px;}
+  .panorama-total-bar{display:block;height:6px;background:var(--carbon);margin-top:14px;}
+  .panorama-total-bar span{display:block;height:100%;background:var(--naranja);}
+  .panorama-total-falta{
+    background:none;border:none;padding:0;text-align:left;cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;
+    color:var(--gris-claro);text-decoration:underline;
+  }
+  .panorama-total-falta:hover{color:var(--naranja);}
+
+  .panorama-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+  @media (max-width:640px){ .panorama-kpis{grid-template-columns:repeat(2,1fr);} }
+  .kpi-btn{
+    background:var(--negro);color:var(--blanco);border:none;padding:16px 14px;text-align:left;font:inherit;cursor:pointer;
+    display:flex;flex-direction:column;gap:8px;min-height:100px;justify-content:space-between;
+  }
+  .kpi-btn:hover{background:var(--carbon);}
+  .kpi-num{font-family:'Archivo',sans-serif;font-weight:800;font-size:28px;}
+  .kpi-num.rojo{color:var(--terracota);}
+  .kpi-label{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--gris-claro);}
+
+  .kpi-chip{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+    border:2px solid var(--negro);border-left:6px solid var(--naranja);padding:10px 14px;margin-bottom:14px;
+  }
+  .btn-quitar-chip{background:var(--blanco);border:2px solid var(--negro);padding:6px 10px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.06em;}
+  .btn-quitar-chip:hover{border-color:var(--naranja-hondo);}
+
+  .link-agrupacion{
+    background:none;border:none;padding:4px 0;text-align:left;font:inherit;font-size:14px;color:var(--negro);cursor:pointer;
+    text-decoration:underline;text-decoration-color:var(--gris-claro);
+  }
+  .link-agrupacion:hover{color:var(--naranja-hondo);text-decoration-color:var(--naranja-hondo);}
+  .tarjeta-lista-vacia{color:var(--gris);font-style:italic;padding:4px 0;}
+
   /* ---------- alertas ---------- */
   .alertas-wrap{margin-bottom:28px;}
   .alertas-wrap h2{font-size:18px;margin-bottom:10px;}
@@ -831,7 +873,8 @@ var state = {
   fichaId: null,
   liberaciones: {},
   formOpen: false,
-  form: null
+  form: null,
+  filtroKPI: null
 };
 
 /* =========================================================
@@ -1094,16 +1137,132 @@ function applyFiltros(groups){
   });
 }
 
+/* =========================================================
+   PANORAMA — resumen tipo tablero + KPI interactivos
+   ========================================================= */
+var META_AGRUPACIONES = 75;
+var PANORAMA_KPIS = [
+  {label:"Con organización lista", pred:function(g){ return g.etapaActual>=2; }},
+  {label:"Con persona moral", pred:function(g){ return g.etapaActual>=3; }},
+  {label:"Expediente ingresado", pred:function(g){ return g.etapaActual>=6; }},
+  {label:"Declaratoria en DOF", pred:function(g){ return g.etapaActual>=7; }},
+  {label:"Con autorizaciones de uso", pred:function(g){ return g.etapaActual>=9; }, rojo:true}
+];
+
+function irACarteraFiltrada(kpiIndex){
+  var kpi = PANORAMA_KPIS[kpiIndex];
+  state.role = "sedeco";
+  state.sedecoView = "cartera";
+  state.view = "list";
+  state.fichaId = null;
+  state.filterRegion = "todas"; state.filterMunicipio = "todas"; state.filterEtapa = "todas";
+  state.filtroKPI = {label:kpi.label, kpiIndex:kpiIndex};
+  renderAll();
+}
+function irACarteraCompleta(){
+  state.role = "sedeco";
+  state.sedecoView = "cartera";
+  state.view = "list";
+  state.fichaId = null;
+  state.filtroKPI = null;
+  state.filterRegion = "todas"; state.filterMunicipio = "todas"; state.filterEtapa = "todas";
+  renderAll();
+}
+function irAMesas(){
+  state.role = "sedeco";
+  state.sedecoView = "mesas";
+  state.view = "list";
+  state.fichaId = null;
+  renderAll();
+}
+
+function renderPanoramaResumen(){
+  var total = GROUPS.length;
+  var faltan = Math.max(0, META_AGRUPACIONES - total);
+  var pct = Math.min(100, Math.round(total / META_AGRUPACIONES * 100));
+  var mesasRealizadas = MESAS.filter(function(m){ return m.estado === "Realizada"; }).length;
+
+  var kpisHTML = PANORAMA_KPIS.map(function(k, i){
+    var n = GROUPS.filter(k.pred).length;
+    return '' +
+      '<button type="button" class="kpi-btn" data-kpi-index="' + i + '" aria-label="Ver ' + esc(k.label) + ' en la cartera">' +
+        '<span class="kpi-num ' + (k.rojo?"rojo":"") + '">' + n + '</span>' +
+        '<span class="kpi-label">' + esc(k.label) + '</span>' +
+      '</button>';
+  }).join("") + '' +
+    '<button type="button" class="kpi-btn" data-ir-mesas aria-label="Ver mesas regionales">' +
+      '<span class="kpi-num">' + mesasRealizadas + ' / ' + MESAS.length + '</span>' +
+      '<span class="kpi-label">Mesas realizadas</span>' +
+    '</button>';
+
+  return '' +
+    '<h2 class="funnel-title">Panorama</h2>' +
+    '<p class="funnel-sub mono">Toca un número para ver el detalle</p>' +
+    '<div class="panorama-resumen">' +
+      '<div class="panorama-total">' +
+        '<button type="button" class="panorama-total-click" data-ir-cartera aria-label="Ver todas las agrupaciones registradas">' +
+          '<span class="panorama-total-num">' + total + '</span>' +
+          '<span class="panorama-total-leyenda">de ' + META_AGRUPACIONES + ' agrupaciones comprometidas</span>' +
+          '<span class="panorama-total-bar"><span style="width:' + pct + '%"></span></span>' +
+        '</button>' +
+        '<button type="button" class="panorama-total-falta" data-ir-mesas>Faltan ' + faltan + ' por diagnosticar en ' + MESAS.length + ' mesas regionales</button>' +
+      '</div>' +
+      '<div class="panorama-kpis">' + kpisHTML + '</div>' +
+    '</div>';
+}
+
+function renderPanoramaNota(){
+  return '' +
+    '<div class="funnel-nota">' +
+      '<span class="mono">Lectura obligada</span>' +
+      'Una declaratoria obtenida todavía no es beneficio para el productor. La columna en rojo mide impacto real y hoy está en cero, incluso para Cajeta de Sayula, cuya declaratoria salió en julio 2024.' +
+    '</div>';
+}
+
+function renderFiltroViabilidadSeccion(){
+  var buckets = {procede:[], validacion:[], noprocede:[]};
+  GROUPS.forEach(function(g){
+    var v = computeDiagnostico(g).veredicto;
+    buckets[v].push(g);
+  });
+  function tarjeta(clave, titulo){
+    var lista = buckets[clave];
+    var itemsHTML = lista.length
+      ? lista.map(function(g){ return '<li><button type="button" class="link-agrupacion" data-open-ficha="' + g.id + '">' + esc(g.producto) + '</button></li>'; }).join("")
+      : '<li class="tarjeta-lista-vacia">Ninguna en este corte.</li>';
+    return '' +
+      '<div class="tarjeta">' +
+        '<div class="tarjeta-cab"><h3>' + titulo + '</h3><span class="mono">' + lista.length + '</span></div>' +
+        '<ul class="tarjeta-lista">' + itemsHTML + '</ul>' +
+      '</div>';
+  }
+  return '' +
+    '<h2 style="margin:28px 0 12px;">Filtro de viabilidad territorial</h2>' +
+    '<div class="tarjeta-grid">' +
+      tarjeta("procede", "Procede") +
+      tarjeta("validacion", "Requiere validación IMPI") +
+      tarjeta("noprocede", "No procede") +
+    '</div>';
+}
+
 function renderSedecoPanorama(){
   return '' +
-    renderFunnel(GROUPS) +
+    renderPanoramaResumen() +
+    renderPanoramaNota() +
+    renderFiltroViabilidadSeccion() +
     renderAlertas();
 }
 
 function renderSedecoCartera(){
-  var filtradas = applyFiltros(GROUPS);
+  var base = state.filtroKPI ? GROUPS.filter(PANORAMA_KPIS[state.filtroKPI.kpiIndex].pred) : GROUPS;
+  var filtradas = applyFiltros(base);
+  var chip = state.filtroKPI ? (
+    '<div class="kpi-chip"><span>Mostrando: <strong>' + esc(state.filtroKPI.label) + '</strong> (' + base.length + ')</span>' +
+    '<button type="button" class="btn-quitar-chip" data-clear-kpi>Quitar filtro ✕</button></div>'
+  ) : "";
   return '' +
     '<h2 style="margin-bottom:12px;">Cartera de agrupaciones</h2>' +
+    chip +
     renderFiltros(REGIONES, MUNICIPIOS, true, filtradas.length) +
     renderTabla(filtradas, "Cartera estatal — SEDECO Jalisco");
 }
@@ -2076,6 +2235,18 @@ document.addEventListener("click", function(e){
     renderAll();
     return;
   }
+  var kpiBtn = e.target.closest("[data-kpi-index]");
+  if(kpiBtn){ irACarteraFiltrada(parseInt(kpiBtn.dataset.kpiIndex, 10)); return; }
+
+  var irMesasBtn = e.target.closest("[data-ir-mesas]");
+  if(irMesasBtn){ irAMesas(); return; }
+
+  var irCarteraBtn = e.target.closest("[data-ir-cartera]");
+  if(irCarteraBtn){ irACarteraCompleta(); return; }
+
+  var clearKpiBtn = e.target.closest("[data-clear-kpi]");
+  if(clearKpiBtn){ state.filtroKPI = null; renderAll(); return; }
+
   var backEl = e.target.closest("[data-back]");
   if(backEl){
     state.view = "list";
